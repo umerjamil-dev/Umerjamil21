@@ -13,7 +13,15 @@ import Reservations from '../pages/Reservations'
 import AddLead from '../pages/AddLead'
 import AddCustomer from '../pages/AddCustomer'
 import AddBooking from '../pages/AddBooking'
+import AddPayment from '../pages/AddPayment'
 import AddReservation from '../pages/AddReservation'
+import Packages from '../pages/Packages'
+import AddPackage from '../pages/AddPackage'
+import LiveBooking from '../pages/LiveBooking'
+import Operations from '../pages/Operations'
+
+import Reports from '../pages/Reports'
+import Settings from '../pages/Settings'
 
 const Router = () => {
   return (
@@ -32,7 +40,14 @@ const Router = () => {
         <Route path="/reservations" element={<Layout><Reservations /></Layout>} />
         <Route path="/reservations/add" element={<Layout><AddReservation /></Layout>} />
         <Route path="/payments" element={<Layout><Payments /></Layout>} />
+        <Route path="/payments/add" element={<Layout><AddPayment /></Layout>} />
+        <Route path="/operations" element={<Layout><Operations /></Layout>} />
+        <Route path="/reports" element={<Layout><Reports /></Layout>} />
+        <Route path="/settings" element={<Layout><Settings /></Layout>} />
         <Route path="/reservations" element={<Layout><Reservations /></Layout>} />
+        <Route path="/packages" element={<Layout><Packages /></Layout>} />
+        <Route path="/packages/add" element={<Layout><AddPackage /></Layout>} />
+        <Route path="/live-booking" element={<Layout><LiveBooking /></Layout>} />
       </Routes>
     </BrowserRouter>
   )

@@ -10,11 +10,19 @@ import Payments from './Payments';
 import AddLead from './AddLead';
 import AddCustomer from './AddCustomer';
 import AddBooking from './AddBooking';
+import AddPayment from './AddPayment';
 import AddReservation from './AddReservation';
+import Packages from './Packages';
+import AddPackage from './AddPackage';
+import LiveBooking from './LiveBooking';
+import Operations from './Operations';
+import Reports from './Reports';
+import Settings from './Settings';
 
 export { 
   Home, Login, Leads, LeadDetail, 
   Customers, Calculator, Bookings, 
   Reservations, Payments, AddLead,
-  AddCustomer, AddBooking, AddReservation
+  AddCustomer, AddBooking, AddPayment, AddReservation,
+  Packages, AddPackage, LiveBooking, Operations, Reports, Settings
 };

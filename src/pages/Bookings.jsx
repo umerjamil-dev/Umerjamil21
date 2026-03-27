@@ -15,101 +15,107 @@ const Bookings = () => {
    ];
 
    return (
-      <div className="space-y-12 animate-in fade-in duration-1000 font-inter">
-         {/* Editorial Header */}
-         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4">
-            <div>
-               <h1 className="text-[2.5rem] font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Financial <span className="text-[var(--on-surface-variant)]/30 italic font-light">Ledger</span></h1>
-               <p className="mt-2 text-sm font-medium text-[var(--on-surface-variant)] tracking-wide">Tracking sacred investments and operational liquidity.</p>
+      <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
+         {/* Premium Header */}
+         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200">
+            <div className="space-y-4">
+               <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-black opacity-80">
+                  <TrendingUp size={14} strokeWidth={3} />
+                  Revenue Analysis: Q1 2024
+               </div>
+               <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
+                  Financial <span className="text-slate-300 italic font-light font-manrope">Ledger</span>
+               </h1>
+               <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
+                  Tracking sacred investments and operational liquidity cycles across the global Al Bayan network.
+               </p>
             </div>
             <div className="flex items-center gap-4">
-               <button className="flex items-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase   hover:text-[var(--on-surface)] transition-all group shadow-sm">
-                  <Download size={16} strokeWidth={2} />
-                  Journal Export
+               <button className="flex items-center gap-3 px-8 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black hover:border-slate-300 transition-all group shadow-sm">
+                  <Download size={18} strokeWidth={3} /> Journal Export
                </button>
                <Link
                   to="/bookings/add"
-                  className="btn-midnight flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-2xl"
+                  className="px-10 py-5 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
                >
-                  <BookOpen size={18} strokeWidth={2.5} />
-                  New Booking
+                  <BookOpen size={18} strokeWidth={3} />
+                  Create Entry
                </Link>
             </div>
          </div>
 
          {/* Financial Bento Matrix */}
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Gross Revenue */}
-            <div className="bg-[var(--surface-container-lowest)] rounded-[2.5rem] p-10 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--surface)] rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-transform"></div>
-               <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-10 relative z-10">Inflow Aggregate</p>
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {/* Inflow Aggregate */}
+            <div className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-all duration-700"></div>
+               <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Inflow Aggregate</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">$284.5k</h3>
-                     <p className="text-[10px] font-bold text-[var(--sacred-emerald)] flex items-center gap-1 mt-2 uppercase tracking-widest">
-                        <TrendingUp size={14} /> +12% Efficiency
+                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">$284.5k</h3>
+                     <p className="text-[9px] font-black text-[var(--sacred-emerald)] flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 w-fit">
+                        <TrendingUp size={12} strokeWidth={3} /> +12% Efficiency
                      </p>
                   </div>
-                  <div className="p-4 bg-[var(--surface)] rounded-2xl group-hover:bg-white group-hover:shadow-lg transition-all">
-                     <DollarSign size={24} className="text-[var(--on-surface)]" />
+                  <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 group-hover:bg-black group-hover:text-white transition-all shadow-sm">
+                     <DollarSign size={28} strokeWidth={2.5} />
                   </div>
                </div>
             </div>
 
-            {/* Pending Collection */}
-            <div className="bg-[var(--surface-container-lowest)] rounded-[2.5rem] p-10 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-transform"></div>
-               <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-10 relative z-10">Outflow Risk</p>
+            {/* Outflow Risk */}
+            <div className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-red-50/50 rounded-bl-[5rem] translate-x-12 -translate-y-12 transition-transform duration-700"></div>
+               <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Outflow Risk</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">$42.3k</h3>
-                     <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-2 uppercase tracking-widest">
-                        <AlertCircle size={14} /> Critical Collection
+                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">$42.3k</h3>
+                     <p className="text-[9px] font-black text-red-500 flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-red-50 px-3 py-1.5 rounded-full border border-red-100 w-fit leading-none">
+                        <AlertCircle size={12} strokeWidth={3} /> 3 Critical Nodes
                      </p>
                   </div>
-                  <div className="p-4 bg-red-500/5 rounded-2xl group-hover:bg-white group-hover:shadow-lg transition-all text-red-400">
-                     <CreditCard size={24} />
+                  <div className="w-16 h-16 bg-red-50 rounded-xl flex items-center justify-center border border-red-100 text-red-400 transition-all shadow-sm">
+                     <CreditCard size={28} strokeWidth={2.5} />
                   </div>
                </div>
             </div>
 
-            {/* Conversion Metrics */}
-            <div className="bg-[var(--grad-black)] rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-transform"></div>
-               <p className="text-[10px] font-extrabold text-white/40 uppercase tracking-[0.25em] mb-10 relative z-10">Engagement Yield</p>
+            {/* Engagement Yield */}
+            <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-xl p-10 text-white shadow-2xl relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-bl-[8rem] translate-x-20 -translate-y-20 group-hover:translate-x-10 group-hover:-translate-y-10 transition-all duration-700"></div>
+               <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Engagement Yield</p>
                <div className="flex items-center justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold tracking-tighter">68.4%</h3>
-                     <p className="text-[10px] font-bold text-green-400 mt-2 uppercase tracking-widest">Optimized Conversion</p>
+                     <h3 className="text-5xl font-manrope font-extrabold tracking-tighter text-white">68.4%</h3>
+                     <p className="text-[10px] font-black text-[var(--desert-gold)] mt-4 uppercase tracking-[0.3em]">Optimized Cycle</p>
                   </div>
-                  <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center border border-white/10">
-                     <TrendingUp size={24} />
+                  <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform">
+                     <TrendingUp size={32} strokeWidth={2} />
                   </div>
                </div>
-               <div className="w-full bg-white/10 h-1.5 rounded-full mt-8 overflow-hidden">
-                  <div className="bg-green-400 h-full rounded-full" style={{ width: '68.4%' }}></div>
+               <div className="w-full bg-white/10 h-2 rounded-full mt-10 overflow-hidden border border-white/5 shadow-inner">
+                  <div className="bg-gradient-to-r from-[var(--desert-gold)] to-amber-300 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(255,191,0,0.4)]" style={{ width: '68.4%' }}></div>
                </div>
             </div>
          </div>
 
          {/* Transaction Ledger */}
-         <div className="bg-[var(--surface-container-lowest)] rounded-[3rem] shadow-sm border border-[var(--outline-variant)] overflow-hidden">
-            <div className="p-10 border-b border-[var(--outline-variant)] flex flex-col lg:flex-row items-center justify-between gap-6">
+         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative">
+            <div className="p-10 border-b border-slate-100 flex flex-col lg:flex-row items-center justify-between gap-8 bg-slate-50/30">
                <div className="relative w-full lg:w-[480px] group">
-                  <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
+                  <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors" size={20} strokeWidth={3} />
                   <input
                      type="text"
                      placeholder="Search transaction ID, customer or package..."
-                     className="w-full pl-9 pr-4 py-3 bg-transparent border-b border-[var(--outline-variant)] rounded-none text-sm outline-none focus:border-[var(--on-surface)] text-[var(--on-surface)] transition-all font-medium placeholder-[var(--on-surface-variant)]"
+                     className="w-full pl-9 pr-4 py-4 bg-transparent border-b-2 border-slate-100 rounded-none text-sm outline-none focus:border-black text-black transition-all font-black placeholder-slate-300 uppercase tracking-widest"
                   />
                </div>
-               <div className="flex items-center gap-4">
-                  <button className="flex items-center gap-2 px-6 py-3 bg-[var(--surface-container-low)]   rounded-xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all">
-                     <Filter size={14} />
-                     Journal Type
+               <div className="flex items-center gap-4 w-full lg:w-auto">
+                  <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black hover:bg-slate-50 transition-all">
+                     <Filter size={16} strokeWidth={3} /> Protocol Type
                   </button>
-                  <button className="flex items-center gap-2 px-6 py-3 bg-[var(--surface-container-low)]   rounded-xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all">
-                     Financial Year
+                  <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+                     Fiscal Cycle: 2024
                   </button>
                </div>
             </div>
@@ -117,53 +123,57 @@ const Bookings = () => {
             <div className="overflow-x-auto">
                <table className="w-full text-left border-collapse">
                   <thead>
-                     <tr className="bg-[var(--surface)]">
-                        <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Transaction Narrative</th>
-                        <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Service Level</th>
-                        <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Liquidity Status</th>
-                        <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Aggregate Value</th>
-                        <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] text-right">Reference Date</th>
+                     <tr className="bg-slate-50 border-b border-slate-100">
+                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Transaction Narrative</th>
+                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Service Level</th>
+                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Liquidity Status</th>
+                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Aggregate Value</th>
+                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] text-right">Registry Date</th>
                      </tr>
                   </thead>
-                  <tbody className="divide-y divide-transparent">
+                  <tbody className="divide-y divide-slate-100">
                      {bookings.map((booking) => (
-                        <tr key={booking.id} className="group hover:bg-[var(--surface-container-high)] transition-all cursor-pointer">
-                           <td className="px-10 py-8">
+                        <tr key={booking.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
+                           <td className="px-10 py-10">
                               <div>
-                                 <p className="text-sm font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">{booking.customer}</p>
-                                 <p className="text-[10px] text-[var(--on-surface-variant)] font-bold uppercase tracking-widest mt-1.5 font-inter">{booking.id}</p>
+                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-3">{booking.customer}</p>
+                                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-slate-200"></span> ID: {booking.id}
+                                 </p>
                               </div>
                            </td>
-                           <td className="px-10 py-8">
-                              <span className="text-[10px] font-extrabold text-[var(--on-surface-variant)] bg-[var(--surface)] px-3 py-1.5   rounded-xl border border-[var(--outline-variant)] group-hover:bg-white uppercase tracking-widest">
+                           <td className="px-10 py-10">
+                              <span className="text-[10px] font-black text-slate-900 bg-white px-5 py-2.5 rounded-xl border border-slate-100 shadow-sm group-hover:border-slate-300 uppercase tracking-widest transition-all">
                                  {booking.package}
                               </span>
                            </td>
-                           <td className="px-10 py-8">
-                              <div className="flex items-center gap-3">
-                                 {booking.status === 'Confirmed' ? (
-                                    <div className="w-2.5 h-2.5 rounded-full bg-[var(--sacred-emerald)] shadow-lg shadow-emerald-500/20" />
-                                 ) : booking.status === 'Partial' ? (
-                                    <div className="w-2.5 h-2.5 rounded-full bg-[var(--desert-gold)] shadow-lg shadow-gold-500/20" />
-                                 ) : (
-                                    <div className="w-2.5 h-2.5 rounded-full bg-red-400 shadow-lg shadow-red-400/20" />
-                                 )}
-                                 <span className="text-[10px] font-extrabold text-[var(--on-surface)] uppercase tracking-widest">{booking.status}</span>
+                           <td className="px-10 py-10">
+                              <div className="flex items-center gap-4">
+                                 <div className={`w-3 h-3 rounded-full ${
+                                    booking.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)] shadow-[0_0_10px_var(--sacred-emerald)]' : 
+                                    booking.status === 'Partial' ? 'bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)]' : 
+                                    'bg-red-400'
+                                 } transition-all`} />
+                                 <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.25em]">{booking.status} Protocol</span>
                               </div>
                            </td>
-                           <td className="px-10 py-8">
-                              <div>
-                                 <p className="text-base font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">${booking.amount.toLocaleString()}</p>
-                                 <div className="w-32 bg-[var(--surface-container-low)] h-1 rounded-full mt-2.5 overflow-hidden group-hover:bg-white transition-colors">
+                           <td className="px-10 py-10">
+                              <div className="space-y-3">
+                                 <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter leading-none">${booking.amount.toLocaleString()}</p>
+                                 <div className="w-36 bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
                                     <div
-                                       className={`${booking.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]' : 'bg-[var(--desert-gold)]'} h-full rounded-full`}
+                                       className={`${booking.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]' : 'bg-[var(--desert-gold)]'} h-full rounded-full shadow-sm transition-all duration-1000`}
                                        style={{ width: `${(booking.paid / booking.amount) * 100}%` }}
                                     ></div>
                                  </div>
                               </div>
                            </td>
-                           <td className="px-10 py-8 text-right">
-                              <p className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest">{booking.date}</p>
+                           <td className="px-10 py-10 text-right">
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-1">{booking.date}</p>
+                              <div className="flex items-center justify-end gap-2 text-[var(--desert-gold)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
+                                 <span className="text-[8px] font-black uppercase tracking-widest">View Portfolio</span>
+                                 <ArrowUpRight size={12} strokeWidth={3} />
+                              </div>
                            </td>
                         </tr>
                      ))}
@@ -172,9 +182,10 @@ const Bookings = () => {
             </div>
 
             {/* Narrative Footer */}
-            <div className="px-10 py-10 bg-[var(--surface)] border-t border-[var(--outline-variant)] text-center">
-               <button className="px-12 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] hover:text-[var(--on-surface)] hover:shadow-xl transition-all shadow-sm active:scale-95">
-                  Illuminate Full Financial History
+            <div className="px-10 py-12 bg-slate-50/50 border-t border-slate-100 text-center relative overflow-hidden">
+               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30 pointer-events-none"></div>
+               <button className="px-14 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] hover:text-[var(--desert-gold)] hover:border-[var(--desert-gold)] hover:shadow-2xl transition-all shadow-sm active:scale-95 relative z-10">
+                  Access Full Ledger History
                </button>
             </div>
          </div>

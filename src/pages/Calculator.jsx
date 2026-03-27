@@ -61,7 +61,7 @@ const Calculator = () => {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
         {/* Configuration Matrix - 8 Columns */}
         <div className="xl:col-span-8 space-y-10">
-          <div className="bg-[var(--surface-container-lowest)] rounded-[3rem] p-12 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
+          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
             <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-12 flex items-center gap-3">
               <CalcIcon size={16} strokeWidth={2} /> Operational Variables
             </h3>
@@ -157,7 +157,7 @@ const Calculator = () => {
           </div>
 
           {/* Revenue Optimization Map */}
-          <div className="bg-[var(--surface-container-lowest)] rounded-[3rem] p-12 shadow-sm border border-[var(--outline-variant)] group">
+          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 shadow-sm border border-[var(--outline-variant)] group">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
               <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Revenue Yield Strategy</h3>
               <div className="px-4 py-2 bg-[var(--tertiary)]/5 text-[var(--tertiary)] text-[9px] font-extrabold uppercase tracking-widest rounded-full border border-[var(--tertiary)]/10">
@@ -188,11 +188,12 @@ const Calculator = () => {
         </div>
 
         {/* Monolithic Result Engine - 4 Columns */}
-        <div className="xl:col-span-4 space-y-10">
-          <div className="bg-[var(--grad-primary)] rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-bl-full translate-x-12 -translate-y-12"></div>
+        <div className="xl:col-span-4 space-y-12">
+          {/* Synthesized Estimation with Black Gradient */}
+          <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-[2.5rem] p-14 text-white shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-white/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-bl-[8rem] translate-x-16 -translate-y-16 group-hover:translate-x-8 group-hover:-translate-y-8 transition-all duration-700"></div>
 
-            <h3 className="text-[10px] font-extrabold text-white/40 uppercase tracking-[0.3em] mb-12 relative z-10">Synthesized Estimation</h3>
+            <h3 className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] mb-16 relative z-10">Synthesized Estimation</h3>
 
             <div className="space-y-8 relative z-10">
               <div className="flex justify-between items-center">
@@ -217,7 +218,7 @@ const Calculator = () => {
           </div>
 
           {/* Granular Allotment Data */}
-          <div className="bg-[var(--surface-container-lowest)] rounded-[2.5rem] p-10 border border-[var(--outline-variant)] shadow-sm group">
+          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-10 border border-[var(--outline-variant)] shadow-sm group">
             <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
               <Info size={16} strokeWidth={2} /> Expenditure Allotment
             </h3>

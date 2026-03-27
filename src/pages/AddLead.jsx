@@ -3,13 +3,14 @@ import {
    ArrowLeft, UserPlus, Phone,
    Mail, MapPin, MessageSquare,
    Tag, Info, Save, X,
-   Globe, ChevronRight, ShieldCheck
+   Globe, ChevronRight, ShieldCheck,
+   UserCheck, Calendar, Activity
 } from 'lucide-react';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { Link, useNavigate } from 'react-router-dom';
 
-const AddLead = () => {
+const AddLead = () => {  
    const navigate = useNavigate();
    const [formData, setFormData] = useState({
       name: '',
@@ -17,7 +18,11 @@ const AddLead = () => {
       email: '',
       city: '',
       source: 'Facebook',
-      message: ''
+      message: '',
+      assignedUser: '',
+      followUpDate: '',
+      status: 'New',
+      comments: ''
    });
 
    return (
@@ -118,9 +123,21 @@ const AddLead = () => {
                   </h3>
                   <textarea
                      placeholder="Record the customer's spiritual requirements and package preferences..."
-                     className="w-full p-6 bg-[var(--surface)] border-none rounded-3xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-40 resize-none placeholder-[var(--on-surface-variant)]/60"
+                     className="w-full p-6 bg-[var(--surface)] border-none rounded-3xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
                      value={formData.message}
                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  ></textarea>
+               </div>
+
+               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
+                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8 flex items-center gap-2">
+                     <ShieldCheck size={14} strokeWidth={2.5} /> Operational Intelligence
+                  </h3>
+                  <textarea
+                     placeholder="Add internal performance notes, staff comments, or special operational instructions..."
+                     className="w-full p-6 bg-[var(--surface)] border-none rounded-3xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
+                     value={formData.comments}
+                     onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
                   ></textarea>
                </div>
             </div>
@@ -129,7 +146,7 @@ const AddLead = () => {
             <div className="space-y-8">
                <div className="bg-[var(--surface-container-low)]    rounded-xl p-8 border border-[var(--outline-variant)]">
                   <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8">Acquisition Channel</h3>
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 gap-3">
                      {[
                         { id: 'Facebook', icon: FacebookIcon, color: 'text-blue-600' },
                         { id: 'WhatsApp', icon: MessageSquare, color: 'text-green-600' },
@@ -139,16 +156,64 @@ const AddLead = () => {
                         <button
                            key={src.id}
                            onClick={() => setFormData({ ...formData, source: src.id })}
-                           className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${formData.source === src.id
+                           className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${formData.source === src.id
                               ? 'bg-white border-transparent shadow-xl shadow-black/5 ring-1 ring-[var(--on-surface)]/10'
                               : 'bg-white/40 border-transparent hover:border-[var(--outline-variant)] text-[var(--on-surface-variant)]'
                               }`}
                         >
                            <div className="flex items-center gap-3">
-                              <src.icon size={18} className={formData.source === src.id ? 'text-[var(--on-surface)]' : ''} />
-                              <span className={`text-[11px] font-extrabold uppercase tracking-widest ${formData.source === src.id ? 'text-[var(--on-surface)]' : ''}`}>{src.id}</span>
+                              <src.icon size={16} className={formData.source === src.id ? 'text-[var(--on-surface)]' : ''} />
+                              <span className={`text-[10px] font-extrabold uppercase tracking-widest ${formData.source === src.id ? 'text-[var(--on-surface)]' : ''}`}>{src.id}</span>
                            </div>
                            {formData.source === src.id && <div className="w-2 h-2 rounded-full bg-[var(--on-surface)]"></div>}
+                        </button>
+                     ))}
+                  </div>
+               </div>
+
+               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)]">
+                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
+                     <UserCheck size={14} /> Delegation Protocol
+                  </h3>
+                  <select 
+                     className="w-full p-4 bg-[var(--surface)] rounded-2xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer"
+                     value={formData.assignedUser}
+                     onChange={(e) => setFormData({ ...formData, assignedUser: e.target.value })}
+                  >
+                     <option value="">Select Staff Member</option>
+                     <option value="umar">Umar Jamil</option>
+                     <option value="ali">Ali Raza</option>
+                     <option value="hamza">Hamza Khan</option>
+                  </select>
+               </div>
+
+               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)]">
+                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
+                     <Calendar size={14} /> Follow-up Matrix
+                  </h3>
+                  <input 
+                     type="date"
+                     className="w-full p-4 bg-[var(--surface)] rounded-2xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer"
+                     value={formData.followUpDate}
+                     onChange={(e) => setFormData({ ...formData, followUpDate: e.target.value })}
+                  />
+               </div>
+
+               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)]">
+                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
+                     <Activity size={14} /> Lifecycle Status
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                     {['New', 'Contacted', 'Quoted', 'Deposit', 'Lost'].map((s) => (
+                        <button
+                           key={s}
+                           onClick={() => setFormData({ ...formData, status: s })}
+                           className={`py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-widest transition-all border ${formData.status === s
+                              ? 'bg-[var(--on-surface)] text-white border-transparent shadow-lg'
+                              : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-[var(--surface-container-high)]'
+                              }`}
+                        >
+                           {s}
                         </button>
                      ))}
                   </div>

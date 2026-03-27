@@ -17,101 +17,94 @@ import {
 const Sidebar = () => {
   const location = useLocation();
 
-const menuItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, path: '/' },
+  const menuItems = [
+    { title: 'Dashboard', icon: LayoutDashboard, path: '/' },
 
-  {
-    title: 'Sales',
-    icon: Users,
-    path: '/leads',
-    submenu: [
-      { title: 'Leads', path: '/leads' },
-      { title: 'Add New Lead', path: '/leads/add' },
-      { title: 'Customers', path: '/customers' }, //  added
-      { title: 'Packages', path: '/packages' },
-      { title: 'Calculator', path: '/calculator' },
-      { title: 'Live Booking (API)', path: '/live-booking' } //  future API
-    ]
-  },
+    {
+      title: 'Sales',
+      icon: Users,
+      path: '/leads',
+      submenu: [
+        { title: 'Leads', path: '/leads' },
+        { title: 'Add New Lead', path: '/leads/add' },
+        { title: 'Customers', path: '/customers' }, //  added
+        { title: 'Packages', path: '/packages' },
+        { title: 'Calculator', path: '/calculator' },
+        { title: 'Live Booking (API)', path: '/live-booking' } //  future API
+      ]
+    },
 
-  {
-    title: 'Reservations',
-    icon: Plane,
-    path: '/reservations',
-    submenu: [
-      { title: 'All Reservations', path: '/reservations' },
-      { title: 'New Reservation', path: '/reservations/add' },
+    {
+      title: 'Reservations',
+      icon: Plane,
+      path: '/reservations',
+      submenu: [
+        { title: 'All Reservations', path: '/reservations' },
+        { title: 'New Reservation', path: '/reservations/add' },
 
-      //  important sub modules
-      { title: 'Visa', path: '/reservations/visa' },
-      { title: 'Hotels', path: '/reservations/hotels' },
-      { title: 'Flights', path: '/reservations/flights' },
-      { title: 'Transport', path: '/reservations/transport' }
-    ]
-  },
+        //  important sub modules
+        { title: 'Visa', path: '/reservations/visa' },
+        { title: 'Hotels', path: '/reservations/hotels' },
+        { title: 'Flights', path: '/reservations/flights' },
+        { title: 'Transport', path: '/reservations/transport' }
+      ]
+    },
 
-  {
-    title: 'Bookings',
-    icon: BookOpen,
-    path: '/bookings',
-    submenu: [
-      { title: 'Booking History', path: '/bookings' },
-      { title: 'New Booking', path: '/bookings/add' }
-    ]
-  },
+    {
+      title: 'Bookings',
+      icon: BookOpen,
+      path: '/bookings',
+      submenu: [
+        { title: 'Booking History', path: '/bookings' },
+        { title: 'New Booking', path: '/bookings/add' }
+      ]
+    },
 
-  {
-    title: 'Payments',
-    icon: CreditCard,
-    path: '/payments',
-    submenu: [
-      { title: 'All Payments', path: '/payments' },
-      { title: 'Add Payment', path: '/payments/add' } //  added
-    ]
-  },
+    {
+      title: 'Payments',
+      icon: CreditCard,
+      path: '/payments',
+      submenu: [
+        { title: 'All Payments', path: '/payments' },
+        { title: 'Add Payment', path: '/payments/add' } //  added
+      ]
+    },
 
-  {
-    title: 'Operations (Abroad)', //  IMPORTANT ADD
-    icon: Plane,
-    path: '/operations',
-    submenu: [
-      { title: 'Arrivals', path: '/operations/arrivals' },
-      { title: 'Departures', path: '/operations/departures' },
-      { title: 'Hotel Assignments', path: '/operations/hotels' },
-      { title: 'Transport Schedule', path: '/operations/transport' }
-    ]
-  },
+    {
+      title: 'Operations (Abroad)',
+      icon: Plane,
+      path: '/operations',
+      submenu: [
+        { title: 'Overview & Dispatch', path: '/operations' },
+        { title: 'Staff Manifest', path: '/operations' },
+        { title: 'Logistics Feed', path: '/operations' }
+      ]
+    },
 
-  {
-    title: 'Reports',
-    icon: FileText,
-    path: '/reports',
-    submenu: [
-      { title: 'Booking Report', path: '/reports/bookings' },
-      { title: 'Payment Report', path: '/reports/payments' },
-      { title: 'Sales Report', path: '/reports/sales' }, //  added
-      { title: 'Customer Report', path: '/reports/customers' } //  added
-    ]
-  },
+    {
+      title: 'Reports',
+      icon: FileText,
+      path: '/reports',
+      submenu: [
+        { title: 'Operational Intelligence', path: '/reports' },
+        { title: 'Booking Analytics', path: '/reports' },
+        { title: 'Payment Reports', path: '/reports' },
+        { title: 'Sales Performance', path: '/reports' }
+      ]
+    },
 
-  {
-    title: 'Settings',
-    icon: Settings,
-    path: '/settings',
-    submenu: [
-      { title: 'Profile', path: '/settings/profile' },
-    { title: 'Company', path: '/settings/company' },
-    { title: 'Users', path: '/settings/users' },
-    { title: 'Roles', path: '/settings/roles' },
-    { title: 'Permissions', path: '/settings/permissions' },
-    { title: 'Assign Permission', path: '/settings/assign-permission' },
-    { title: 'Master Types', path: '/settings/master-types' },
-    { title: 'API Settings', path: '/settings/apis' },
-    { title: 'Subscription', path: '/settings/subscription' },
-    { title: 'Tenant Features', path: '/settings/tenant-features' }
-    ]
-  }
-];
+    {
+      title: 'Settings',
+      icon: Settings,
+      path: '/settings',
+      submenu: [
+        { title: 'Identity Protocol', path: '/settings' },
+        { title: 'System Parameters', path: '/settings' },
+        { title: 'Access Control', path: '/settings' },
+        { title: 'API Sync', path: '/settings' }
+      ]
+    }
+  ];
 
   const [openMenus, setOpenMenus] = useState({});
 
@@ -185,7 +178,7 @@ const menuItems = [
                 >
                   <div className="flex items-center gap-3.5">
                     <span className={`transition-all duration-300 text-white ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
-                      <item.icon size={18}  strokeWidth={isActive ? 2 : 1.5} />
+                      <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} />
                     </span>
                     <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{item.title}</span>
                   </div>
@@ -220,7 +213,7 @@ const menuItems = [
                   <div className="flex flex-col gap-0.5 pl-[2.6rem] pr-2 relative">
                     {/* Subtle connecting line */}
                     <div className="absolute left-[20px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-white/20 via-white/10 to-transparent"></div>
-                    
+
                     {item.submenu.map((subItem, subIndex) => {
                       const isSubActive = location.pathname === subItem.path || (subItem.path !== '/' && location.pathname.startsWith(subItem.path + '/'));
                       return (
@@ -238,7 +231,7 @@ const menuItems = [
                           {/* Active Indicator Dot overriding the line */}
                           {isSubActive && <div className="absolute -left-[23.5px] w-1.5 h-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_10px_var(--primary)] z-10"></div>}
                           {!isSubActive && <div className="absolute -left-[23px] w-1 h-1 rounded-full bg-gray-600 group-hover/sub:bg-white group-hover/sub:scale-150 transition-all z-10"></div>}
-                          
+
                           <span className={`font-medium text-[10px] uppercase tracking-[0.1em] transition-all ${isSubActive ? 'text-white translate-x-1' : 'text-gray-400 group-hover/sub:text-white group-hover/sub:translate-x-1'}`}>
                             {subItem.title}
                           </span>

@@ -83,58 +83,61 @@ const Customers = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {customers.map((customer) => (
-            <div key={customer.id} className="group bg-[var(--surface-container-lowest)] hover:bg-[var(--surface-container-high)] rounded-[2.5rem] p-10 border border-[var(--outline-variant)] shadow-sm transition-all cursor-pointer relative overflow-hidden">
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-10">
-                  <div className="flex gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface)] font-manrope font-extrabold text-xl group-hover:bg-white group-hover:shadow-xl transition-all">
+            <div key={customer.id} className="group bg-[var(--surface-container-lowest)] hover:bg-[var(--surface-container-high)] rounded-xl p-8 border border-[var(--outline-variant)] shadow-sm transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
+              <div className="relative z-10 flex flex-col h-full uppercase tracking-widest">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface)] font-manrope font-extrabold text-base group-hover:bg-white group-hover:shadow-lg transition-all border border-[var(--outline-variant)]">
                       {customer.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
-                      <h3 className="text-xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">{customer.name}</h3>
-                      <p className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-[0.15em] mt-1.5 font-inter italic">{customer.id}</p>
-                      <div className="flex items-center gap-2 mt-3">
-                        <MapPin size={12} className="text-[var(--on-surface-variant)]" />
-                        <span className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest font-inter">{customer.location}</span>
-                      </div>
+                      <h4 className="text-sm font-manrope font-extrabold text-[var(--on-surface)] tracking-tight leading-none mb-1.5">{customer.name}</h4>
+                      <p className="text-[9px] font-bold text-[var(--on-surface-variant)] opacity-60 italic">{customer.id}</p>
                     </div>
                   </div>
-                  <span className={`px-4 py-2 rounded-full text-[9px] font-extrabold uppercase   shadow-sm ${customer.status === 'Active' ? 'bg-[var(--grad-green)] text-white' :
-                    customer.status === 'Completed' ? 'bg-[var(--grad-black)] text-white' : 'bg-[var(--grad-gold)] text-white'
+                  <span className={`px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm ${customer.status === 'Active' ? 'bg-[var(--grad-green)] text-black' :
+                    customer.status === 'Completed' ? 'bg-[var(--grad-black)] text-black' : 'bg-[var(--grad-gold)] text-black'
                     }`}>
                     {customer.status}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-10 py-8 border-y border-[var(--outline-variant)] group-hover:border-white/20 transition-colors">
-                  <div>
-                    <p className="text-[9px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-2">Assigned Manifest</p>
-                    <div className="flex items-center gap-2 text-xs font-bold text-[var(--on-surface)]">
-                      <Star size={14} className="text-[var(--desert-gold)]" />
-                      {customer.group}
-                    </div>
+                <div className="space-y-6 flex-grow">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={10} className="text-[var(--on-surface-variant)]" />
+                    <span className="text-[9px] font-bold text-[var(--on-surface-variant)]">{customer.location}</span>
                   </div>
-                  <div>
-                    <p className="text-[9px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-2">Departure Cadence</p>
-                    <p className="text-xs font-bold text-[var(--on-surface)]">{customer.travelDate}</p>
+
+                  <div className="grid grid-cols-2 gap-4 py-6 border-y border-[var(--outline-variant)] group-hover:border-white/20 transition-colors">
+                    <div>
+                      <p className="text-[8px] font-bold text-[var(--on-surface-variant)] mb-1 opacity-50">Manifest</p>
+                      <div className="flex items-center gap-1.5 text-[10px] font-extrabold text-[var(--on-surface)] truncate">
+                        <Star size={10} className="text-[var(--desert-gold)]" />
+                        {customer.group.split('(')[0]}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-bold text-[var(--on-surface-variant)] mb-1 opacity-50">Departure</p>
+                      <p className="text-[10px] font-extrabold text-[var(--on-surface)] truncate">{customer.travelDate}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-10">
-                  <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest">
-                      <FileText size={14} className="text-[var(--on-surface-variant)]" />
-                      <span>{customer.docs} Dossiers</span>
+                <div className="flex items-center justify-between mt-8">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 text-[8px] font-bold text-[var(--on-surface-variant)]">
+                      <FileText size={12} strokeWidth={2} />
+                      <span>{customer.docs}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest">
-                      <Phone size={14} className="text-[var(--on-surface-variant)]" />
-                      <span>{customer.phone}</span>
+                    <div className="flex items-center gap-1.5 text-[8px] font-bold text-[var(--on-surface-variant)]">
+                      <Phone size={12} strokeWidth={2} />
+                      <span>{customer.phone.slice(-4)}</span>
                     </div>
                   </div>
-                  <button className="w-12 h-12 rounded-2xl bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] flex items-center justify-center text-[var(--on-surface)] hover:btn-midnight shadow-sm group-hover:shadow-2xl transition-all">
-                    <ChevronRight size={20} />
+                  <button className="w-10 h-10 rounded-xl bg-[var(--surface-container-low)] border border-[var(--outline-variant)] flex items-center justify-center text-[var(--on-surface)] group-hover:btn-midnight transition-all">
+                    <ChevronRight size={16} />
                   </button>
                 </div>
               </div>

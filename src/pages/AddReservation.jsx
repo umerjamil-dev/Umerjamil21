@@ -3,7 +3,8 @@ import {
    ArrowLeft, Plane, Hotel,
    MapPin, ShieldCheck, Clock,
    Save, Info, LayoutDashboard,
-   Calendar, CheckCircle2
+   Calendar, CheckCircle2,
+   ArrowRight
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -29,21 +30,23 @@ const AddReservation = () => {
    return (
       <div className="font-inter max-w-6xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Header */}
-         <div className="flex items-center justify-between">
-            <Link to="/reservations" className="flex items-center gap-3 text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] transition-all group">
-               <div className="p-3 bg-[var(--surface-container-lowest)]   rounded-xl border border-[var(--outline-variant)] group-hover:shadow-md transition-all">
+         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
+            <Link to="/reservations" className="flex items-center gap-3 text-slate-400 hover:text-slate-900 transition-all group">
+               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 group-hover:shadow-md transition-all">
                   <ArrowLeft size={18} strokeWidth={2.5} />
                </div>
-               <span className="text-[10px] font-extrabold uppercase tracking-[0.25em]">Logistics Hub</span>
+               <span className="text-[10px] font-black uppercase tracking-[0.25em]">Logistics Hub</span>
             </Link>
-            <h1 className="text-2xl font-manrope font-extrabold text-[var(--on-surface)] absolute left-1/2 -translate-x-1/2 tracking-tighter uppercase">Logistics <span className="text-[var(--on-surface-variant)]/40 italic font-light">Manifest</span></h1>
-            <button
-               onClick={() => navigate('/reservations')}
-               className="btn-midnight px-10 py-4 rounded-2xl text-white font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-black/20 hover:-translate-y-1 transition-all flex items-center gap-3"
-            >
-               <Save size={18} strokeWidth={2.5} />
-               Commit Changes
-            </button>
+            <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Logistics <span className="text-slate-300 italic font-light">Manifest</span></h1>
+            <div className="flex items-center gap-4">
+               <button
+                  onClick={() => navigate('/reservations')}
+                  className="px-10 py-5 bg-black text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
+               >
+                  <Save size={18} strokeWidth={2.5} />
+                  Commit Changes
+               </button>
+            </div>
          </div>
 
          {/* Select Type Grid */}
@@ -52,18 +55,25 @@ const AddReservation = () => {
                <button
                   key={t.id}
                   onClick={() => setFormData({ ...formData, type: t.id })}
-                  className={`p-10 rounded-[3rem] border transition-all text-left group relative overflow-hidden ${formData.type === t.id
-                     ? 'bg-[var(--surface-container-lowest)] border-[var(--on-surface)] shadow-2xl shadow-black/5'
-                     : 'bg-[var(--surface-container-low)] border-transparent hover:border-[var(--on-surface-variant)]/20'
+                  className={`p-10 rounded-xl border-2 transition-all text-left group relative overflow-hidden ${formData.type === t.id
+                     ? 'bg-white border-black shadow-lg shadow-slate-200'
+                     : 'bg-slate-50 border-transparent hover:border-slate-200 hover:bg-white'
                      }`}
                >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--surface)] rounded-bl-[4rem] translate-x-12 -translate-y-12"></div>
-                  <t.icon size={28} className={`${t.color} mb-6 group-hover:scale-110 transition-transform relative z-10`} strokeWidth={2.5} />
-                  <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-1 relative z-10">{t.id} Segment</p>
-                  <h4 className="text-sm font-manrope font-extrabold text-[var(--on-surface)] relative z-10">Manage {t.id}</h4>
+                  <div className={`p-4 rounded-xl inline-flex items-center justify-center mb-6 transition-all ${
+                     formData.type === t.id ? 'bg-black text-white' : 'bg-white text-slate-400 group-hover:bg-slate-100'
+                  }`}>
+                     <t.icon size={24} strokeWidth={2.5} />
+                  </div>
+                  <p className={`text-[10px] font-black uppercase tracking-widest mb-1 transition-all ${
+                     formData.type === t.id ? 'text-black' : 'text-slate-400'
+                  }`}>{t.id} Segment</p>
+                  <h4 className={`text-sm font-manrope font-black transition-all ${
+                     formData.type === t.id ? 'text-black' : 'text-slate-900'
+                  }`}>Manage {t.id}</h4>
                   {formData.type === t.id && (
-                     <div className={`absolute top-6 right-6 ${t.color}`}>
-                        <CheckCircle2 size={24} />
+                     <div className="absolute top-6 right-6 text-[var(--sacred-emerald)]">
+                        <CheckCircle2 size={24} fill="currentColor" className="text-white" />
                      </div>
                   )}
                </button>
@@ -73,112 +83,175 @@ const AddReservation = () => {
          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             {/* Instruction Card */}
             <div className="lg:col-span-4">
-               <div className="bg-[var(--grad-black)] rounded-[3rem] p-10 text-white shadow-2xl space-y-10 h-full relative overflow-hidden group">
+               <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-xl p-10 text-white shadow-2xl space-y-10 h-full relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] translate-x-12 -translate-y-12"></div>
-                  <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 relative z-10">
-                     <Info size={28} className="text-[var(--sacred-emerald)]" strokeWidth={2.5} />
+                  <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 relative z-10">
+                     <Info size={28} className="text-[var(--desert-gold)]" strokeWidth={2.5} />
                   </div>
-                  <h3 className="text-2xl font-manrope font-extrabold leading-tight tracking-tight relative z-10">Operational <br />Accuracy Protocol</h3>
-                  <p className="text-xs text-white/50 leading-relaxed font-medium relative z-10">
-                     Reference verification mandatory for Amadeus, Maqam, and Global GDS synchronization.
+                  <h3 className="text-2xl font-manrope font-black leading-tight tracking-tight relative z-10">Operational <br />Accuracy Protocol</h3>
+                  <p className="text-xs text-white/40 leading-relaxed font-medium relative z-10 uppercase tracking-widest">
+                     Reference verification mandatory for Amadeus, Maqam, and Global GDS synchronization hooks.
                   </p>
 
                   <div className="pt-10 space-y-6 relative z-10">
-                     <div className="flex items-center gap-4 text-white/30">
+                     <div className="flex items-center gap-4 text-white/30 group-hover:text-white/60 transition-all">
                         <Clock size={16} strokeWidth={2.5} />
-                        <span className="text-[9px] font-extrabold uppercase  ">Real-time Sync Active</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Real-time Sync Active</span>
                      </div>
-                     <div className="flex items-center gap-4 text-white/30">
-                        <LayoutDashboard size={16} strokeWidth={2.5} />
-                        <span className="text-[9px] font-extrabold uppercase  ">GDS Uplink Verified</span>
+                     <div className="flex items-center gap-4 text-white/30 group-hover:text-white/60 transition-all">
+                        <ShieldCheck size={16} strokeWidth={2.5} />
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">GDS Uplink Verified</span>
                      </div>
                   </div>
                </div>
             </div>
 
             {/* Form Main Area */}
-            <div className="lg:col-span-8 bg-[var(--surface-container-lowest)] rounded-[3rem] p-12 shadow-sm border border-[var(--outline-variant)] space-y-12 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--surface)] rounded-bl-[5rem] translate-x-12 -translate-y-12"></div>
-               <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] flex items-center gap-3 relative z-10">
-                  <ShieldCheck size={18} strokeWidth={2.5} /> Data Entry Manifest
+            <div className="lg:col-span-8 bg-white rounded-xl p-12 shadow-sm border border-slate-200 space-y-12 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] translate-x-12 -translate-y-12"></div>
+               <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3 relative z-10">
+                  <LayoutDashboard size={18} strokeWidth={2.5} className="text-[var(--desert-gold)]" /> Data Entry Manifest
                </h3>
 
                <div className="space-y-12 relative z-10">
                   {/* Global Booking Link */}
                   <div className="group">
-                     <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Parent Booking Reference</label>
-                     <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4">
+                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">Parent Booking Reference</label>
+                     <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6">
                         <select
-                           className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none appearance-none cursor-pointer"
+                           className="w-full bg-transparent text-lg font-manrope font-black text-slate-900 outline-none appearance-none cursor-pointer"
                            value={formData.bookingId}
                            onChange={(e) => setFormData({ ...formData, bookingId: e.target.value })}
                         >
-                           <option value="">Query Registry...</option>
-                           <option value="1">BK-9123 (Ahmed Raza)</option>
-                           <option value="2">BK-4421 (Fatima Zahra)</option>
+                           <option value="" className="bg-white">Query Registry...</option>
+                           <option value="1" className="bg-white">BK-9123 (Ahmed Raza)</option>
+                           <option value="2" className="bg-white">BK-4421 (Fatima Zahra)</option>
                         </select>
                      </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-                     <div className="group">
-                        <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Service Provider / Entity</label>
-                        <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4">
-                           <input
-                              type="text"
-                              placeholder={formData.type === 'Hotel' ? 'Saudi Hilton...' : 'Saudi Airlines...'}
-                              className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
-                              value={formData.provider}
-                              onChange={(e) => setFormData({ ...formData, provider: e.target.value })}
-                           />
-                        </div>
-                     </div>
-                     <div className="group">
-                        <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Manifest Status</label>
-                        <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4">
-                           <select className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none appearance-none cursor-pointer">
-                              <option>Confirmed</option>
-                              <option>Pending Voucher</option>
-                              <option>Cancelled</option>
-                           </select>
-                        </div>
-                     </div>
-                  </div>
+                  {/* Conditional Fields based on Type */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16 animate-in slide-in-from-right duration-700">
+                     {formData.type === 'Visa' && (
+                        <>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Number</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="E-VISA #82934..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-widest" />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Status</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <select className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer">
+                                    <option className="bg-white">Pending</option>
+                                    <option className="bg-white">Processing</option>
+                                    <option className="bg-white">Approved</option>
+                                    <option className="bg-white">Rejected</option>
+                                 </select>
+                              </div>
+                           </div>
+                           <div className="md:col-span-2 group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Internal Notes</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="MOFA verification pending..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                        </>
+                     )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-                     <div className="group">
-                        <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Arrival / Check-In</label>
-                        <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
-                           <input
-                              type="date"
-                              className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none"
-                           />
-                           <Calendar size={18} className="text-[var(--on-surface-variant)]" />
-                        </div>
-                     </div>
-                     <div className="group">
-                        <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Departure / Check-Out</label>
-                        <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
-                           <input
-                              type="date"
-                              className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none"
-                           />
-                           <Calendar size={18} className="text-[var(--on-surface-variant)]" />
-                        </div>
-                     </div>
-                  </div>
+                     {formData.type === 'Hotel' && (
+                        <>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Hotel Name</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="Fairmont Makkah..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">City</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <select className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer">
+                                    <option className="bg-white">Makkah</option>
+                                    <option className="bg-white">Madinah</option>
+                                    <option className="bg-white">Jeddah</option>
+                                 </select>
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Check-in / Check-out</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4 flex items-center gap-4">
+                                 <input type="date" className="bg-transparent text-xs font-black text-slate-900 outline-none" />
+                                 <ArrowRight size={14} className="text-slate-300" />
+                                 <input type="date" className="bg-transparent text-xs font-black text-slate-900 outline-none" />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Room Manifest</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="Double Quad, Triple... " className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                        </>
+                     )}
 
-                  <div className="group">
-                     <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Operational Ref # (GDS / Voucher)</label>
-                     <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4">
-                        <input
-                           type="text"
-                           placeholder="ENTER VALID REFERENCE"
-                           className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30 tracking-[0.3em] uppercase"
-                           value={formData.referenceNumber}
-                           onChange={(e) => setFormData({ ...formData, referenceNumber: e.target.value })}
-                        />
-                     </div>
+                     {formData.type === 'Flight' && (
+                        <>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Airline</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="Saudi Airlines (SV-001)..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Ticket Number</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="TKT-#029384756..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-tighter" />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Departure Loc / Time</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="JFK @ 14:00..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Arrival Loc / Time</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="JED @ 09:30..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                        </>
+                     )}
+
+                     {formData.type === 'Transport' && (
+                        <>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Transport Type</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <select className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer">
+                                    <option className="bg-white">Pickup (Airport)</option>
+                                    <option className="bg-white">Drop (Airport)</option>
+                                    <option className="bg-white">Ziyarat (Makkah)</option>
+                                    <option className="bg-white">Ziyarat (Madinah)</option>
+                                    <option className="bg-white">Inter-city Transit</option>
+                                 </select>
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Vehicle Assignment</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="GMC Yukon / Bus-50..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                           <div className="md:col-span-2 group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Driver Name / Contact</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input type="text" placeholder="Muhammad Ali (+966...)" className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                              </div>
+                           </div>
+                        </>
+                     )}
                   </div>
                </div>
             </div>
