@@ -1,0 +1,150 @@
+1️⃣ Dashboard
+Purpose: Overview
+Fields / Data to show:
+Total Leads
+Converted Leads
+Revenue
+Recent Activities (Lead follow-ups, Bookings, Payments)
+======================================================================
+
+2️⃣ Sales
+a) Leads
+Name
+Phone
+Email
+Source (Facebook / Website / WhatsApp / Email)
+Status (New, Contacted, Qualified, Converted, Lost)
+Assigned To (User)
+Follow-up Date
+Actions (on click of a lead): click action show number and dail btn
+Call – Opens dialer or links to VoIP
+Actions (on click of a lead): click action show email and send email btn
+Email – Opens email client / template
+Change Status – Dropdown to update lead status
+Add Comments – Text area to add notes or follow-ups
+
+b) Add New Lead
+Name
+Phone
+Email
+Source
+Message
+City
+Assign User
+Follow-up Date
+Change Status
+Add Comments
+
+c) Customers
+Name
+Phone
+Email
+Passport No
+CNIC
+Address
+City / Country
+
+d) Packages
+Title
+Makkah Hotel
+Madinah Hotel
+Nights in Makkah / Madinah
+Base Price
+
+e) Calculator
+Number of Persons
+Nights (Makkah / Madinah)
+Hotel Category
+Flight Cost
+Visa Cost
+Transport Cost
+Output: Total Cost, Profit ============== ajai
+
+f) Live Booking (API)
+Customer Select
+Package Select
+Flight API Selection
+Hotel API Selection
+Transport
+Travel Dates from
+Travel Dates to
+======================================================================
+
+3️⃣ Reservations
+a) All Reservations / New Reservation
+Booking ID
+Customer
+Package
+Travel Dates
+Total Amount / Status
+
+b) Sub-modules
+Visa:
+Status (Pending / Processing / Approved / Rejected)
+Visa Number
+Notes
+
+Hotels:
+Hotel Name
+City
+Check-in / Check-out
+Rooms
+
+Flights:
+Airline
+Departure
+Arrival
+Ticket Number
+
+Transport:
+Type (Pickup / Drop / Ziyarat)
+Vehicle
+Driver Name
+======================================================================
+
+4️⃣ Bookings
+Customer Select
+Package Select
+Travel Dates from
+Travel Dates to
+Total Amount
+Paid Amount / Remaining Amount
+Status (Pending / Confirmed / Cancelled)
+======================================================================
+
+5️⃣ Payments
+Booking Select
+Amount
+Payment Method (Cash / Bank / Online)
+Payment Date
+Reference / Notes
+Payment History (list previous payments)
+======================================================================
+
+6️⃣ Operations (Abroad)
+Arrival / Departure Dates
+Hotel Assignment per customer
+Transport Schedule per customer
+Report for each customer (who stays where, Hotel, flight, transport, visa)
+======================================================================
+
+7️⃣ Reports
+Booking Report → Customer, Package, Travel Date, Amount, Status
+Payment Report → Booking, Amount, Date, Method
+Sales Report → Leads / Customers / Revenue / Packages
+Customer Report → Customer info + Bookings + Payments
+======================================================================
+
+Settings Menu
+Profile → Name, Email, Phone, Password
+Company → Name, Address, Email, Phone
+Users → Name, Email, Phone, Role, Status
+Roles → Name, Description
+Permissions → Name, Description
+Assign Permission → Role + Permission mapping
+Master Types → id, name, type_flag, description
+API Settings → API keys, credentials for Flights/Hotels
+Subscription
+Monthly subscription status / expiry
+Tenant-specific feature toggles (true/false)
+Fields / reports visibility control
