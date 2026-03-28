@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { BarChart, PieChart } from '@mui/x-charts';
 import {
     Users, DollarSign, Calendar, TrendingUp,
-    Plane, Plus, Calculator, Activity, ArrowUpRight, ArrowDownRight, Globe
+    Plane, Plus, Calculator, Activity, ArrowUpRight, ArrowDownRight, Globe,
+    ShieldCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -161,58 +162,70 @@ const Home = () => {
                 </div>
 
                 {/* Conversion Funnel / Source (Donut Chart) */}
-                <div className="xl:col-span-1 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col">
-                    <div className="mb-8">
-                        <h3 className="text-xl font-manrope font-extrabold text-gray-900 mb-1">Acquisition Source</h3>
-                        <p className="text-xs font-medium text-gray-500 tracking-wide">Where your premium leads originate.</p>
+                <div className="xl:col-span-1 bg-white rounded-[2rem] p-10 shadow-[0_20px_60px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col relative overflow-hidden group hover:shadow-[0_40px_80px_rgba(0,0,0,0.06)] transition-all duration-700">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--desert-gold)] opacity-[0.03] rounded-bl-[5rem] translate-x-8 -translate-y-8"></div>
+
+                    <div className="mb-10 relative z-10">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                            <ShieldCheck size={12} className="text-[var(--desert-gold)]" /> Intelligence Source
+                        </div>
+                        <h3 className="text-2xl font-manrope font-black text-gray-900 tracking-tighter leading-none mb-2">Acquisition</h3>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Global Entry Vector Analytics</p>
                     </div>
 
-                    <div className="flex-1 flex flex-col items-center justify-center relative">
-                        <div className="relative w-full h-[240px] flex justify-center">
+                    <div className="flex-1 flex flex-col items-center justify-center relative ">
+                        <div className="relative w-full h-[220px]  flex justify-center items-center scale-110 ">
                             <PieChart
                                 series={[
                                     {
                                         data: [
-                                            { id: 0, value: 45, label: 'Direct', color: '#111827' },
-                                            { id: 1, value: 30, label: 'Agent', color: '#5E5F65' },
-                                            { id: 2, value: 15, label: 'Social', color: '#CA9323' },
+                                            { id: 0, value: 45, label: 'Direct', color: '#CA9323' },
+                                            { id: 1, value: 30, label: 'B2B', color: '#111827' },
+                                            { id: 2, value: 15, label: 'Digital', color: '#3B82F6' },
+                                            { id: 3, value: 10, label: 'Referral', color: '#10B981' },
                                         ],
-                                        innerRadius: 75,
-                                        outerRadius: 100,
-                                        paddingAngle: 4,
-                                        cornerRadius: 8,
+                                        innerRadius: 85,
+                                        outerRadius: 110,
+                                        paddingAngle: 8,
+                                        cornerRadius: 15,
                                         strokeWidth: 0,
+                                        highlightScope: { faded: 'global', highlighted: 'item' },
+                                        faded: { innerRadius: 85, additionalRadius: -5, color: 'gray' },
                                     },
                                 ]}
                                 margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                                 slotProps={{ legend: { hidden: true } }}
                             />
-                            {/* Inner Label */}
+                            {/* Inner Label - High Luxury */}
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-3xl font-manrope font-black text-gray-900 tracking-tighter">45%</span>
-                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Direct Flow</span>
+                                <span className="text-4xl font-manrope font-black text-gray-900 tracking-tighter leading-none">92%</span>
+                                <span className="text-[8px] font-black text-[var(--desert-gold)] uppercase tracking-[0.3em] mt-3">Efficiency</span>
                             </div>
                         </div>
 
-                        {/* Custom Legend */}
-                        <div className="w-full grid grid-cols-2 gap-y-4 gap-x-6 mt-8">
+                        {/* Custom Legend - Premium Matrix Style */}
+                        <div className="w-full grid grid-cols-2 gap-y-6 gap-x-8 pt-8  relative z-10">
                             {[
-                                { label: 'Direct Web', val: '45%', color: 'bg-[#111827]' },
-                                { label: 'B2B Agents', val: '30%', color: 'bg-[#76777D]' },
-                                { label: 'Social Media', val: '15%', color: 'bg-[var(--desert-gold)]' },
-                                { label: 'Corporate', val: '10%', color: 'bg-[#E5E7EB]' }
+                                { label: 'Direct Entry', val: '45%', color: 'bg-[#CA9323]', desc: 'Organic' },
+                                { label: 'B2B Matrix', val: '30%', color: 'bg-[#111827]', desc: 'Agents' },
+                                { label: 'Digital Ads', val: '15%', color: 'bg-[#3B82F6]', desc: 'Social' },
+                                { label: 'Referral Net', val: '10%', color: 'bg-[#10B981]', desc: 'Partners' }
                             ].map(item => (
-                                <div key={item.label} className="flex items-center justify-between group cursor-default">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className={`w-2.5 h-2.5 rounded-full ${item.color} shadow-sm group-hover:scale-125 transition-transform`}></div>
-                                        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">{item.label}</span>
+                                <div key={item.label} className="flex flex-col gap-1 transition-all hover:translate-x-1 cursor-default">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${item.color} shadow-[0_0_8px_rgba(0,0,0,0.1)]`}></div>
+                                            <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">{item.label}</span>
+                                        </div>
+                                        <span className="text-xs font-black text-[var(--desert-gold)]">{item.val}</span>
                                     </div>
-                                    <span className="text-xs font-black text-gray-900">{item.val}</span>
+                                    <p className="pl-3.5 text-[8px] font-bold text-gray-400 uppercase tracking-widest opacity-60">{item.desc}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
                 </div>
+
             </div>
 
             {/* System Actions Grid */}

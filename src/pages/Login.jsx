@@ -1,5 +1,8 @@
-import React from 'react';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import useAuthStore from '../store/useAuthStore';
 
 const MosqueIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -14,6 +17,27 @@ const MosqueIcon = ({ className }) => (
 );
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { login, isLoading, error } = useAuthStore();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error('Identification protocols required.');
+      return;
+    }
+
+    const success = await login({ email, password });
+    if (success) {
+      toast.success('Authentication Protocol Initialized.');
+      navigate('/');
+    } else {
+      toast.error(error || 'Authentication Failed.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[var(--surface)] flex flex-col items-center justify-center p-6 font-inter">
       
@@ -34,11 +58,13 @@ const Login = () => {
           Secure authentication for the elevated pilgrimage management suite.
         </p>
 
-        <form className="space-y-6 relative z-10">
+        <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
           <div className="relative group">
             <Mail className="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--on-surface)] group-focus-within:text-[var(--on-surface)] transition-colors" />
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Operational Email"
               className="w-full pl-9 py-5 border-b border-[var(--outline-variant)] bg-transparent text-[var(--on-surface)] font-manrope font-bold text-sm outline-none placeholder-[var(--on-surface-variant)]/50 transition-all focus:border-[var(--on-surface)]"
             />
@@ -48,6 +74,8 @@ const Login = () => {
             <Lock className="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--on-surface)] group-focus-within:text-[var(--on-surface)] transition-colors" />
             <input
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Access Key"
               className="w-full pl-9 pr-4 py-5 border-b border-[var(--outline-variant)] bg-transparent text-[var(--on-surface)] font-manrope font-bold text-sm outline-none placeholder-[var(--on-surface-variant)]/50 transition-all focus:border-[var(--on-surface)]"
             />
@@ -62,10 +90,12 @@ const Login = () => {
           </div>
 
           <button
-            type="button"
+            type="submit"
+            disabled={isLoading}
             className="btn-primary w-full py-5 rounded-2xl font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-black/20 transition-all duration-500 mt-6 flex items-center justify-center gap-3 group"
           >
-            Initiate Protocol <LogIn size={18} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />
+            {isLoading ? 'Processing Protocol...' : 'Initiate Protocol'} 
+            {!isLoading && <LogIn size={18} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />}
           </button>
 
           <div className="pt-4 text-center">
@@ -82,3 +112,4 @@ const Login = () => {
 };
 
 export default Login;
+

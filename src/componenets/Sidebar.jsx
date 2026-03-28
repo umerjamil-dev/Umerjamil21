@@ -98,7 +98,8 @@ const Sidebar = () => {
       icon: Settings,
       path: '/settings',
       submenu: [
-        { title: 'Identity Protocol', path: '/settings' },
+        { title: 'Personnel Registry', path: '/settings/users' },
+        { title: 'Identity Protocol', path: '/settings/profile' },
         { title: 'System Parameters', path: '/settings' },
         { title: 'Access Control', path: '/settings' },
         { title: 'API Sync', path: '/settings' }

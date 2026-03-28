@@ -4,7 +4,8 @@ import {
    Mail, MapPin, MessageSquare,
    Tag, Info, Save, X,
    Globe, ChevronRight, ShieldCheck,
-   UserCheck, Calendar, Activity
+   UserCheck, Calendar, Activity,
+   Rss
 } from 'lucide-react';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -171,6 +172,7 @@ const AddLead = () => {
                         { id: 'Facebook', icon: FacebookIcon, color: 'text-blue-600' },
                         { id: 'WhatsApp', icon: MessageSquare, color: 'text-green-600' },
                         { id: 'Instagram', icon: InstagramIcon, color: 'text-pink-600' },
+                        { id: 'Website', icon: Rss, color: 'text-pink-600' },
                         { id: 'Direct', icon: Globe, color: 'text-gray-600' }
                      ].map((src) => (
                         <button

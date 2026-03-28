@@ -19,9 +19,12 @@ import Packages from '../pages/Packages'
 import AddPackage from '../pages/AddPackage'
 import LiveBooking from '../pages/LiveBooking'
 import Operations from '../pages/Operations'
+import ProtectedRoute from '../componenets/ProtectedRoute'
 
 import Reports from '../pages/Reports'
 import Settings from '../pages/Settings'
+import ManageUsers from '../pages/ManageUsers'
+import Profile from '../pages/settings/Profile'
 import Visa from '../pages/Visa'
 import Hotels from '../pages/Hotels'
 import Flights from '../pages/Flights'
@@ -32,30 +35,33 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Layout><Home /></Layout>} />
-        <Route path="/leads" element={<Layout><Leads /></Layout>} />
-        <Route path="/leads/add" element={<Layout><AddLead /></Layout>} />
-        <Route path="/leads/:id" element={<Layout><LeadDetail /></Layout>} />
-        <Route path="/customers" element={<Layout><Customers /></Layout>} />
-        <Route path="/customers/add" element={<Layout><AddCustomer /></Layout>} />
-        <Route path="/calculator" element={<Layout><Calculator /></Layout>} />
-        <Route path="/bookings" element={<Layout><Bookings /></Layout>} />
-        <Route path="/bookings/add" element={<Layout><AddBooking /></Layout>} />
-        <Route path="/reservations" element={<Layout><Reservations /></Layout>} />
-        <Route path="/reservations/add" element={<Layout><AddReservation /></Layout>} />
-        <Route path="/payments" element={<Layout><Payments /></Layout>} />
-        <Route path="/payments/add" element={<Layout><AddPayment /></Layout>} />
-        <Route path="/operations" element={<Layout><Operations /></Layout>} />
-        <Route path="/reports" element={<Layout><Reports /></Layout>} />
-        <Route path="/settings" element={<Layout><Settings /></Layout>} />
-        <Route path="/reservations" element={<Layout><Reservations /></Layout>} />
-        <Route path="/reservations/visa" element={<Layout><Visa /></Layout>} />
-        <Route path="/reservations/hotels" element={<Layout><Hotels /></Layout>} />
-        <Route path="/reservations/flights" element={<Layout><Flights /></Layout>} />
-        <Route path="/reservations/transport" element={<Layout><Transport /></Layout>} />
-        <Route path="/packages" element={<Layout><Packages /></Layout>} />
-        <Route path="/packages/add" element={<Layout><AddPackage /></Layout>} />
-        <Route path="/live-booking" element={<Layout><LiveBooking /></Layout>} />
+
+        {/* Protected Routes */}
+        <Route path="/" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
+        <Route path="/leads" element={<ProtectedRoute><Layout><Leads /></Layout></ProtectedRoute>} />
+        <Route path="/leads/add" element={<ProtectedRoute><Layout><AddLead /></Layout></ProtectedRoute>} />
+        <Route path="/leads/:id" element={<ProtectedRoute><Layout><LeadDetail /></Layout></ProtectedRoute>} />
+        <Route path="/customers" element={<ProtectedRoute><Layout><Customers /></Layout></ProtectedRoute>} />
+        <Route path="/customers/add" element={<ProtectedRoute><Layout><AddCustomer /></Layout></ProtectedRoute>} />
+        <Route path="/calculator" element={<ProtectedRoute><Layout><Calculator /></Layout></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute><Layout><Bookings /></Layout></ProtectedRoute>} />
+        <Route path="/bookings/add" element={<ProtectedRoute><Layout><AddBooking /></Layout></ProtectedRoute>} />
+        <Route path="/reservations" element={<ProtectedRoute><Layout><Reservations /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/add" element={<ProtectedRoute><Layout><AddReservation /></Layout></ProtectedRoute>} />
+        <Route path="/payments" element={<ProtectedRoute><Layout><Payments /></Layout></ProtectedRoute>} />
+        <Route path="/payments/add" element={<ProtectedRoute><Layout><AddPayment /></Layout></ProtectedRoute>} />
+        <Route path="/operations" element={<ProtectedRoute><Layout><Operations /></Layout></ProtectedRoute>} />
+        <Route path="/reports" element={<ProtectedRoute><Layout><Reports /></Layout></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+        <Route path="/settings/users" element={<ProtectedRoute><Layout><ManageUsers /></Layout></ProtectedRoute>} />
+        <Route path="/settings/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/visa" element={<ProtectedRoute><Layout><Visa /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/hotels" element={<ProtectedRoute><Layout><Hotels /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/flights" element={<ProtectedRoute><Layout><Flights /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/transport" element={<ProtectedRoute><Layout><Transport /></Layout></ProtectedRoute>} />
+        <Route path="/packages" element={<ProtectedRoute><Layout><Packages /></Layout></ProtectedRoute>} />
+        <Route path="/packages/add" element={<ProtectedRoute><Layout><AddPackage /></Layout></ProtectedRoute>} />
+        <Route path="/live-booking" element={<ProtectedRoute><Layout><LiveBooking /></Layout></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )

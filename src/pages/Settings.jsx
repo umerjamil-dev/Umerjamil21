@@ -12,7 +12,7 @@ import useSettingsStore from '../store/useSettingsStore';
 import toast from 'react-hot-toast';
 
 const Settings = () => {
-   const [activeSection, setActiveSection] = useState('Profile');
+ const [activeSection, setActiveSection] = useState('Company');
    const { settings, fetchSettings, updateSettings, isLoading } = useSettingsStore();
    const [formData, setFormData] = useState({});
 
@@ -46,9 +46,7 @@ const Settings = () => {
    };
 
    const sections = [
-      { id: 'Profile', icon: User, label: 'Profile' },
       { id: 'Company', icon: Building2, label: 'Company' },
-      { id: 'Users', icon: Users, label: 'Users' },
       { id: 'Roles', icon: ShieldCheck, label: 'Roles' },
       { id: 'Permissions', icon: Lock, label: 'Permissions' },
       { id: 'AssignPermissions', icon: Sliders, label: 'Assign Permission' },
@@ -68,7 +66,7 @@ const Settings = () => {
                   System Configuration
                </div>
                <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Global 
+                  Global
                </h1>
                <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
                   Orchestrate the foundational protocols, security layers, and data indices that power the Al Bayan CRM ecosystem.
@@ -91,8 +89,8 @@ const Settings = () => {
                      key={section.id}
                      onClick={() => setActiveSection(section.id)}
                      className={`w-full flex items-center justify-between p-6 rounded-xl border transition-all duration-300 group ${activeSection === section.id
-                           ? 'bg-black text-white border-black shadow-2xl scale-[1.02]'
-                           : 'bg-white text-slate-400 border-slate-200 hover:border-black hover:text-black'
+                        ? 'bg-black text-white border-black shadow-2xl scale-[1.02]'
+                        : 'bg-white text-slate-400 border-slate-200 hover:border-black hover:text-black'
                         }`}
                   >
                      <div className="flex items-center gap-5">
@@ -110,36 +108,6 @@ const Settings = () => {
                <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-[10rem] -translate-y-20 translate-x-20"></div>
 
                <div className="p-12 relative z-10">
-                  {activeSection === 'Profile' && (
-                     <div className="space-y-12 animate-in slide-in-from-right-8 duration-700">
-                        <div>
-                           <h3 className="text-2xl font-manrope font-black text-slate-900 tracking-tight mb-2 uppercase">Identity Registry</h3>
-                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-loose">Personal administrative identifiers.</p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-black">
-                           {[
-                              { label: 'Name', key: 'name', icon: User },
-                              { label: 'Email', key: 'email', icon: Mail },
-                              { label: 'Phone', key: 'phone', icon: Smartphone },
-                              { label: 'Password', key: 'password', icon: Key, type: 'password' },
-                           ].map((item) => (
-                              <div key={item.key} className="group">
-                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">{item.label}</label>
-                                 <div className="flex items-center justify-between border-b-2 border-slate-50 group-focus-within:border-black transition-all pb-4">
-                                    <input
-                                       type={item.type || 'text'}
-                                       value={formData.profile?.[item.key] || ''}
-                                       onChange={(e) => handleInputChange('profile', item.key, e.target.value)}
-                                       className="w-full bg-transparent text-sm font-manrope font-black text-slate-900 outline-none"
-                                    />
-                                    <item.icon size={16} className="text-slate-200 group-hover:text-black transition-colors" />
-                                 </div>
-                              </div>
-                           ))}
-                        </div>
-                     </div>
-                  )}
-
                   {activeSection === 'Company' && (
                      <div className="space-y-12 animate-in slide-in-from-right-8 duration-700">
                         <div>
@@ -170,42 +138,6 @@ const Settings = () => {
                      </div>
                   )}
 
-                  {activeSection === 'Users' && (
-                     <div className="space-y-12 animate-in slide-in-from-right-8 duration-700">
-                        <div className="flex items-center justify-between">
-                           <h3 className="text-2xl font-manrope font-black text-slate-900 tracking-tight mb-2 uppercase text-black">Personnel Management</h3>
-                           <button className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest">Enroll User</button>
-                        </div>
-                        <div className="overflow-x-auto">
-                           <table className="w-full text-left">
-                              <thead>
-                                 <tr className="border-b border-slate-100 text-black">
-                                    <th className="py-6 text-[9px] font-black uppercase tracking-widest text-slate-400">Identity</th>
-                                    <th className="py-6 text-[9px] font-black uppercase tracking-widest text-slate-400">Role</th>
-                                    <th className="py-6 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Status</th>
-                                 </tr>
-                              </thead>
-                              <tbody className="divide-y divide-slate-50">
-                                 {[
-                                    { name: 'Umar Jamil', email: 'umar@dev.com', role: 'System Admin', status: 'Active' },
-                                    { name: 'Hamza Khan', email: 'hamza@ops.com', role: 'Manager', status: 'Active' },
-                                 ].map((u, i) => (
-                                    <tr key={i} className="group hover:bg-slate-50 transition-all text-black">
-                                       <td className="py-6">
-                                          <div className="font-black text-xs">{u.name}</div>
-                                          <div className="text-[9px] text-slate-400 font-bold uppercase">{u.email}</div>
-                                       </td>
-                                       <td className="py-6 text-[10px] font-black uppercase tracking-widest">{u.role}</td>
-                                       <td className="py-6 text-right">
-                                          <span className="px-3 py-1 bg-emerald-50 text-[var(--sacred-emerald)] border border-emerald-100 rounded-lg text-[8px] font-black uppercase tracking-widest">{u.status}</span>
-                                       </td>
-                                    </tr>
-                                 ))}
-                              </tbody>
-                           </table>
-                        </div>
-                     </div>
-                  )}
 
                   {activeSection === 'Roles' && (
                      <div className="space-y-12 animate-in slide-in-from-right-8 duration-700">

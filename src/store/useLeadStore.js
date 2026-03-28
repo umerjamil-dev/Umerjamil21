@@ -19,6 +19,8 @@ const useLeadStore = create((set, get) => ({
   addLead: async (leadData) => {
     set({ isLoading: true });
     try {
+      console.log(leadData);
+      
       const response = await api.post('/leads', leadData);
       set((state) => ({ 
         leads: [response.data, ...state.leads], 

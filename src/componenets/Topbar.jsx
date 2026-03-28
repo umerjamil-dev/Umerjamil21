@@ -1,6 +1,18 @@
-import { Bell, Search, User, Command, Settings } from "lucide-react";
+import { Bell, Search, User, Command, Settings, LogOut } from "lucide-react";
+import useAuthStore from "../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const Topbar = () => {
+  const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Secure Session Terminated.");
+    navigate("/login");
+  };
+
   return (
     <div className="h-24 bg-white/80 backdrop-blur-2xl px-10 flex items-center justify-between sticky top-0 z-40 border-b border-black/[0.04]">
       {/* Search - High-End Floating Style */}
@@ -29,8 +41,9 @@ const Topbar = () => {
             <Bell size={22} strokeWidth={1.5} />
             <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)] border-2 border-white rounded-full animate-pulse"></span>
           </button>
-          <button className="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-[var(--desert-gold)] hover:bg-[var(--desert-gold)]/5 rounded-2xl transition-all duration-300 border border-transparent hover:border-[var(--desert-gold)]/20">
-            <Settings size={22} strokeWidth={1.5} />
+          <button onClick={handleLogout} className="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all duration-300 border border-transparent hover:border-red-100 group">
+            <LogOut size={22} strokeWidth={1.5} />
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Terminate Session</div>
           </button>
         </div>
 
@@ -39,15 +52,19 @@ const Topbar = () => {
         {/* User Profile - VIP Style */}
         <div className="flex items-center gap-4 cursor-pointer group hover:bg-black/[0.02] p-2 pr-5 rounded-[1.25rem] transition-all border border-transparent hover:border-[var(--desert-gold)]/20">
           <div className="text-right">
-            <p className="text-[13px] font-manrope font-extrabold text-gray-800 leading-none group-hover:text-[var(--desert-gold)] transition-colors">Khalid Al-Bakri</p>
-            <p className="text-[10px] text-gray-500 font-bold mt-1.5 uppercase tracking-[0.2em] group-hover:text-[var(--desert-gold)] transition-colors">Chief Concierge</p>
+            <p className="text-[13px] font-manrope font-extrabold text-gray-800 leading-none group-hover:text-[var(--desert-gold)] transition-colors">
+              {user?.name || 'Authorized Personnel'}
+            </p>
+            <p className="text-[10px] text-gray-500 font-bold mt-1.5 uppercase tracking-[0.2em] group-hover:text-[var(--desert-gold)] transition-colors">
+              {user?.role || 'Premium Access'}
+            </p>
           </div>
 
           <div className="relative">
             <div className="w-11 h-11 rounded-[1.25rem] bg-gradient-to-br from-[#1E293B] to-[#0F172A] flex items-center justify-center text-white shadow-lg shadow-black/10 group-hover:scale-105 group-hover:shadow-[0_4px_15px_rgba(212,175,55,0.4)] transition-all border border-black/10">
               <User size={20} strokeWidth={2} className="text-[var(--desert-gold)] transition-colors" />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--sacred-emerald)] border-[3px] border-white rounded-full shadow-sm"></div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-[3px] border-white rounded-full shadow-sm"></div>
           </div>
         </div>
 
