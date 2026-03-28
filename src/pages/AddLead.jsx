@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    ArrowLeft, UserPlus, Phone,
    Mail, MapPin, MessageSquare,
@@ -11,23 +11,40 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { Link, useNavigate } from 'react-router-dom';
 import useLeadStore from '../store/useLeadStore';
+import useMasterTypeStore from '../store/useMasterTypeStore';
 import toast from 'react-hot-toast';
 
 const AddLead = () => {
    const navigate = useNavigate();
    const { addLead, isLoading } = useLeadStore();
+   const { masterData, fetchMasterData } = useMasterTypeStore();
+
+   useEffect(() => {
+      fetchMasterData();
+   }, [fetchMasterData]);
+
    const [formData, setFormData] = useState({
       name: '',
       phone: '',
       email: '',
       city: '',
-      source: 'Facebook',
+      source: '',
       message: '',
       assignedUser: '',
       followUpDate: '',
-      status: 'New',
+      status: '',
       comments: ''
    });
+
+   // Auto-select defaults once master data is loaded
+   useEffect(() => {
+      if (!formData.source && masterData.leadsource.length > 0) {
+         setFormData(prev => ({ ...prev, source: masterData.leadsource[0].id || masterData.leadsource[0] }));
+      }
+      if (!formData.status && masterData.lead.length > 0) {
+         setFormData(prev => ({ ...prev, status: masterData.lead[0].id || masterData.lead[0] }));
+      }
+   }, [masterData, formData.source, formData.status]);
 
    const handleSubmit = async () => {
       if (!formData.name || !formData.phone) {
@@ -168,28 +185,40 @@ const AddLead = () => {
                <div className="bg-[var(--surface-container-low)]    rounded-xl p-8 border border-[var(--outline-variant)]">
                   <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8">Acquisition Channel</h3>
                   <div className="grid grid-cols-1 gap-3">
-                     {[
-                        { id: 'Facebook', icon: FacebookIcon, color: 'text-blue-600' },
-                        { id: 'WhatsApp', icon: MessageSquare, color: 'text-green-600' },
-                        { id: 'Instagram', icon: InstagramIcon, color: 'text-pink-600' },
-                        { id: 'Website', icon: Rss, color: 'text-pink-600' },
-                        { id: 'Direct', icon: Globe, color: 'text-gray-600' }
-                     ].map((src) => (
-                        <button
-                           key={src.id}
-                           onClick={() => setFormData({ ...formData, source: src.id })}
-                           className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${formData.source === src.id
-                              ? 'bg-white border-transparent shadow-xl shadow-black/5 ring-1 ring-[var(--on-surface)]/10'
-                              : 'bg-white/40 border-transparent hover:border-[var(--outline-variant)] text-[var(--on-surface-variant)]'
-                              }`}
-                        >
-                           <div className="flex items-center gap-3">
-                              <src.icon size={16} className={formData.source === src.id ? 'text-[var(--on-surface)]' : ''} />
-                              <span className={`text-[10px] font-extrabold uppercase tracking-widest ${formData.source === src.id ? 'text-[var(--on-surface)]' : ''}`}>{src.id}</span>
-                           </div>
-                           {formData.source === src.id && <div className="w-2 h-2 rounded-full bg-[var(--on-surface)]"></div>}
-                        </button>
-                     ))}
+                     {masterData.leadsource.map((src) => {
+                        const sourceName = src.name || src;
+                        const srcId = src.id || sourceName;
+                        
+                        // Icon Mapping
+                        const getIcon = (name) => {
+                           const n = name.toLowerCase();
+                           if (n.includes('facebook')) return FacebookIcon;
+                           if (n.includes('whatsapp')) return MessageSquare;
+                           if (n.includes('instagram')) return InstagramIcon;
+                           if (n.includes('website')) return Rss;
+                           return Globe;
+                        };
+                        const SourceIcon = getIcon(sourceName);
+
+                        return (
+                           <button
+                              key={srcId}
+                              onClick={() => setFormData({ ...formData, source: srcId })}
+                              className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${formData.source === srcId
+                                 ? 'bg-white border-transparent shadow-xl shadow-black/5 ring-1 ring-[var(--on-surface)]/10'
+                                 : 'bg-white/40 border-transparent hover:border-[var(--outline-variant)] text-[var(--on-surface-variant)]'
+                                 }`}
+                           >
+                              <div className="flex items-center gap-3">
+                                 <SourceIcon size={16} className={formData.source === srcId ? 'text-[var(--on-surface)]' : ''} />
+                                 <span className={`text-[10px] font-extrabold uppercase tracking-widest ${formData.source === srcId ? 'text-[var(--on-surface)]' : ''}`}>
+                                    {sourceName}
+                                 </span>
+                              </div>
+                              {formData.source === srcId && <div className="w-2 h-2 rounded-full bg-[var(--on-surface)]"></div>}
+                           </button>
+                        );
+                     })}
                   </div>
                </div>
 
@@ -226,34 +255,22 @@ const AddLead = () => {
                      <Activity size={14} /> Lifecycle Status
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
-                     {['New', 'Contacted', 'Quoted', 'Deposit', 'Lost'].map((s) => (
+                     {masterData.lead.map((s) => (
                         <button
-                           key={s}
-                           onClick={() => setFormData({ ...formData, status: s })}
-                           className={`py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-widest transition-all border ${formData.status === s
+                           key={s.id || s}
+                           onClick={() => setFormData({ ...formData, status: s.id || s })}
+                           className={`py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-widest transition-all border ${formData.status === (s.id || s)
                               ? 'bg-[var(--on-surface)] text-white border-transparent shadow-lg'
                               : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-[var(--surface-container-high)]'
                               }`}
                         >
-                           {s}
+                           {s.name || s}
                         </button>
                      ))}
                   </div>
                </div>
 
-               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)] group overflow-hidden relative">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--surface)] rounded-bl-[3rem]"></div>
-                  <Tag className="text-[var(--on-surface-variant)] mb-6 relative z-10" size={24} strokeWidth={1.5} />
-                  <h4 className="text-[11px] font-extrabold text-[var(--on-surface)] mb-2 uppercase tracking-widest relative z-10">Sales Priority</h4>
-                  <p className="text-[10px] text-[var(--on-surface-variant)] mb-8 leading-relaxed font-medium relative z-10">Define the urgency of this operational cycle.</p>
-                  <div className="flex gap-2 relative z-10">
-                     {['Low', 'Normal', 'VIP'].map((p) => (
-                        <button key={p} className="flex-1 py-3   rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] text-[9px] font-extrabold uppercase tracking-widest text-[var(--on-surface-variant)] hover:btn-midnight hover:text-white transition-all">
-                           {p}
-                        </button>
-                     ))}
-                  </div>
-               </div>
+             
 
                <div className="bg-[var(--grad-black)]    rounded-xl p-8 text-white relative overflow-hidden group">
                   <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-tl-[4rem] group-hover:scale-110 transition-transform"></div>

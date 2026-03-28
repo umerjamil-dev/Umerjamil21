@@ -17,7 +17,7 @@ api.interceptors.request.use(async (config) => {
   
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log(`[Axios] Attaching token to request: ${config.url}`);
+    // console.log(`[Axios] Attaching token to request: ${config.url}`);
   } else {
     console.warn(`[Axios] No token found in store for request: ${config.url}`);
   }

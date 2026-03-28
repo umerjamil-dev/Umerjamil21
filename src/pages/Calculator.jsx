@@ -157,7 +157,7 @@ const Calculator = () => {
           </div>
 
           {/* Revenue Optimization Map */}
-          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 shadow-sm border border-[var(--outline-variant)] group">
+          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 shadow-sm border border-[var(--outline-variant)] ">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
               <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Revenue Yield Strategy</h3>
               <div className="px-4 py-2 bg-[var(--tertiary)]/5 text-[var(--tertiary)] text-[9px] font-extrabold uppercase tracking-widest rounded-full border border-[var(--tertiary)]/10">
@@ -180,7 +180,7 @@ const Calculator = () => {
                   <span>50% Premium</span>
                 </div>
               </div>
-              <div className="w-28 h-28 rounded-3xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center text-center group-hover:btn-primary group-hover:text-white transition-all shadow-sm">
+              <div className="w-28 h-28 rounded-3xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center text-center group-hover:btn-primary  transition-all shadow-sm">
                 <p className="text-3xl font-manrope font-extrabold tracking-tighter">{inputs.markup}%</p>
               </div>
             </div>
@@ -206,7 +206,7 @@ const Calculator = () => {
               </div>
               <div className="pt-10 mt-2 border-t border-white/10 text-center">
                 <p className="text-[10px] text-gray-500 font-extrabold uppercase tracking-[0.25em] mb-4">Official Quoted Value</p>
-                <p className="text-6xl font-manrope font-extrabold tracking-tighter shadow-sm text-white">
+                <p className="text-6xl font-manrope font-extrabold tracking-tighter shadow-sm text-white ">
                   ${results.finalPrice.toLocaleString()}
                 </p>
               </div>
@@ -236,8 +236,8 @@ const Calculator = () => {
                 <span className="text-[var(--on-surface)] font-manrope">${(inputs.transportCost * inputs.persons).toLocaleString()}</span>
               </div>
             </div>
-            <div className="mt-10 p-5 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-2xl flex items-center justify-center gap-3 text-[10px] font-extrabold text-[var(--on-surface)] uppercase tracking-widest group-hover:btn-primary group-hover:text-white transition-all">
-              <RefreshCw size={16} strokeWidth={2.5} className="text-[var(--on-surface-variant)] group-hover:text-white" />
+            <div className="mt-10 p-5 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-2xl flex items-center justify-center gap-3 text-[10px] font-extrabold text-[var(--on-surface)] uppercase tracking-widest group-hover:btn-primary group-hover:text-black transition-all">
+              <RefreshCw size={16} strokeWidth={2.5} className="text-[var(--on-surface-variant)] " />
               Algorithmic Sync Active
             </div>
           </div>

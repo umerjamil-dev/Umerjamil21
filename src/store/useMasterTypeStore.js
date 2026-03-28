@@ -1,90 +1,63 @@
 import { create } from 'zustand';
 import api from '../api/axios';
 
-const useMasterTypeStore = create((set, get) => ({
-  masterTypes: [],
-  leadSources: [],
-  leadStatuses: [],
-  paymentMethods: [],
-  roles: [],
-  userStatuses: [],
-  isLoading: false,
+const useMasterTypeStore = create((set) => ({
+  masterData: {
+    property_type: [],
+    status: [],
+    agreement_status: [],
+    contract_status: [],
+    payment_method: [],
+    collection_status: [],
+    assigned_to: [],
+    urgency_level: [],
+    lifecycle_status: [],
+    lead: [],
+    leadsource: []
+  },
+  loading: false,
   error: null,
 
-  // Fetch specific types based on flag and optional filter
-  fetchMasterTypes: async (typeFlag, forParam = null) => {
-    set({ isLoading: true });
+  fetchMasterData: async () => {
+    set({ loading: true, error: null });
     try {
-      let url = `/master-types/${typeFlag}`;
-      if (forParam) {
-        url += `?for=${forParam}`;
-      }
-      
-      const response = await api.get(url);
-      const data = response.data.requested_names || response.data; // Handle success wrapper if needed
+      const types = [
+        'property_type',
+        'status',
+        'agreement_status',
+        'contract_status',
+        'payment_method',
+        'collection_status',
+        'assigned_to',
+        'urgency_level',
+        'lifecycle_status',
+        'lead',
+        'leadsource'
+      ];
 
-      // Map response to specific collections based on 'for' or 'typeFlag'
-      const target = forParam || typeFlag;
-      
-      switch (target.toLowerCase()) {
-        case 'lead':
-          set({ leadStatuses: data, isLoading: false });
-          break;
-        case 'leadsource':
-          set({ leadSources: data, isLoading: false });
-          break;
-        case 'payment_method':
-          set({ paymentMethods: data, isLoading: false });
-          break;
-        case 'role':
-          set({ roles: data, isLoading: false });
-          break;
-        case 'user':
-          set({ userStatuses: data, isLoading: false });
-          break;
-        default:
-          set({ masterTypes: data, isLoading: false });
-      }
-    } catch (err) {
-      set({ error: err.message, isLoading: false });
-    }
-  },
+      // Fetch all types in parallel
+      const responses = await Promise.all(
+        types.map(type => api.get(`/master-types/${type}`))
+      );
 
-  // Generic add method (adjusting to URL segment pattern if needed)
-  addMasterType: async (typeFlag, data) => {
-    set({ isLoading: true });
-    try {
-      const response = await api.post(`/master-types/${typeFlag}`, data);
-      await get().fetchMasterTypes(typeFlag); // Refresh
-      return response.data;
-    } catch (err) {
-      set({ error: err.message, isLoading: false });
-      throw err;
-    }
-  },
+      // Create the new masterData object
+      const newMasterData = {};
+      types.forEach((type, index) => {
+        // Handle the data mapping based on previous controller logic (?for=) if necessary
+        // but the user's snippet uses simple segment pattern: /master-types/${type}
+        newMasterData[type] = responses[index].data.requested_names || responses[index].data.data || responses[index].data || [];
+      });
 
-  // Update
-  updateMasterType: async (typeFlag, id, data) => {
-    set({ isLoading: true });
-    try {
-      const response = await api.patch(`/master-types/${typeFlag}/${id}`, data);
-      await get().fetchMasterTypes(typeFlag); // Refresh
-      return response.data;
-    } catch (err) {
-      set({ error: err.message, isLoading: false });
-      throw err;
-    }
-  },
-
-  // Delete
-  deleteMasterType: async (typeFlag, id) => {
-    set({ isLoading: true });
-    try {
-      await api.delete(`/master-types/${typeFlag}/${id}`);
-      await get().fetchMasterTypes(typeFlag); // Refresh
-    } catch (err) {
-      set({ error: err.message, isLoading: false });
-      throw err;
+      set({ 
+        masterData: newMasterData, 
+        loading: false 
+      });
+    } catch (error) {
+      set({ 
+        error: error.response?.data?.message || error.message || 'Failed to fetch master data', 
+        loading: false 
+      });
+      console.error('fetchMasterData error:', error);
     }
   }
 }));
