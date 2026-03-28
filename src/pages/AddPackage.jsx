@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { 
-   ArrowLeft, Save, Package, 
+import {
+   ArrowLeft, Save, Package,
    Hotel, MapPin, Calendar,
    DollarSign, Info, ShieldCheck,
    ChevronRight, Star,
@@ -30,8 +30,8 @@ const AddPackage = () => {
                   <Package size={14} className="text-[var(--desert-gold)]" />
                   Inventory Forge
                </div>
-               <h1 className="text-4xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">Assemble <span className="text-[var(--on-surface-variant)]/40 italic font-light font-manrope">Travel Manifest</span></h1>
-               <p className="text-[var(--on-surface-variant)] text-sm font-medium max-w-lg">Archiving a new travel manifest for the upcoming pilgrimage season with verified hospitality and transit nodes.</p>
+               <h1 className="text-4xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">Assemble <span className="text-[var(--on-surface-variant)]/40 italic font-light font-manrope">Travel </span></h1>
+               <p className="text-[var(--on-surface-variant)] text-sm font-medium max-w-lg">Archiving a new travel  for the upcoming pilgrimage season with verified hospitality and transit nodes.</p>
             </div>
             <div className="flex items-center gap-4">
                <Link
@@ -55,15 +55,15 @@ const AddPackage = () => {
             <div className="lg:col-span-8 space-y-10">
                <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 shadow-sm border border-[var(--outline-variant)] relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--surface)] rounded-bl-[6rem] translate-x-12 -translate-y-12 transition-transform group-hover:translate-x-6 group-hover:-translate-y-6"></div>
-                  
+
                   <h3 className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.4em] mb-16 flex items-center gap-3 relative z-10">
-                     <Layers size={18} strokeWidth={2.5} className="text-[var(--on-surface)]" /> 
+                     <Layers size={18} strokeWidth={2.5} className="text-[var(--on-surface)]" />
                      Structural Blueprint
                   </h3>
 
                   <div className="space-y-16 relative z-10">
                      <div className="group">
-                        <label className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-6 block ml-1 opacity-70">Manifest Designation (Title)</label>
+                        <label className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-6 block ml-1 opacity-70"> Designation (Title)</label>
                         <div className="relative border-b-2 border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-6">
                            <input
                               type="text"
@@ -111,9 +111,9 @@ const AddPackage = () => {
                               <Calendar size={18} className="text-[var(--on-surface-variant)]" strokeWidth={2.5} />
                            </div>
                            <div className="flex items-center gap-8">
-                              <input 
-                                 type="range" 
-                                 min="1" 
+                              <input
+                                 type="range"
+                                 min="1"
                                  max="30"
                                  className="flex-1 h-2 bg-[var(--surface-container-low)] rounded-full appearance-none accent-[var(--on-surface)] cursor-pointer"
                                  value={formData.nightsMakkah}
@@ -131,9 +131,9 @@ const AddPackage = () => {
                               <Calendar size={18} className="text-[var(--on-surface-variant)]" strokeWidth={2.5} />
                            </div>
                            <div className="flex items-center gap-8">
-                              <input 
-                                 type="range" 
-                                 min="1" 
+                              <input
+                                 type="range"
+                                 min="1"
                                  max="30"
                                  className="flex-1 h-2 bg-[var(--surface-container-low)] rounded-full appearance-none accent-[var(--on-surface)] cursor-pointer"
                                  value={formData.nightsMadinah}
@@ -151,7 +151,7 @@ const AddPackage = () => {
 
                <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 shadow-sm border border-[var(--outline-variant)]">
                   <h3 className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.4em] mb-12 flex items-center gap-3">
-                     <DollarSign size={18} strokeWidth={2.5} className="text-[var(--on-surface)]" /> 
+                     <DollarSign size={18} strokeWidth={2.5} className="text-[var(--on-surface)]" />
                      Equity Calibration
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
@@ -175,11 +175,10 @@ const AddPackage = () => {
                               <button
                                  key={cat}
                                  onClick={() => setFormData({ ...formData, category: cat })}
-                                 className={`py-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border ${
-                                    formData.category === cat 
-                                    ? 'bg-[var(--on-surface)] text-white border-transparent shadow-xl -translate-y-1' 
-                                    : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-white hover:border-[var(--on-surface)]'
-                                 }`}
+                                 className={`py-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border ${formData.category === cat
+                                       ? 'bg-[var(--on-surface)] text-white border-transparent shadow-xl -translate-y-1'
+                                       : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-white hover:border-[var(--on-surface)]'
+                                    }`}
                               >
                                  {cat}
                               </button>
@@ -200,10 +199,10 @@ const AddPackage = () => {
                      </div>
                      <h4 className="text-3xl font-manrope font-black tracking-tighter mb-6 leading-tight">Operational <br /><span className="italic font-light opacity-50">Guarantee</span></h4>
                      <p className="text-[12px] font-medium text-white/40 leading-relaxed mb-10 max-w-[24ch]">
-                        This manifest configuration will be globally active and available for quotation synthesis once authorized.
+                        This  configuration will be globally active and available for quotation synthesis once authorized.
                      </p>
                   </div>
-                  
+
                   <div className="space-y-6 relative z-10 pt-10 border-t border-white/5">
                      {[
                         { label: 'Hospitality Verified', ready: true },
@@ -220,12 +219,12 @@ const AddPackage = () => {
 
                <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 border border-[var(--outline-variant)] shadow-sm group">
                   <h4 className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.4em] mb-12 flex items-center gap-3">
-                     <ShieldCheck size={18} className="text-[var(--on-surface)]" /> Security Manifest
+                     <ShieldCheck size={18} className="text-[var(--on-surface)]" /> Security
                   </h4>
                   <div className="flex items-center gap-5 mb-10">
                      <div className="w-16 h-16 rounded-[1.5rem] bg-[var(--surface)] flex items-center justify-center border border-[var(--outline-variant)] group-hover:bg-white transition-all overflow-hidden relative">
-                        <img 
-                           src="https://api.dicebear.com/7.x/avataaars/svg?seed=Umar" 
+                        <img
+                           src="https://api.dicebear.com/7.x/avataaars/svg?seed=Umar"
                            alt="Umar Jamil"
                            className="w-full h-full object-cover p-2"
                         />
@@ -236,7 +235,7 @@ const AddPackage = () => {
                      </div>
                   </div>
                   <div className="p-6 bg-[var(--surface)] rounded-2xl italic text-[11px] font-medium text-[var(--on-surface-variant)]/60 leading-relaxed border-l-4 border-[var(--on-surface)]">
-                     "Ensure all hospitality allotments are synchronized with the KSA global hospitality manifest before commitment."
+                     "Ensure all hospitality allotments are synchronized with the KSA global hospitality  before commitment."
                   </div>
                </div>
             </div>

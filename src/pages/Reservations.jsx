@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 
 const Reservations = () => {
-   const reservations = [
+  const reservations = [
     {
       id: 'RES-9012',
       customer: 'Ahmed Raza',
@@ -52,7 +52,7 @@ const Reservations = () => {
   ];
 
   const getTypeIcon = (type) => {
-    switch(type) {
+    switch (type) {
       case 'Visa': return { icon: ShieldCheck, bg: 'bg-emerald-50 text-emerald-600' };
       case 'Hotel': return { icon: Hotel, bg: 'bg-amber-50 text-amber-600' };
       case 'Flight': return { icon: Plane, bg: 'bg-blue-50 text-blue-600' };
@@ -68,10 +68,10 @@ const Reservations = () => {
         <div className="space-y-4">
           <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-black opacity-80">
             <Clock size={14} strokeWidth={3} />
-            Live Sync: 14:55 Manifest
+            Live Sync: 14:55
           </div>
           <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-            Logistics <span className="text-slate-300 italic font-light font-manrope">Manifest</span>
+            Reservations
           </h1>
           <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
             Orchestrating visa cycles, hospitality nodes, and global transit authorizations in real-time synchronization.
@@ -94,7 +94,7 @@ const Reservations = () => {
             <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors" size={20} />
             <input
               type="text"
-              placeholder="Search manifest by ID, pilgrim or package..."
+              placeholder="Search  by ID, pilgrim or package..."
               className="w-full pl-10 pr-4 py-4 bg-transparent border-b-2 border-slate-100 rounded-none text-sm outline-none focus:border-black text-black transition-all font-black placeholder-slate-300 uppercase tracking-widest"
             />
           </div>
@@ -109,14 +109,14 @@ const Reservations = () => {
         </div>
       </div>
 
-      {/* Manifest Ledger */}
+      {/*  Ledger */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50">
                 <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Reservation Narrative</th>
-                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Manifest Node</th>
+                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]"> Node</th>
                 <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Temporal Window</th>
                 <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Floor Valuation</th>
                 <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] text-right">Protocol</th>
@@ -159,11 +159,10 @@ const Reservations = () => {
                       <div>
                         <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter">${res.amount.toLocaleString()}</p>
                         <div className="flex items-center gap-3 mt-3">
-                          <span className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.3em] ${
-                            res.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] border border-[var(--sacred-emerald)]/20' : 
-                            res.status === 'Partial' ? 'bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] border border-[var(--desert-gold)]/20' : 
-                            'bg-slate-100 text-slate-400 border border-slate-200'
-                          }`}>
+                          <span className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.3em] ${res.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] border border-[var(--sacred-emerald)]/20' :
+                              res.status === 'Partial' ? 'bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] border border-[var(--desert-gold)]/20' :
+                                'bg-slate-100 text-slate-400 border border-slate-200'
+                            }`}>
                             {res.status} Protocol
                           </span>
                         </div>

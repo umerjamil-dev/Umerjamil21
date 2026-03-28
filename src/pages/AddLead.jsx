@@ -9,9 +9,12 @@ import {
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { Link, useNavigate } from 'react-router-dom';
+import useLeadStore from '../store/useLeadStore';
+import toast from 'react-hot-toast';
 
-const AddLead = () => {  
+const AddLead = () => {
    const navigate = useNavigate();
+   const { addLead, isLoading } = useLeadStore();
    const [formData, setFormData] = useState({
       name: '',
       phone: '',
@@ -24,6 +27,22 @@ const AddLead = () => {
       status: 'New',
       comments: ''
    });
+
+   const handleSubmit = async () => {
+      if (!formData.name || !formData.phone) {
+         toast.error('Identity name and primary contact are mandatory.');
+         return;
+      }
+
+      try {
+         await addLead(formData);
+         toast.success('Inquiry successfully officialized.');
+         navigate('/leads');
+      } catch (err) {
+         toast.error('Operational failure: ' + err.message);
+      }
+   };
+
 
    return (
       <div className="font-inter space-y-10 animate-in fade-in duration-700">
@@ -41,11 +60,12 @@ const AddLead = () => {
                   Discard & Exit
                </Link>
                <button
-                  onClick={() => navigate('/leads')}
-                  className="btn-primary px-8 py-3 rounded-2xl text-white text-[11px] font-extrabold uppercase   shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className={`btn-primary px-8 py-3 rounded-2xl text-white text-[11px] font-extrabold uppercase shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                >
                   <Save size={18} strokeWidth={2.5} />
-                  Verify & Save
+                  {isLoading ? 'Officializing...' : 'Verify & Save'}
                </button>
             </div>
          </div>
@@ -57,7 +77,7 @@ const AddLead = () => {
             <div className="lg:col-span-2 space-y-8">
                <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
                   <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-10 flex items-center gap-2">
-                     <Info size={14} strokeWidth={2.5} /> Personal Manifest
+                     <Info size={14} strokeWidth={2.5} /> Personal
                   </h3>
 
                   <div className="space-y-10">
@@ -175,7 +195,7 @@ const AddLead = () => {
                   <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
                      <UserCheck size={14} /> Delegation Protocol
                   </h3>
-                  <select 
+                  <select
                      className="w-full p-4 bg-[var(--surface)] rounded-2xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer"
                      value={formData.assignedUser}
                      onChange={(e) => setFormData({ ...formData, assignedUser: e.target.value })}
@@ -191,7 +211,7 @@ const AddLead = () => {
                   <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
                      <Calendar size={14} /> Follow-up Matrix
                   </h3>
-                  <input 
+                  <input
                      type="date"
                      className="w-full p-4 bg-[var(--surface)] rounded-2xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer"
                      value={formData.followUpDate}

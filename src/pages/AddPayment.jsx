@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    ArrowLeft, CreditCard, DollarSign,
    Calendar, Landmark, Receipt,
@@ -6,9 +6,15 @@ import {
    CheckCircle2, Clock
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import usePaymentStore from '../store/usePaymentStore';
+import useBookingStore from '../store/useBookingStore';
+import toast from 'react-hot-toast';
 
 const AddPayment = () => {
    const navigate = useNavigate();
+   const { addPayment, isLoading } = usePaymentStore();
+   const { bookings, fetchBookings } = useBookingStore();
+   
    const [formData, setFormData] = useState({
       bookingId: '',
       amount: '',
@@ -18,13 +24,33 @@ const AddPayment = () => {
       notes: ''
    });
 
+   useEffect(() => {
+      fetchBookings();
+   }, [fetchBookings]);
+
+   const handleSubmit = async () => {
+      if (!formData.bookingId || !formData.amount) {
+         toast.error('Booking reference and aggregate value are mandatory.');
+         return;
+      }
+
+      try {
+         await addPayment(formData);
+         toast.success('Treasury entry officialized.');
+         navigate('/payments');
+      } catch (err) {
+         toast.error('Ledger failure: ' + err.message);
+      }
+   };
+
+
    const paymentHistory = [
       { date: 'Mar 15, 2024', amount: 2500, method: 'Cash', status: 'Verified' },
       { date: 'Feb 28, 2024', amount: 1500, method: 'Bank Transfer', status: 'Verified' },
    ];
 
    return (
-      <div className="font-inter max-w-6xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
+      <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Premium Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
             <Link to="/payments" className="flex items-center gap-3 text-slate-400 hover:text-slate-900 transition-all group">
@@ -34,15 +60,16 @@ const AddPayment = () => {
                <span className="text-[10px] font-black uppercase tracking-[0.25em]">Audit Treasury</span>
             </Link>
             <div className="text-center">
-               <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Revenue <span className="text-slate-300 italic font-light font-manrope">Reconciliation</span></h1>
+               <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Revenue </h1>
                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] mt-2 italic opacity-60">Al Bayan Financial Protocol v2.4</p>
             </div>
             <button
-               onClick={() => navigate('/payments')}
-               className="px-10 py-5 bg-black text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
+               onClick={handleSubmit}
+               disabled={isLoading}
+               className={`px-10 py-5 bg-black text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
                <Save size={18} strokeWidth={2.5} />
-               Confirm Receipt
+               {isLoading ? 'Officializing...' : 'Confirm Receipt'}
             </button>
          </div>
 
@@ -69,7 +96,7 @@ const AddPayment = () => {
                            <User size={20} strokeWidth={2.5} />
                         </div>
                         <div>
-                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-1">Contractor</p>
+                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-1">or</p>
                            <p className="text-xs font-black text-white tracking-tight uppercase">Ahmed Raza (BK-1001)</p>
                         </div>
                      </div>
@@ -123,7 +150,7 @@ const AddPayment = () => {
                               value={formData.bookingId}
                               onChange={(e) => setFormData({ ...formData, bookingId: e.target.value })}
                            >
-                              <option value="" className="bg-white">Query Booking Manifest...</option>
+                              <option value="" className="bg-white">Query Booking ...</option>
                               <option value="1" className="bg-white">BK-1001 (Ahmed Raza)</option>
                               <option value="2" className="bg-white">BK-1002 (Fatima Zahra)</option>
                            </select>

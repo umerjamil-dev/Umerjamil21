@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BarChart, PieChart } from '@mui/x-charts';
 import {
     Users, DollarSign, Calendar, TrendingUp,
@@ -7,9 +7,29 @@ import {
 import { Link } from 'react-router-dom';
 
 const Home = () => {
+    const [timeFilter, setTimeFilter] = useState('Yearly');
+
+    const chartData = {
+        Weekly: {
+            categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            umrah: [15, 22, 18, 30, 45, 50, 40],
+            hajj: [2, 5, 3, 8, 12, 10, 5]
+        },
+        Monthly: {
+            categories: ['1-5', '6-10', '11-15', '16-20', '21-25', '26-30'],
+            umrah: [120, 150, 140, 180, 200, 250],
+            hajj: [10, 15, 25, 40, 50, 80]
+        },
+        Yearly: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            umrah: [1200, 1500, 1800, 2200, 2600, 3100, 3400, 3800, 4100, 4000, 4200, 4500],
+            hajj: [40, 60, 45, 90, 120, 160, 300, 500, 800, 1200, 1500, 1800]
+        }
+    };
+
     return (
         <div className="space-y-8 animate-in fade-in duration-700 font-inter mx-auto pb-12">
-            
+
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
@@ -31,16 +51,16 @@ const Home = () => {
                 {/* Metric 1 - Dark Premium */}
                 <div className="bg-[#0B0F19] rounded-3xl p-8 text-white shadow-xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-white/10 to-transparent rounded-bl-full pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
-                    
+
                     <div className="flex justify-between items-start mb-10 relative z-10">
                         <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 backdrop-blur-md">
                             <Users size={24} className="text-white" />
                         </div>
-                        <div className="px-3 py-1.5 bg-green-500/20 text-green-400 text-[10px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1 border border-green-500/20">
+                        <div className="px-3 py-1.5 bg-[var(--desert-gold)]/20 text-[var(--desert-gold)] text-[10px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1 border border-[var(--desert-gold)]/20">
                             <ArrowUpRight size={14} /> 12.5%
                         </div>
                     </div>
-                    
+
                     <div className="relative z-10">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Active Inquiries</p>
                         <h2 className="text-5xl font-manrope font-black tracking-tighter">1,245</h2>
@@ -53,11 +73,11 @@ const Home = () => {
                         <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 group-hover:bg-blue-50 transition-colors">
                             <DollarSign size={24} className="text-blue-600" />
                         </div>
-                        <div className="px-3 py-1.5 bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1">
+                        <div className="px-3 py-1.5 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] text-[10px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1">
                             <ArrowUpRight size={14} /> 8.2%
                         </div>
                     </div>
-                    
+
                     <div>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Revenue Captured</p>
                         <h2 className="text-5xl font-manrope font-black text-gray-900 tracking-tighter">$84.5k</h2>
@@ -74,9 +94,9 @@ const Home = () => {
                             Stable
                         </div>
                     </div>
-                    
+
                     <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Live Manifests</p>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Live s</p>
                         <h2 className="text-5xl font-manrope font-black text-gray-900 tracking-tighter">142</h2>
                     </div>
                 </div>
@@ -89,16 +109,34 @@ const Home = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                         <div>
                             <h3 className="text-xl font-manrope font-extrabold text-gray-900 mb-1">Performance Matrix</h3>
-                            <p className="text-xs font-medium text-gray-500 tracking-wide">Comparative volume of Hajj & Umrah bookings over last 6 months.</p>
+                            <p className="text-xs font-medium text-gray-500 tracking-wide">Comparative volume of Hajj & Umrah bookings over time.</p>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full bg-[#111827]"></div>
-                                <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Umrah</span>
+                        <div className="flex items-center gap-6">
+                            {/* Time Horizon Toggle */}
+                            <div className="flex p-1 bg-gray-50 rounded-lg border border-gray-200">
+                                {['Weekly', 'Monthly', 'Yearly'].map(filter => (
+                                    <button
+                                        key={filter}
+                                        onClick={() => setTimeFilter(filter)}
+                                        className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${timeFilter === filter
+                                            ? 'bg-white text-gray-900 shadow-sm border border-gray-200/50'
+                                            : 'text-gray-400 hover:text-gray-900'
+                                            }`}
+                                    >
+                                        {filter}
+                                    </button>
+                                ))}
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full bg-[#76777D]"></div>
-                                <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Hajj</span>
+
+                            <div className="hidden lg:flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-[#CA9323]"></div>
+                                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Umrah</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-[#111827]"></div>
+                                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Hajj</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -106,11 +144,11 @@ const Home = () => {
                     <div className="flex-1 w-full ">
                         <BarChart
                             series={[
-                                { data: [120, 150, 180, 220, 260, 310], label: 'Umrah', color: '#5F5C78' },
-                                { data: [40, 60, 45, 90, 120, 160], label: 'Hajj', color: '#111827' },
+                                { data: chartData[timeFilter].umrah, label: 'Umrah', color: '#CA9323' },
+                                { data: chartData[timeFilter].hajj, label: 'Hajj', color: '#111827' },
                             ]}
                             xAxis={[{
-                                data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                                data: chartData[timeFilter].categories,
                                 scaleType: 'band',
                                 categoryGapRatio: 0.4,
                                 barGapRatio: 0.1
@@ -137,7 +175,7 @@ const Home = () => {
                                         data: [
                                             { id: 0, value: 45, label: 'Direct', color: '#111827' },
                                             { id: 1, value: 30, label: 'Agent', color: '#5E5F65' },
-                                            { id: 2, value: 15, label: 'Social', color: '#757981ff' },
+                                            { id: 2, value: 15, label: 'Social', color: '#CA9323' },
                                         ],
                                         innerRadius: 75,
                                         outerRadius: 100,
@@ -161,7 +199,7 @@ const Home = () => {
                             {[
                                 { label: 'Direct Web', val: '45%', color: 'bg-[#111827]' },
                                 { label: 'B2B Agents', val: '30%', color: 'bg-[#76777D]' },
-                                { label: 'Social Media', val: '15%', color: 'bg-[#9CA3AF]' },
+                                { label: 'Social Media', val: '15%', color: 'bg-[var(--desert-gold)]' },
                                 { label: 'Corporate', val: '10%', color: 'bg-[#E5E7EB]' }
                             ].map(item => (
                                 <div key={item.label} className="flex items-center justify-between group cursor-default">
@@ -182,15 +220,15 @@ const Home = () => {
                 {[
                     { label: 'Register Lead', desc: 'Add new inquiry', icon: Plus },
                     { label: 'Generate Quote', desc: 'Pricing calculator', icon: Calculator },
-                    { label: 'New Booking', desc: 'Contract creation', icon: Calendar },
+                    { label: 'New Booking', desc: ' creation', icon: Calendar },
                     { label: 'Global Map', desc: 'Tracking matrix', icon: Globe }
                 ].map((action, idx) => (
                     <Link
                         key={idx}
                         to="#"
-                        className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-[var(--primary)]/20 hover:-translate-y-1 transition-all group flex items-start gap-4"
+                        className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-[var(--desert-gold)]/50 hover:shadow-[0_4px_20px_rgba(212,175,55,0.1)] hover:-translate-y-1 transition-all group flex items-start gap-4"
                     >
-                        <div className="w-12 h-12 rounded-2xl  flex items-center justify-center text-gray-600 bg-[#0B0F19] text-white transition-colors shrink-0">
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#0B0F19] text-white group-hover:text-[var(--desert-gold)] transition-colors shrink-0">
                             <action.icon size={20} className="group-hover:scale-110 transition-transform" />
                         </div>
                         <div>

@@ -6,9 +6,12 @@ import {
    Globe, CreditCard, Calendar
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import useCustomerStore from '../store/useCustomerStore';
+import toast from 'react-hot-toast';
 
 const AddCustomer = () => {
    const navigate = useNavigate();
+   const { addCustomer, isLoading } = useCustomerStore();
    const [formData, setFormData] = useState({
       firstName: '',
       lastName: '',
@@ -21,6 +24,22 @@ const AddCustomer = () => {
       nationality: 'Pakistani',
       photo: null
    });
+
+   const handleSubmit = async () => {
+      if (!formData.firstName || !formData.lastName || !formData.phone) {
+         toast.error('Identity names and communication channel are mandatory.');
+         return;
+      }
+
+      try {
+         await addCustomer(formData);
+         toast.success('Pilgrim profile officialized.');
+         navigate('/customers');
+      } catch (err) {
+         toast.error('Registry failure: ' + err.message);
+      }
+   };
+
 
    return (
       <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
@@ -37,11 +56,12 @@ const AddCustomer = () => {
                <p className="text-[10px] text-[var(--on-surface-variant)] font-extrabold uppercase tracking-[0.3em] mt-1">Verification <span className="text-[var(--sacred-emerald)] font-black">Active</span></p>
             </div>
             <button
-               onClick={() => navigate('/customers')}
-               className="btn-emerald px-10 py-4 rounded-2xl text-white font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-emerald-900/20 hover:-translate-y-1 transition-all flex items-center gap-3"
+               onClick={handleSubmit}
+               disabled={isLoading}
+               className={`btn-emerald px-10 py-4 rounded-2xl text-white font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-emerald-900/20 hover:-translate-y-1 transition-all flex items-center gap-3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
                <Save size={18} strokeWidth={2.5} />
-               Finalize Profile
+               {isLoading ? 'Officializing...' : 'Finalize Profile'}
             </button>
          </div>
 
@@ -60,9 +80,9 @@ const AddCustomer = () => {
                      </div>
                      <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-[var(--on-surface)] text-white rounded-2xl flex items-center justify-center cursor-pointer hover:scale-110 transition-all z-20 shadow-lg">
                         <FileText size={16} />
-                        <input 
-                           type="file" 
-                           className="hidden" 
+                        <input
+                           type="file"
+                           className="hidden"
                            onChange={(e) => setFormData({ ...formData, photo: e.target.files[0] })}
                            accept="image/*"
                         />
@@ -218,7 +238,7 @@ const AddCustomer = () => {
                   </div>
 
                   <div className="group relative z-10">
-                     <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Manifest Address</label>
+                     <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1"> Address</label>
                      <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
                         <input
                            type="text"

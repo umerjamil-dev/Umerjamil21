@@ -1,177 +1,324 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-   BarChart3, PieChart, TrendingUp,
-   TrendingDown, Calendar, Download,
-   Filter, ArrowUpRight, ArrowDownRight,
-   Users, DollarSign, Briefcase, 
-   Award, Globe, Zap,
-   MapPin
+    Calendar, Download, Filter, ArrowUpRight, ArrowDownRight,
+    Users, DollarSign, Briefcase, Award, Zap,
+    BookOpen, CreditCard, UserCircle, Target,
+    MoreHorizontal, MapPin
 } from 'lucide-react';
+import useReportStore from '../store/useReportStore';
+import useBookingStore from '../store/useBookingStore';
+import usePaymentStore from '../store/usePaymentStore';
+import useCustomerStore from '../store/useCustomerStore';
+import useLeadStore from '../store/useLeadStore';
 
 const Reports = () => {
-   const stats = [
-      { label: 'Gross Revenue', value: '$428,500', growth: '+12.5%', icon: DollarSign, color: 'text-emerald-500', trend: 'up' },
-      { label: 'Active Bookings', value: '1,240', growth: '+5.2%', icon: Briefcase, color: 'text-blue-500', trend: 'up' },
-      { label: 'Retention Rate', value: '94.2%', growth: '-0.4%', icon: Users, color: 'text-indigo-500', trend: 'down' },
-      { label: 'Avg. Deal Value', value: '$3,450', growth: '+2.1%', icon: Award, color: 'text-[var(--desert-gold)]', trend: 'up' },
-   ];
+    const [activeReport, setActiveReport] = useState('Booking');
+    const { 
+        bookingReports, paymentReports, salesReports, customerReports, 
+        fetchReports, isLoading 
+    } = useReportStore();
 
-   return (
-      <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
-         {/* Premium Header */}
-         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200">
-            <div className="space-y-4">
-               <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[11px] font-black opacity-80">
-                  <Zap size={14} strokeWidth={3} />
-                  Analytical Engine v4.0
-               </div>
-               <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Operational <span className="text-slate-300 italic font-light font-manrope">Intelligence</span>
-               </h1>
-               <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
-                  High-fidelity analytical insights derived from real-time global operations, financial manifests, and pilgrim satisfaction indices.
-               </p>
+    const { bookings, fetchBookings } = useBookingStore();
+    const { payments, fetchPayments } = usePaymentStore();
+    const { customers, fetchCustomers } = useCustomerStore();
+    const { leads, fetchLeads } = useLeadStore();
+
+    useEffect(() => {
+        fetchReports(activeReport.toLowerCase());
+        // Also fetch general stats for the cards
+        fetchBookings();
+        fetchPayments();
+        fetchCustomers();
+        fetchLeads();
+    }, [activeReport, fetchReports, fetchBookings, fetchPayments, fetchCustomers, fetchLeads]);
+
+    const totalRevenue = payments.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+    const activeBookingCount = bookings.filter(b => b.status === 'Confirmed' || b.status === 'Active').length;
+    const customerCount = customers.length;
+    const leadCount = leads.length;
+
+    const stats = [
+        { label: 'Gross Revenue', value: `$${totalRevenue.toLocaleString()}`, growth: '+12.5%', icon: DollarSign, color: 'text-emerald-500', trend: 'up' },
+        { label: 'Active Bookings', value: activeBookingCount.toString(), growth: '+5.2%', icon: Briefcase, color: 'text-blue-500', trend: 'up' },
+        { label: 'Total Clients', value: customerCount.toString(), growth: '+3.1%', icon: Users, color: 'text-indigo-500', trend: 'up' },
+        { label: 'Sales Velocity', value: `${leadCount} Leads`, growth: '+8.1%', icon: Target, color: 'text-[var(--desert-gold)]', trend: 'up' },
+    ];
+
+
+    const reportsList = [
+        { id: 'Booking', title: 'Booking Report', icon: BookOpen },
+        { id: 'Payment', title: 'Payment Report', icon: CreditCard },
+        { id: 'Sales', title: 'Sales Report', icon: Target },
+        { id: 'Customer', title: 'Customer Report', icon: UserCircle },
+    ];
+
+    // Normalized Data from Store
+    const bookingData = bookingReports && bookingReports.length > 0 ? bookingReports : [
+        { id: 'BKG-9921', customer: 'Ahmed Raza', package: 'Premium Ramadan', date: '10 Apr - 25 Apr', amount: '$4,500', status: 'Confirmed' },
+        { id: 'BKG-9922', customer: 'Fatima Zahra', package: 'Executive Hajj', date: '05 Jun - 25 Jun', amount: '$15,800', status: 'Pending' },
+        { id: 'BKG-9923', customer: 'Zubair Ahmed', package: 'Economy Umrah Plus', date: '02 May - 16 May', amount: '$2,100', status: 'Cancelled' },
+    ];
+
+    const paymentData = paymentReports && paymentReports.length > 0 ? paymentReports : [
+        { ref: 'TRX-1011', bookingId: 'BKG-9921', amount: '$2,500', date: '01 Mar 2024', method: 'Bank Transfer' },
+        { ref: 'TRX-1012', bookingId: 'BKG-9922', amount: '$5,000', date: '15 Mar 2024', method: 'Credit Card' },
+        { ref: 'TRX-1013', bookingId: 'BKG-9921', amount: '$2,000', date: '20 Mar 2024', method: 'Cash' },
+    ];
+
+    const salesData = salesReports && salesReports.length > 0 ? salesReports : [
+        { period: 'Q1 2024', leads: 450, conversions: 120, revenue: '$320,000', topPackage: 'Premium Ramadan' },
+        { period: 'Q4 2023', leads: 620, conversions: 185, revenue: '$480,500', topPackage: 'Executive Hajj' },
+        { period: 'Q3 2023', leads: 310, conversions: 85, revenue: '$150,000', topPackage: 'Economy Umrah Plus' },
+    ];
+
+    const customerData = customerReports && customerReports.length > 0 ? customerReports : [
+        { id: 'CUST-001', name: 'Ahmed Raza', email: 'ahmed@example.com', bookings: 3, spend: '$12,500', status: 'VIP' },
+        { id: 'CUST-002', name: 'Fatima Zahra', email: 'fatima@example.com', bookings: 1, spend: '$15,800', status: 'Active' },
+        { id: 'CUST-003', name: 'Zubair Ahmed', email: 'zubair@test.com', bookings: 5, spend: '$8,400', status: 'Loyal' },
+    ];
+
+
+    return (
+        <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
+            {/* Premium Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[11px] font-black opacity-80">
+                        <Zap size={14} strokeWidth={3} />
+                        Analytical Engine v4.0
+                    </div>
+                    <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
+                        Business 
+                    </h1>
+                    <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
+                        High-fidelity analytical insights derived from real-time global operations, financial s, and sales velocities.
+                    </p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <button className="flex items-center gap-3 px-8 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black hover:border-slate-300 transition-all group shadow-sm">
+                        <Calendar size={18} strokeWidth={3} /> Temporal Filter
+                    </button>
+                    <button className="px-10 py-5 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3">
+                        <Download size={18} strokeWidth={3} />
+                        Export Ledger
+                    </button>
+                </div>
             </div>
-            <div className="flex items-center gap-4">
-               <button className="flex items-center gap-3 px-8 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black hover:border-slate-300 transition-all group shadow-sm">
-                  <Calendar size={18} strokeWidth={3} /> Quarterly View
-               </button>
-               <button className="px-10 py-5 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3">
-                  <Download size={18} strokeWidth={3} />
-                  Export Intelligence
-               </button>
+
+            {/* Macro Metrics Matrix */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                {stats.map((stat, idx) => (
+                    <div key={idx} className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-all"></div>
+                        <div className="flex items-center justify-between mb-8 relative z-10">
+                            <div className={`p-4 rounded-xl bg-slate-50 border border-slate-100 group-hover:bg-white transition-all ${stat.color}`}>
+                                <stat.icon size={20} strokeWidth={2.5} />
+                            </div>
+                            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${stat.trend === 'up' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-red-50 text-red-600 border border-red-100'
+                                }`}>
+                                {stat.trend === 'up' ? <ArrowUpRight size={10} strokeWidth={4} /> : <ArrowDownRight size={10} strokeWidth={4} />}
+                                {stat.growth}
+                            </div>
+                        </div>
+                        <div className="relative z-10">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">{stat.label}</p>
+                            <h4 className="text-3xl font-manrope font-black text-slate-900 tracking-tighter">{stat.value}</h4>
+                        </div>
+                    </div>
+                ))}
             </div>
-         </div>
 
-         {/* Macro Metrics Matrix */}
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-            {stats.map((stat, idx) => (
-               <div key={idx} className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-all"></div>
-                  <div className="flex items-center justify-between mb-8 relative z-10">
-                     <div className={`p-4 rounded-xl bg-slate-50 border border-slate-100 group-hover:bg-white transition-all ${stat.color}`}>
-                        <stat.icon size={20} strokeWidth={2.5} />
-                     </div>
-                     <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                        stat.trend === 'up' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-red-50 text-red-600 border border-red-100'
-                     }`}>
-                        {stat.trend === 'up' ? <ArrowUpRight size={10} strokeWidth={4} /> : <ArrowDownRight size={10} strokeWidth={4} />}
-                        {stat.growth}
-                     </div>
-                  </div>
-                  <div className="relative z-10">
-                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">{stat.label}</p>
-                     <h4 className="text-3xl font-manrope font-black text-slate-900 tracking-tighter">{stat.value}</h4>
-                  </div>
-               </div>
-            ))}
-         </div>
-
-         {/* Deep Analysis Bento */}
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Sales Velocity Chart Placeholder */}
-            <div className="lg:col-span-8 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative group">
-               <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/20">
-                  <div>
-                     <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em] flex items-center gap-3 mb-2">
-                        <TrendingUp size={16} strokeWidth={3} className="text-emerald-500" /> Revenue Trajectory
-                     </h3>
-                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-7">Monthly conversion delta: +14.2%</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                     {['Volume', 'Yield'].map(t => (
-                        <button key={t} className="px-5 py-2 rounded-full border border-slate-200 text-[8px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">
-                           {t}
-                        </button>
-                     ))}
-                  </div>
-               </div>
-               
-               <div className="h-[380px] p-10 flex items-end gap-3 relative">
-                  <div className="absolute inset-0 bg-slate-50/30 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  {/* Mock Chart Bars */}
-                  {[45, 62, 48, 75, 52, 88, 72, 95, 65, 82, 58, 70].map((h, i) => (
-                     <div key={i} className="flex-1 group/bar relative">
-                        <div 
-                           className={`w-full rounded-t-lg transition-all duration-1000 group-hover/bar:bg-black ease-out relative z-10 ${
-                              i === 7 ? 'bg-[var(--desert-gold)] shadow-[0_-10px_20px_rgba(212,175,55,0.2)]' : 'bg-slate-100'
-                           }`}
-                           style={{ height: `${h}%` }}
+            {/* Reporting Tab System */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative">
+                <div className="border-b border-slate-200 bg-slate-50 p-2 flex space-x-2 overflow-x-auto">
+                    {reportsList.map(r => (
+                        <button
+                            key={r.id}
+                            onClick={() => setActiveReport(r.id)}
+                            className={`flex items-center gap-3 px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeReport === r.id
+                                ? 'bg-white shadow-md text-black border border-slate-200'
+                                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 border border-transparent'
+                                }`}
                         >
-                           <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-[8px] font-black px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity uppercase tracking-widest pointer-events-none">
-                              {h}k
-                           </div>
+                            <r.icon size={16} strokeWidth={activeReport === r.id ? 2.5 : 2} />
+                            {r.title}
+                        </button>
+                    ))}
+                    <div className="flex-grow"></div>
+                    <div className="px-4 py-4 opacity-50">
+                        <Filter size={20} className="text-slate-400" />
+                    </div>
+                </div>
+
+                <div className="p-0">
+                    {/* 1. BOOKING REPORT */}
+                    {activeReport === 'Booking' && (
+                        <div className="overflow-x-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-white border-b border-slate-100">
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Booking / Customer</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Package Detail</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Travel Window</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Valuation</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Protocol Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {isLoading ? (
+                                        <tr><td colSpan="5" className="py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">Compiling Booking Intelligence...</td></tr>
+                                    ) : bookingData.length === 0 ? (
+                                        <tr><td colSpan="5" className="py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">No booking records in current data cycle.</td></tr>
+                                    ) : bookingData.map((row) => (
+
+                                        <tr key={row.id} className="group hover:bg-slate-50 transition-all">
+                                            <td className="px-8 py-6">
+                                                <p className="text-sm font-manrope font-black text-slate-900 tracking-tight">{row.customer}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em]">{row.id}</p>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-none">
+                                                    {row.package}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6 text-[11px] font-bold text-slate-600 uppercase tracking-widest">{row.date}</td>
+                                            <td className="px-8 py-6 text-base font-manrope font-black text-slate-900">{row.amount}</td>
+                                            <td className="px-8 py-6">
+                                                <span className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] inline-flex items-center gap-1.5 ${row.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)]' :
+                                                    row.status === 'Pending' ? 'bg-[var(--desert-gold)]/10 text-[var(--desert-gold)]' :
+                                                        'bg-red-50 text-red-600'
+                                                    }`}>
+                                                    {row.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                        <div className="mt-4 text-[8px] font-black text-slate-300 text-center uppercase tracking-tighter">
-                           {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}
+                    )}
+
+                    {/* 2. PAYMENT REPORT */}
+                    {activeReport === 'Payment' && (
+                        <div className="overflow-x-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-white border-b border-slate-100">
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Reference Node</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Booking Link</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Capital Dispersed</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Temporal Marker</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Protocol Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {paymentData.map((row) => (
+                                        <tr key={row.ref} className="group hover:bg-slate-50 transition-all">
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-3 text-slate-900 font-mono tracking-widest text-xs bg-slate-100 px-3 py-1.5 rounded-lg inline-flex border border-slate-200">
+                                                    {row.ref}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6 text-[11px] font-bold text-slate-600 uppercase tracking-widest">{row.bookingId}</td>
+                                            <td className="px-8 py-6 text-base font-manrope font-black text-emerald-600">{row.amount}</td>
+                                            <td className="px-8 py-6 text-[11px] font-medium text-slate-500">{row.date}</td>
+                                            <td className="px-8 py-6">
+                                                <span className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] bg-blue-50 text-blue-600 border border-blue-100 inline-block">
+                                                    {row.method}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                     </div>
-                  ))}
-               </div>
+                    )}
+
+                    {/* 3. SALES REPORT */}
+                    {activeReport === 'Sales' && (
+                        <div className="overflow-x-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-white border-b border-slate-100">
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Fiscal Epoch</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Lead Velocity</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Conversion Node</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Gross Yield</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Apex Product</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {salesData.map((row) => (
+                                        <tr key={row.period} className="group hover:bg-slate-50 transition-all">
+                                            <td className="px-8 py-6 text-[12px] font-black text-slate-900 uppercase tracking-widest">{row.period}</td>
+                                            <td className="px-8 py-6 text-sm font-bold text-slate-600">{row.leads} Output</td>
+                                            <td className="px-8 py-6">
+                                                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 text-slate-700 font-black text-xs border border-slate-200">
+                                                    {row.conversions}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6 text-base font-manrope font-black text-slate-900">{row.revenue}</td>
+                                            <td className="px-8 py-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest">{row.topPackage}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    {/* 4. CUSTOMER REPORT */}
+                    {activeReport === 'Customer' && (
+                        <div className="overflow-x-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-white border-b border-slate-100">
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Client Topology</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Contact Vector</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Booking Count</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Lifetime Yield</th>
+                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] text-right">Loyalty Index</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {customerData.map((row) => (
+                                        <tr key={row.id} className="group hover:bg-slate-50 transition-all">
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-black text-xs border border-slate-200 uppercase">
+                                                        {row.name.substring(0, 2)}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-manrope font-black text-slate-900 tracking-tight leading-none mb-1">{row.name}</p>
+                                                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{row.id}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6 text-[11px] font-medium text-slate-500">{row.email}</td>
+                                            <td className="px-8 py-6 text-sm font-black text-slate-700">{row.bookings} Active</td>
+                                            <td className="px-8 py-6 text-base font-manrope font-black text-[var(--desert-gold)]">{row.spend}</td>
+                                            <td className="px-8 py-6 text-right">
+                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] inline-block ${row.status === 'VIP' ? 'bg-black text-[var(--desert-gold)] shadow-[0_4px_10px_rgba(212,175,55,0.2)]' :
+                                                    row.status === 'Loyal' ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)]' :
+                                                        'bg-slate-100 text-slate-500'
+                                                    }`}>
+                                                    {row.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+                <div className="bg-slate-50 border-t border-slate-100 p-6 flex justify-center">
+                    <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black transition-all">
+                        Load More Intelligence
+                    </button>
+                </div>
             </div>
-
-            {/* Service Distribution */}
-            <div className="lg:col-span-4 bg-black rounded-xl p-10 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] group-hover:scale-110 transition-transform duration-700"></div>
-               
-               <div>
-                  <h3 className="text-[11px] font-black text-white/30 uppercase tracking-[0.4em] mb-12 relative z-10 flex items-center gap-3">
-                     <PieChart size={18} strokeWidth={3} className="text-[var(--desert-gold)]" /> Sector Allocation
-                  </h3>
-                  
-                  <div className="space-y-8 relative z-10">
-                     {[
-                        { label: 'Umrah Premium', value: '42%', color: 'bg-[var(--desert-gold)]' },
-                        { label: 'Hajj Institutional', value: '28%', color: 'bg-white' },
-                        { label: 'Global Ticketing', value: '18%', color: 'bg-emerald-500' },
-                        { label: 'Ground Logistics', value: '12%', color: 'bg-slate-700' }
-                     ].map((item, idx) => (
-                        <div key={idx} className="group/item cursor-pointer">
-                           <div className="flex justify-between items-center mb-4">
-                              <span className="text-[10px] font-black uppercase tracking-widest text-white/60 group-hover/item:text-white transition-colors">{item.label}</span>
-                              <span className="text-sm font-black text-white">{item.value}</span>
-                           </div>
-                           <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                              <div className={`h-full ${item.color} rounded-full transition-all duration-1000`} style={{ width: item.value }}></div>
-                           </div>
-                        </div>
-                     ))}
-                  </div>
-               </div>
-
-               <button className="w-full mt-12 py-5 bg-white/10 border border-white/10 rounded-xl text-[10px] font-black text-white uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all relative z-10">
-                  Segmentation Audit
-               </button>
-            </div>
-         </div>
-
-         {/* Service KPIs */}
-         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {[
-               { title: 'Visa Efficiency', value: '98.8%', desc: 'Avg. processing latency: 18h', icon: Globe },
-               { title: 'Hotel Occupancy', value: '84.2%', desc: 'Projected Mar load: 92%', icon: MapPin },
-               { title: 'Staff Performance', value: '4.9/5', desc: 'Based on 840 pilgrim reviews', icon: Award }
-            ].map((kpi, idx) => (
-               <div key={idx} className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm group hover:border-black transition-all">
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 text-slate-900 group-hover:bg-black group-hover:text-white transition-all">
-                        <kpi.icon size={22} strokeWidth={2.5} />
-                     </div>
-                     <div>
-                        <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{kpi.title}</h4>
-                     </div>
-                  </div>
-                  <div className="space-y-2">
-                     <p className="text-4xl font-manrope font-black text-slate-900 tracking-tighter">{kpi.value}</p>
-                     <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {kpi.desc}
-                     </p>
-                  </div>
-               </div>
-            ))}
-         </div>
-      </div>
-   );
+        </div>
+    );
 };
 
 export default Reports;

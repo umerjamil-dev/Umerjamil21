@@ -1,26 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-   Truck, Users, MapPin, 
+   Truck, Users, MapPin,
    Clock, CheckCircle2, AlertCircle,
-   Phone, Search, Filter, 
+   Phone, Search, Filter,
    MoreHorizontal, Plus, Navigation,
    UserCheck, Calendar, Radio
 } from 'lucide-react';
+import useOperationsStore from '../store/useOperationsStore';
 
 const Operations = () => {
    const [activeTab, setActiveTab] = useState('Overview');
+   const { staff, liveTasks, sectorSaturation, fetchOperationsData, isLoading } = useOperationsStore();
 
-   const staff = [
+   useEffect(() => {
+      fetchOperationsData();
+   }, [fetchOperationsData]);
+
+   const staffData = staff && staff.length > 0 ? staff : [
       { id: 'STF-001', name: 'Zaid Al-Harbi', role: 'Mutawwif', status: 'On Task', location: 'Makkah', contact: '+966 50 123 4567' },
       { id: 'STF-002', name: 'Omar Bakr', role: 'Driver', status: 'Available', location: 'Jeddah', contact: '+966 50 987 6543' },
       { id: 'STF-003', name: 'Hassan Idris', role: 'Guide', status: 'Resting', location: 'Madinah', contact: '+966 50 555 0192' },
    ];
 
-   const liveTasks = [
+   const taskData = liveTasks && liveTasks.length > 0 ? liveTasks : [
       { id: 'TSK-901', customer: 'Ahmed Raza', service: 'Airport Pickup', staff: 'Omar Bakr', status: 'In Transit', time: '14:30 AST' },
       { id: 'TSK-902', customer: 'Fatima Zahra', service: 'Ziyarat Guide', staff: 'Zaid Al-Harbi', status: 'Completed', time: '10:00 AST' },
       { id: 'TSK-903', customer: 'Zubair Ahmed', service: 'Hotel Check-in', staff: 'Hassan Idris', status: 'Delayed', time: '16:45 AST' },
    ];
+
+   const saturationData = sectorSaturation && sectorSaturation.length > 0 ? sectorSaturation : [
+      { sector: 'Makkah', value: '82%', color: 'bg-black' },
+      { sector: 'Madinah', value: '45%', color: 'bg-slate-200' },
+      { sector: 'Jeddah', value: '18%', color: 'bg-slate-100' }
+   ];
+
 
    return (
       <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
@@ -32,7 +45,7 @@ const Operations = () => {
                   KSA Ground Orchestration
                </div>
                <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Abroad <span className="text-slate-300 italic font-light font-manrope">Operations</span>
+                  Abroad
                </h1>
                <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
                   Real-time synchronization of ground staff, logistics, and pilgrim movements across the Saudi Arabian sectors.
@@ -43,11 +56,10 @@ const Operations = () => {
                   <button
                      key={tab}
                      onClick={() => setActiveTab(tab)}
-                     className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                        activeTab === tab 
-                        ? 'bg-black text-white shadow-lg' 
-                        : 'text-slate-400 hover:text-black'
-                     }`}
+                     className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab
+                           ? 'bg-black text-white shadow-lg'
+                           : 'text-slate-400 hover:text-black'
+                        }`}
                   >
                      {tab}
                   </button>
@@ -78,17 +90,20 @@ const Operations = () => {
                   </div>
 
                   <div className="divide-y divide-slate-100">
-                     {liveTasks.map((task) => (
+                     {isLoading ? (
+                        <div className="p-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50 text-black">Synchronizing Deployment Vectors...</div>
+                     ) : taskData.length === 0 ? (
+                        <div className="p-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50 text-black">No active deployments detected.</div>
+                     ) : taskData.map((task) => (
                         <div key={task.id} className="p-10 group hover:bg-slate-50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-8">
                            <div className="flex items-center gap-8">
-                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border transition-all ${
-                                 task.status === 'In Transit' ? 'bg-blue-50 border-blue-100 text-blue-500' :
-                                 task.status === 'Completed' ? 'bg-emerald-50 border-emerald-100 text-emerald-500' :
-                                 'bg-red-50 border-red-100 text-red-500'
-                              }`}>
+                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border transition-all ${task.status === 'In Transit' ? 'bg-blue-50 border-blue-100 text-blue-500' :
+                                    task.status === 'Completed' ? 'bg-emerald-50 border-emerald-100 text-emerald-500' :
+                                       'bg-red-50 border-red-100 text-red-500'
+                                 }`}>
                                  {task.service.includes('Pickup') ? <Truck size={28} strokeWidth={2} /> :
-                                  task.service.includes('Ziyarat') ? <Users size={28} strokeWidth={2} /> :
-                                  <MapPin size={28} strokeWidth={2} />}
+                                    task.service.includes('Ziyarat') ? <Users size={28} strokeWidth={2} /> :
+                                       <MapPin size={28} strokeWidth={2} />}
                               </div>
                               <div>
                                  <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">{task.customer}</p>
@@ -106,14 +121,13 @@ const Operations = () => {
                                  <p className="text-[9px] text-slate-400 uppercase tracking-widest">Assigned Staff</p>
                               </div>
                               <div className="min-w-[140px]">
-                                 <div className={`flex items-center justify-center gap-3 px-5 py-3 rounded-full border text-[9px] font-black uppercase tracking-widest ${
-                                    task.status === 'In Transit' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                    task.status === 'Completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                    'bg-red-50 text-red-600 border-red-100 shadow-[0_4px_12px_rgba(239,68,68,0.1)] font-black'
-                                 }`}>
+                                 <div className={`flex items-center justify-center gap-3 px-5 py-3 rounded-full border text-[9px] font-black uppercase tracking-widest ${task.status === 'In Transit' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                       task.status === 'Completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                          'bg-red-50 text-red-600 border-red-100 shadow-[0_4px_12px_rgba(239,68,68,0.1)] font-black'
+                                    }`}>
                                     {task.status === 'In Transit' ? <Clock size={12} strokeWidth={3} /> :
-                                     task.status === 'Completed' ? <CheckCircle2 size={12} strokeWidth={3} /> :
-                                     <AlertCircle size={12} strokeWidth={3} />}
+                                       task.status === 'Completed' ? <CheckCircle2 size={12} strokeWidth={3} /> :
+                                          <AlertCircle size={12} strokeWidth={3} />}
                                     {task.status}
                                  </div>
                                  <p className="text-right text-[8px] font-black text-slate-300 uppercase tracking-widest mt-2">{task.time}</p>
@@ -122,7 +136,8 @@ const Operations = () => {
                         </div>
                      ))}
                   </div>
-                  
+
+
                   <div className="p-8 bg-slate-50 border-t border-slate-100 text-center">
                      <button className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] hover:text-black transition-all">
                         Load Historical Dispatches
@@ -135,13 +150,15 @@ const Operations = () => {
             <div className="lg:col-span-4 space-y-10">
                <div className="bg-black rounded-xl p-10 text-white shadow-2xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] group-hover:scale-110 transition-transform"></div>
-                  <h3 className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-12 relative z-10">Staff Manifest</h3>
-                  
+                  <h3 className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-12 relative z-10">Staff </h3>
+
                   <div className="space-y-8 relative z-10">
-                     {staff.map((member) => (
+                     {isLoading ? (
+                        <div className="py-10 text-center text-[10px] font-black text-white/20 uppercase tracking-[0.2em] leading-relaxed">Auditing Ground Personnel...</div>
+                     ) : staffData.map((member) => (
                         <div key={member.id} className="group/item cursor-pointer">
                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-4 text-white">
                                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 group-hover/item:border-white/30 transition-all font-black text-xs">
                                     {member.name.charAt(0)}
                                  </div>
@@ -150,10 +167,9 @@ const Operations = () => {
                                     <p className="text-[9px] text-white/40 uppercase tracking-widest font-black">{member.role} • {member.location}</p>
                                  </div>
                               </div>
-                              <div className={`w-2 h-2 rounded-full ${
-                                 member.status === 'Available' ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' :
-                                 member.status === 'On Task' ? 'bg-blue-500' : 'bg-slate-600'
-                              }`}></div>
+                              <div className={`w-2 h-2 rounded-full ${member.status === 'Available' ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' :
+                                    member.status === 'On Task' ? 'bg-blue-500' : 'bg-slate-600'
+                                 }`}></div>
                            </div>
                            <div className="flex items-center justify-between pl-16">
                               <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em]">{member.status}</span>
@@ -165,6 +181,7 @@ const Operations = () => {
                      ))}
                   </div>
 
+
                   <button className="w-full mt-12 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-white/40 uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all">
                      Recruit Global Staff
                   </button>
@@ -174,22 +191,19 @@ const Operations = () => {
                <div className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm relative overflow-hidden">
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10">Sector Saturation</h3>
                   <div className="space-y-8">
-                     {[
-                        { sector: 'Makkah', value: '82%', color: 'bg-black' },
-                        { sector: 'Madinah', value: '45%', color: 'bg-slate-200' },
-                        { sector: 'Jeddah', value: '18%', color: 'bg-slate-100' }
-                     ].map((sector) => (
+                     {saturationData.map((sector) => (
                         <div key={sector.sector}>
                            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-3">
                               <span className="text-slate-900">{sector.sector}</span>
                               <span className="text-slate-400">{sector.value}</span>
                            </div>
-                           <div className="h-2 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+                           <div className="h-2 bg-slate-50 rounded-full overflow-hidden border border-slate-100 text-black">
                               <div className={`h-full ${sector.color} transition-all duration-1000`} style={{ width: sector.value }}></div>
                            </div>
                         </div>
                      ))}
                   </div>
+
                </div>
             </div>
          </div>

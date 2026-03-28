@@ -76,7 +76,7 @@ const Sidebar = () => {
       path: '/operations',
       submenu: [
         { title: 'Overview & Dispatch', path: '/operations' },
-        { title: 'Staff Manifest', path: '/operations' },
+        { title: 'Staff ', path: '/operations' },
         { title: 'Logistics Feed', path: '/operations' }
       ]
     },
@@ -172,17 +172,17 @@ const Sidebar = () => {
                   className={`
                     w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group
                     ${isActive
-                      ? 'bg-white/10 border border-white/10 shadow-lg shadow-black/20'
+                      ? 'bg-[var(--desert-gold)]/10 border border-[var(--desert-gold)]/20 shadow-lg shadow-[var(--desert-gold)]/5'
                       : 'hover:bg-white/5 border border-transparent'}
                   `}
                 >
                   <div className="flex items-center gap-3.5">
-                    <span className={`transition-all duration-300 text-white ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
+                    <span className={`transition-all duration-300 ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>
                       <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} />
                     </span>
-                    <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{item.title}</span>
+                    <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>{item.title}</span>
                   </div>
-                  <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'}`} />
+                  <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-500 group-hover:text-gray-300'}`} />
                 </button>
               ) : (
                 <NavLink
@@ -191,14 +191,14 @@ const Sidebar = () => {
                   className={({ isActive: isExactActive }) => `
                     flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group
                     ${isExactActive || isActive
-                      ? 'bg-white/10 border border-white/10 shadow-lg shadow-black/20'
+                      ? 'bg-[var(--desert-gold)]/10 border border-[var(--desert-gold)]/20 shadow-lg shadow-[var(--desert-gold)]/5'
                       : 'hover:bg-white/5 border border-transparent'}
                   `}
                 >
-                  <span className={`transition-all duration-300 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
+                  <span className={`transition-all duration-300 ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>
                     <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} />
                   </span>
-                  <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{item.title}</span>
+                  <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>{item.title}</span>
                 </NavLink>
               )}
 
@@ -229,10 +229,10 @@ const Sidebar = () => {
                           `}
                         >
                           {/* Active Indicator Dot overriding the line */}
-                          {isSubActive && <div className="absolute -left-[23.5px] w-1.5 h-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_10px_var(--primary)] z-10"></div>}
-                          {!isSubActive && <div className="absolute -left-[23px] w-1 h-1 rounded-full bg-gray-600 group-hover/sub:bg-white group-hover/sub:scale-150 transition-all z-10"></div>}
+                          {isSubActive && <div className="absolute -left-[23.5px] w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)] z-10"></div>}
+                          {!isSubActive && <div className="absolute -left-[23px] w-1 h-1 rounded-full bg-gray-600 group-hover/sub:bg-[var(--desert-gold)] group-hover/sub:scale-150 transition-all z-10"></div>}
 
-                          <span className={`font-medium text-[10px] uppercase tracking-[0.1em] transition-all ${isSubActive ? 'text-white translate-x-1' : 'text-gray-400 group-hover/sub:text-white group-hover/sub:translate-x-1'}`}>
+                          <span className={`font-medium text-[10px] uppercase tracking-[0.1em] transition-all ${isSubActive ? 'text-[var(--desert-gold)] translate-x-1' : 'text-gray-400 group-hover/sub:text-white group-hover/sub:translate-x-1'}`}>
                             {subItem.title}
                           </span>
                         </NavLink>
@@ -253,8 +253,8 @@ const Sidebar = () => {
           <div className="flex-1 overflow-hidden">
             <p className="text-[11px] font-bold text-white uppercase tracking-wider truncate">Admin Zeal</p>
             <div className="flex items-center gap-1.5 mt-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse"></div>
-              <p className="text-[8px] text-gray-400 uppercase tracking-widest truncate">Prime Controller</p>
+              <div className="w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)] animate-pulse"></div>
+              <p className="text-[8px] text-[var(--desert-gold)] uppercase tracking-widest truncate">Prime Controller</p>
             </div>
           </div>
           <button className="p-2.5 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all cursor-pointer">

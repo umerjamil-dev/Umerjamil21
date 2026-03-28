@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
    CreditCard, DollarSign, ArrowUpRight,
    Filter, Download, MoreHorizontal,
@@ -6,13 +6,21 @@ import {
    BookOpen, TrendingUp, Calendar
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useBookingStore from '../store/useBookingStore';
 
 const Bookings = () => {
-   const bookings = [
+   const { bookings, fetchBookings, isLoading } = useBookingStore();
+
+   useEffect(() => {
+      fetchBookings();
+   }, [fetchBookings]);
+
+   const bookingsToShow = bookings && bookings.length > 0 ? bookings : [
       { id: 'BK-1001', customer: 'Ahmed Raza', package: 'Umrah 15-Day Premium', amount: 5400, paid: 5400, status: 'Confirmed', date: 'Mar 15, 2024' },
       { id: 'BK-1002', customer: 'Fatima Zahra', package: 'Hajj 2024 Economy', amount: 12000, paid: 4500, status: 'Partial', date: 'Mar 12, 2024' },
       { id: 'BK-1003', customer: 'Zubair Ahmed', package: 'Umrah Luxury (Ramadan)', amount: 8200, paid: 0, status: 'Pending', date: 'Mar 10, 2024' },
    ];
+
 
    return (
       <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
@@ -24,7 +32,7 @@ const Bookings = () => {
                   Revenue Analysis: Q1 2024
                </div>
                <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Financial <span className="text-slate-300 italic font-light font-manrope">Ledger</span>
+                  Financial 
                </h1>
                <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
                   Tracking sacred investments and operational liquidity cycles across the global Al Bayan network.
@@ -132,7 +140,11 @@ const Bookings = () => {
                      </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                     {bookings.map((booking) => (
+                     {isLoading ? (
+                        <tr><td colSpan="5" className="px-10 py-10 text-center text-xs font-black uppercase tracking-widest text-slate-400">Synchronizing Ledger...</td></tr>
+                     ) : bookingsToShow.length === 0 ? (
+                        <tr><td colSpan="5" className="px-10 py-10 text-center text-xs font-black uppercase tracking-widest text-slate-400">No active protocols found.</td></tr>
+                     ) : bookingsToShow.map((booking) => (
                         <tr key={booking.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                            <td className="px-10 py-10">
                               <div>

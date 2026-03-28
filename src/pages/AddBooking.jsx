@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    ArrowLeft, Package, User,
    Calendar, Plane, CreditCard,
@@ -6,9 +6,17 @@ import {
    MapPin, Clock, DollarSign
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import useBookingStore from '../store/useBookingStore';
+import useCustomerStore from '../store/useCustomerStore';
+import usePackageStore from '../store/usePackageStore';
+import toast from 'react-hot-toast';
 
 const AddBooking = () => {
    const navigate = useNavigate();
+   const { createBooking, isLoading: isBookingLoading } = useBookingStore();
+   const { customers, fetchCustomers } = useCustomerStore();
+   const { packages, fetchPackages } = usePackageStore();
+
    const [formData, setFormData] = useState({
       customerId: '',
       packageId: '',
@@ -18,8 +26,29 @@ const AddBooking = () => {
       paymentMethod: 'Bank Transfer'
    });
 
+   useEffect(() => {
+      fetchCustomers();
+      fetchPackages();
+   }, [fetchCustomers, fetchPackages]);
+
+   const handleSubmit = async () => {
+      if (!formData.customerId || !formData.packageId || !formData.totalAmount) {
+         toast.error('Identity, protocol, and valuation are mandatory.');
+         return;
+      }
+
+      try {
+         await createBooking(formData);
+         toast.success('Registry entry finalized.');
+         navigate('/bookings');
+      } catch (err) {
+         toast.error('Registry failure: ' + err.message);
+      }
+   };
+
+
    return (
-      <div className="font-inter max-w-6xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
+      <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Premium Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
             <Link to="/bookings" className="flex items-center gap-3 text-slate-400 hover:text-slate-900 transition-all group">
@@ -29,15 +58,16 @@ const AddBooking = () => {
                <span className="text-[10px] font-black uppercase tracking-[0.25em]">Audit Registry</span>
             </Link>
             <div className="text-center">
-               <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Pilgrimage <span className="text-slate-300 italic font-light">Contract</span></h1>
+               <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Pilgrimage <span className="text-slate-300 italic font-light"></span></h1>
                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.4em] mt-2">Registry Core <span className="text-black">BK-9128</span></p>
             </div>
             <button
-               onClick={() => navigate('/bookings')}
-               className="px-10 py-5 bg-black text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
+               onClick={handleSubmit}
+               disabled={isBookingLoading}
+               className={`px-10 py-5 bg-black text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3 ${isBookingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
                <Save size={18} strokeWidth={2.5} />
-               Finalize Manifest
+               {isBookingLoading ? 'Processing...' : 'Finalize'}
             </button>
          </div>
 
@@ -46,7 +76,7 @@ const AddBooking = () => {
             <div className="lg:col-span-4 space-y-10">
                <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-xl p-10 text-white shadow-2xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] group-hover:scale-110 transition-transform"></div>
-                  <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-12 relative z-10">Contract Synthesis</p>
+                  <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-12 relative z-10"> Synthesis</p>
 
                   <div className="space-y-10 relative z-10">
                      <div className="flex items-center justify-between">
@@ -77,7 +107,7 @@ const AddBooking = () => {
                   </div>
                   <h4 className="text-[10px] font-black text-slate-900 mb-4 uppercase tracking-[0.3em]">Mandate Protocol</h4>
                   <p className="text-xs font-medium text-slate-500 leading-relaxed mb-8">
-                     Contracts are operationalized upon initial deposit verification. VIP manifest rules apply to all segments.
+                     s are operationalized upon initial deposit verification. VIP  rules apply to all segments.
                   </p>
                   <button className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-900 border-b-2 border-slate-100 hover:border-black transition-all pb-1">Review Mandate terms</button>
                </div>
@@ -102,8 +132,16 @@ const AddBooking = () => {
                               onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
                            >
                               <option value="" className="bg-white">Query Registry...</option>
-                              <option value="1" className="bg-white">Ahmed Raza (LD-1024)</option>
-                              <option value="2" className="bg-white">Fatima Zahra (LD-1025)</option>
+                              {customers.map(c => (
+                                 <option key={c.id} value={c.id} className="bg-white">{c.name} ({c.id})</option>
+                              ))}
+                              {/* Fallback for empty API */}
+                              {customers.length === 0 && (
+                                 <>
+                                    <option value="1" className="bg-white">Ahmed Raza (LD-1024)</option>
+                                    <option value="2" className="bg-white">Fatima Zahra (LD-1025)</option>
+                                 </>
+                              )}
                            </select>
                         </div>
                      </div>
@@ -116,8 +154,16 @@ const AddBooking = () => {
                               onChange={(e) => setFormData({ ...formData, packageId: e.target.value })}
                            >
                               <option value="" className="bg-white">Catalogue Entry...</option>
-                              <option value="1" className="bg-white">Executive Hajj 2024</option>
-                              <option value="2" className="bg-white">Premium Umrah (Economy Plus)</option>
+                              {packages.map(p => (
+                                 <option key={p.id} value={p.id} className="bg-white">{p.name}</option>
+                              ))}
+                              {/* Fallback for empty API */}
+                              {packages.length === 0 && (
+                                 <>
+                                    <option value="1" className="bg-white">Executive Hajj 2024</option>
+                                    <option value="2" className="bg-white">Premium Umrah (Economy Plus)</option>
+                                 </>
+                              )}
                            </select>
                         </div>
                      </div>
@@ -161,7 +207,7 @@ const AddBooking = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-20 relative z-10">
                      <div className="group">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">Total Contract Value</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">Total  Value</label>
                         <div className="relative border-b-2 border-slate-100 group-focus-within:border-black transition-all pb-6 flex items-center justify-between">
                            <input
                               type="number"

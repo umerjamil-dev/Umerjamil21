@@ -28,7 +28,7 @@ const AddReservation = () => {
    ];
 
    return (
-      <div className="font-inter max-w-6xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
+      <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
             <Link to="/reservations" className="flex items-center gap-3 text-slate-400 hover:text-slate-900 transition-all group">
@@ -37,7 +37,7 @@ const AddReservation = () => {
                </div>
                <span className="text-[10px] font-black uppercase tracking-[0.25em]">Logistics Hub</span>
             </Link>
-            <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Logistics <span className="text-slate-300 italic font-light">Manifest</span></h1>
+            <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Add Reservation </h1>
             <div className="flex items-center gap-4">
                <button
                   onClick={() => navigate('/reservations')}
@@ -60,17 +60,14 @@ const AddReservation = () => {
                      : 'bg-slate-50 border-transparent hover:border-slate-200 hover:bg-white'
                      }`}
                >
-                  <div className={`p-4 rounded-xl inline-flex items-center justify-center mb-6 transition-all ${
-                     formData.type === t.id ? 'bg-black text-white' : 'bg-white text-slate-400 group-hover:bg-slate-100'
-                  }`}>
+                  <div className={`p-4 rounded-xl inline-flex items-center justify-center mb-6 transition-all ${formData.type === t.id ? 'bg-black text-white' : 'bg-white text-slate-400 group-hover:bg-slate-100'
+                     }`}>
                      <t.icon size={24} strokeWidth={2.5} />
                   </div>
-                  <p className={`text-[10px] font-black uppercase tracking-widest mb-1 transition-all ${
-                     formData.type === t.id ? 'text-black' : 'text-slate-400'
-                  }`}>{t.id} Segment</p>
-                  <h4 className={`text-sm font-manrope font-black transition-all ${
-                     formData.type === t.id ? 'text-black' : 'text-slate-900'
-                  }`}>Manage {t.id}</h4>
+                  <p className={`text-[10px] font-black uppercase tracking-widest mb-1 transition-all ${formData.type === t.id ? 'text-black' : 'text-slate-400'
+                     }`}>{t.id} Segment</p>
+                  <h4 className={`text-sm font-manrope font-black transition-all ${formData.type === t.id ? 'text-black' : 'text-slate-900'
+                     }`}>Manage {t.id}</h4>
                   {formData.type === t.id && (
                      <div className="absolute top-6 right-6 text-[var(--sacred-emerald)]">
                         <CheckCircle2 size={24} fill="currentColor" className="text-white" />
@@ -110,7 +107,7 @@ const AddReservation = () => {
             <div className="lg:col-span-8 bg-white rounded-xl p-12 shadow-sm border border-slate-200 space-y-12 relative overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] translate-x-12 -translate-y-12"></div>
                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3 relative z-10">
-                  <LayoutDashboard size={18} strokeWidth={2.5} className="text-[var(--desert-gold)]" /> Data Entry Manifest
+                  <LayoutDashboard size={18} strokeWidth={2.5} className="text-[var(--desert-gold)]" /> Data Entry
                </h3>
 
                <div className="space-y-12 relative z-10">
@@ -187,7 +184,7 @@ const AddReservation = () => {
                               </div>
                            </div>
                            <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Room Manifest</label>
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Room </label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
                                  <input type="text" placeholder="Double Quad, Triple... " className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
                               </div>

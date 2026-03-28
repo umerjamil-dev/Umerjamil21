@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { 
-   User, Package, Plane, 
+import {
+   User, Package, Plane,
    Hotel, Calendar, CreditCard,
    Clock, Save, ArrowLeft,
    ShieldCheck, MapPin, Search,
@@ -43,15 +43,15 @@ const LiveBooking = () => {
                   Live GDS Sync v2.4
                </div>
                <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Protocol <span className="text-slate-300 italic font-light font-manrope">Initiation</span>
+                  Protocol
                </h1>
                <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
-                  Synchronizing live travel assets for real-time manifest authorization. Validating across multiple API nodes.
+                  Synchronizing live travel assets for real-time  authorization. Validating across multiple API nodes.
                </p>
             </div>
             <div className="flex items-center gap-4">
                <button onClick={() => navigate('/bookings')} className="px-8 py-4 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all">
-                  Abort Manifest
+                  Abort
                </button>
                {step === 5 && (
                   <button className="px-10 py-5 bg-[var(--sacred-emerald)] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-[0_20px_40px_rgba(40,160,120,0.2)] flex items-center gap-3 hover:-translate-y-1 active:scale-95 transition-all">
@@ -65,19 +65,18 @@ const LiveBooking = () => {
          {/* Step Navigation Matrix */}
          <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-[8rem] translate-x-32 -translate-y-32 transition-all duration-700"></div>
-            
+
             <div className="flex items-center justify-between max-w-4xl mx-auto relative z-10">
                {steps.map((s) => (
                   <div key={s.id} className="flex flex-col items-center gap-4 text-center">
-                     <button 
+                     <button
                         onClick={() => setStep(s.id)}
-                        className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all cursor-pointer border-2 ${
-                           step === s.id 
-                           ? 'bg-[var(--desert-gold)] text-black border-transparent shadow-[0_0_30px_rgba(180,140,80,0.2)]' 
-                           : step > s.id 
-                           ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] border-[var(--sacred-emerald)]/10' 
-                           : 'bg-slate-50 text-slate-300 border-slate-100 hover:bg-slate-100 hover:text-slate-500'
-                        }`}
+                        className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all cursor-pointer border-2 ${step === s.id
+                              ? 'bg-[var(--desert-gold)] text-black border-transparent shadow-[0_0_30px_rgba(180,140,80,0.2)]'
+                              : step > s.id
+                                 ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] border-[var(--sacred-emerald)]/10'
+                                 : 'bg-slate-50 text-slate-300 border-slate-100 hover:bg-slate-100 hover:text-slate-500'
+                           }`}
                      >
                         <s.icon size={20} strokeWidth={step === s.id ? 3 : 2} />
                      </button>
@@ -102,11 +101,11 @@ const LiveBooking = () => {
                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Verified Identity Search</label>
                            <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
                               <Search className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <select 
+                              <select
                                  className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none cursor-pointer appearance-none"
-                                 onChange={(e) => setFormData({...formData, customerId: e.target.value})}
+                                 onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
                               >
-                                 <option value="" className="bg-white">Query Registry Manifest...</option>
+                                 <option value="" className="bg-white">Query Registry ...</option>
                                  <option value="Muhammad Arif" className="bg-white">Muhammad Arif (PK-10294)</option>
                                  <option value="Zahra Khan" className="bg-white">Zahra Khan (PK-10295)</option>
                                  <option value="Omar Jamil" className="bg-white">Omar Jamil (PK-10296)</option>
@@ -129,14 +128,13 @@ const LiveBooking = () => {
                      </h3>
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {['Premium Hajj v1', 'Ramadan Umrah Platinum', 'Standard Umrah Premium'].map((pkg) => (
-                           <button 
-                              key={pkg} 
-                              onClick={() => setFormData({...formData, packageId: pkg})}
-                              className={`p-10 rounded-xl text-left border-2 transition-all group relative overflow-hidden ${
-                                 formData.packageId === pkg 
-                                 ? 'bg-slate-50 border-[var(--desert-gold)] shadow-sm' 
-                                 : 'bg-white border-slate-100 hover:border-slate-300'
-                              }`}
+                           <button
+                              key={pkg}
+                              onClick={() => setFormData({ ...formData, packageId: pkg })}
+                              className={`p-10 rounded-xl text-left border-2 transition-all group relative overflow-hidden ${formData.packageId === pkg
+                                    ? 'bg-slate-50 border-[var(--desert-gold)] shadow-sm'
+                                    : 'bg-white border-slate-100 hover:border-slate-300'
+                                 }`}
                            >
                               <div className="flex justify-between items-start mb-6">
                                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Package Node</span>
@@ -164,15 +162,14 @@ const LiveBooking = () => {
                         </h3>
                         <div className="px-6 py-2 bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] rounded-full text-[9px] font-black uppercase tracking-[0.4em] border border-[var(--sacred-emerald)]/20 animate-pulse">Live API Syncing</div>
                      </div>
-                     
+
                      <div className="space-y-6">
                         {['Saudia SV-724', 'Emirates EK-601', 'PIA PK-701'].map((flight) => (
-                           <div 
-                              key={flight} 
-                              onClick={() => setFormData({...formData, flightApi: flight})}
-                              className={`p-10 bg-slate-50 border-2 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-10 group transition-all cursor-pointer ${
-                                 formData.flightApi === flight ? 'border-[var(--desert-gold)] bg-white' : 'border-slate-100 hover:border-slate-300'
-                              }`}
+                           <div
+                              key={flight}
+                              onClick={() => setFormData({ ...formData, flightApi: flight })}
+                              className={`p-10 bg-slate-50 border-2 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-10 group transition-all cursor-pointer ${formData.flightApi === flight ? 'border-[var(--desert-gold)] bg-white' : 'border-slate-100 hover:border-slate-300'
+                                 }`}
                            >
                               <div className="flex items-center gap-8">
                                  <div className="w-20 h-20 rounded-xl bg-white flex items-center justify-center border border-slate-100 shadow-sm">
@@ -180,7 +177,7 @@ const LiveBooking = () => {
                                  </div>
                                  <div className="space-y-1">
                                     <h4 className="text-xl font-manrope font-black text-slate-900 tracking-tight">{flight}</h4>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">JFK → JED | 14:30 MANIFEST</p>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">JFK → JED | 14:30 </p>
                                  </div>
                               </div>
                               <div className="flex items-center gap-10">
@@ -188,10 +185,9 @@ const LiveBooking = () => {
                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Live Dynamic Val</p>
                                     <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter">$845.00</p>
                                  </div>
-                                 <div className={`px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.4em] transition-all ${
-                                    formData.flightApi === flight ? 'bg-[var(--desert-gold)] text-black' : 'bg-slate-200 text-slate-400'
-                                 }`}>
-                                    {formData.flightApi === flight ? 'Manifested' : 'Secure Node'}
+                                 <div className={`px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.4em] transition-all ${formData.flightApi === flight ? 'bg-[var(--desert-gold)] text-black' : 'bg-slate-200 text-slate-400'
+                                    }`}>
+                                    {formData.flightApi === flight ? 'ed' : 'Secure Node'}
                                  </div>
                               </div>
                            </div>
@@ -214,15 +210,15 @@ const LiveBooking = () => {
                         </h3>
                         <div className="px-6 py-2 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] rounded-full text-[9px] font-black uppercase tracking-[0.4em] border border-[var(--desert-gold)]/20">LIVE API v5.2</div>
                      </div>
-                     
+
                      <div className="space-y-10">
                         <div className="group">
                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Select Verified Hospitality node</label>
                            <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
                               <Hotel className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <select 
+                              <select
                                  className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none cursor-pointer appearance-none"
-                                 onChange={(e) => setFormData({...formData, hotelApi: e.target.value})}
+                                 onChange={(e) => setFormData({ ...formData, hotelApi: e.target.value })}
                               >
                                  <option value="" className="bg-white">Query Hospitality API...</option>
                                  <option value="Clock Tower Fairmont" className="bg-white">Fairmont Makkah Clock Royal Tower</option>
@@ -237,7 +233,7 @@ const LiveBooking = () => {
                            <AlertCircle className="text-[var(--desert-gold)] shrink-0" size={24} />
                            <div>
                               <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em] mb-2 leading-relaxed">System Recommendation</p>
-                              <p className="text-slate-500 text-xs font-medium leading-relaxed">Based on your selected aviation manifest, Fairmont Makkah offers the highest synchronization efficiency for transit logistics.</p>
+                              <p className="text-slate-500 text-xs font-medium leading-relaxed">Based on your selected aviation , Fairmont Makkah offers the highest synchronization efficiency for transit logistics.</p>
                            </div>
                         </div>
                      </div>
@@ -255,19 +251,19 @@ const LiveBooking = () => {
                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-16 flex items-center gap-4">
                         <Car className="text-[var(--desert-gold)]" size={20} /> Phase 05: Logistics & Temporal Registry
                      </h3>
-                     
+
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16">
                         <div className="group">
                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Transit Protocol</label>
                            <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
                               <Car className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <select 
+                              <select
                                  className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none cursor-pointer appearance-none"
                                  value={formData.transportMode}
-                                 onChange={(e) => setFormData({...formData, transportMode: e.target.value})}
+                                 onChange={(e) => setFormData({ ...formData, transportMode: e.target.value })}
                               >
                                  <option className="bg-white">VIP Private GMC</option>
-                                 <option className="bg-white">Premium Bus Manifest</option>
+                                 <option className="bg-white">Premium Bus </option>
                                  <option className="bg-white">Standard Logistics</option>
                               </select>
                            </div>
@@ -277,24 +273,24 @@ const LiveBooking = () => {
                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Inventory Dispatch Date</label>
                            <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
                               <Calendar className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <input 
+                              <input
                                  type="date"
                                  className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none"
                                  value={formData.startDate}
-                                 onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
                               />
                            </div>
                         </div>
 
                         <div className="group">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Manifest Expiry Date</label>
+                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block"> Expiry Date</label>
                            <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
                               <Calendar className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <input 
+                              <input
                                  type="date"
                                  className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none"
                                  value={formData.endDate}
-                                 onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                                 onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
                               />
                            </div>
                         </div>
@@ -314,11 +310,11 @@ const LiveBooking = () => {
             <div className="lg:col-span-4 space-y-10">
                <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-xl p-14 text-white shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-white/5 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--desert-gold)]/5 rounded-bl-[10rem] group-hover:scale-125 transition-all duration-1000 blur-3xl opacity-20"></div>
-                  
+
                   <h4 className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] mb-16 flex items-center gap-3">
-                     <Clock size={16} className="text-[var(--desert-gold)]" /> Protocol Manifest
+                     <Clock size={16} className="text-[var(--desert-gold)]" /> Protocol
                   </h4>
-                  
+
                   <div className="space-y-12 relative z-10">
                      <div className="flex flex-col gap-3 group/item transition-all hover:translate-x-2">
                         <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">Verified Pilgrim</span>
@@ -326,7 +322,7 @@ const LiveBooking = () => {
                      </div>
                      <div className="flex flex-col gap-3 group/item transition-all hover:translate-x-2">
                         <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">Inventory Node</span>
-                        <span className="text-sm font-manrope font-black text-white uppercase tracking-tight">{formData.packageId || 'Manifest Pending'}</span>
+                        <span className="text-sm font-manrope font-black text-white uppercase tracking-tight">{formData.packageId || ' Pending'}</span>
                      </div>
                      <div className="grid grid-cols-2 gap-8">
                         <div className="flex flex-col gap-2">
@@ -343,7 +339,7 @@ const LiveBooking = () => {
                         <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#020617] text-[8px] font-black text-white/10 uppercase tracking-[0.4em] border border-white/5 rounded-full">
                            Aggregated Floor
                         </div>
-                        <p className="text-[10px] text-white/20 font-black uppercase tracking-[0.4em] mb-6">Estimated manifest valuation</p>
+                        <p className="text-[10px] text-white/20 font-black uppercase tracking-[0.4em] mb-6">Estimated  valuation</p>
                         <p className="text-5xl font-manrope font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                            $2,139.00
                         </p>
@@ -358,7 +354,7 @@ const LiveBooking = () => {
                   <div className="space-y-8">
                      {[
                         { label: 'Visa Quota Sync', active: true },
-                        { label: 'Passport Manifest Match', active: true },
+                        { label: 'Passport  Match', active: true },
                         { label: 'Health Protocol Protocol', active: false }
                      ].map(v => (
                         <div key={v.label} className="flex items-center justify-between group">

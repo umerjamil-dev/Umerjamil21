@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Users, Search, Filter,
   MapPin, Phone, FileText,
@@ -8,21 +8,29 @@ import {
   Plus
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useCustomerStore from '../store/useCustomerStore';
 
 const Customers = () => {
-  const customers = [
+  const { customers, fetchCustomers, isLoading } = useCustomerStore();
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
+
+  const customersToShow = customers && customers.length > 0 ? customers : [
     { id: 'CID-5001', name: 'Zaid bin Harith', location: 'Lahore, PK', group: 'Hajj 2024 (Group A)', status: 'Active', phone: '+92 312 0000000', travelDate: '2024-06-12', docs: 4 },
     { id: 'CID-5002', name: 'Mariam Ali', location: 'Islamabad, PK', group: 'Umrah Premium', status: 'Completed', phone: '+92 333 1111111', travelDate: '2024-02-15', docs: 3 },
     { id: 'CID-5003', name: 'Omar Farooq', location: 'Karachi, PK', group: 'Hajj 2024 (Group B)', status: 'Active', phone: '+92 301 2222222', travelDate: '2024-06-15', docs: 5 },
     { id: 'CID-5004', name: 'Ayesha Siddiqa', location: 'Peshawar, PK', group: 'Umrah Standard', status: 'Processing', phone: '+92 345 3333333', travelDate: '2024-04-10', docs: 2 },
   ];
 
+
   return (
     <div className="space-y-12 animate-in fade-in duration-1000 font-inter">
       {/* Editorial Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4">
         <div>
-          <h1 className="text-[2.5rem] font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Pilgrim <span className="text-[var(--on-surface-variant)]/30 italic font-light">Inventory</span></h1>
+          <h1 className="text-[2.5rem] font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Customers </h1>
           <p className="mt-2 text-sm font-medium text-[var(--on-surface-variant)] tracking-wide">The definitive collective of sacred travelers.</p>
         </div>
         <div className="flex items-center gap-4">
@@ -32,10 +40,10 @@ const Customers = () => {
           </button>
           <Link
             to="/customers/add"
-            className="btn-midnight flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-2xl"
+            className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-2xl"
           >
             <Plus size={18} strokeWidth={2.5} />
-            Register Pilgrim
+            Register Customer
           </Link>
         </div>
       </div>
@@ -43,7 +51,7 @@ const Customers = () => {
       {/* Stats Summary - Bento No-Line Style */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Pilgrims', value: '1,245', icon: Users, grad: 'var(--grad-black)' },
+          { label: 'Total Customers', value: '1,245', icon: Users, grad: 'var(--grad-black)' },
           { label: 'Visa Approved', value: '890', icon: ShieldCheck, grad: 'var(--grad-green)' },
           { label: 'Flight Ready', value: '450', icon: Plane, grad: 'var(--grad-black)' },
           { label: 'Hospitality', value: '1,120', icon: Hotel, grad: 'var(--grad-gold)' },
@@ -84,7 +92,11 @@ const Customers = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {customers.map((customer) => (
+          {isLoading ? (
+            <div className="col-span-full py-20 text-center text-sm font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50">Querying Customer Registry...</div>
+          ) : customersToShow.length === 0 ? (
+            <div className="col-span-full py-20 text-center text-sm font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50">No pilgrims found in the current cycle.</div>
+          ) : customersToShow.map((customer) => (
             <div key={customer.id} className="group bg-[var(--surface-container-lowest)] hover:bg-[var(--surface-container-high)] rounded-xl p-8 border border-[var(--outline-variant)] shadow-sm transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
               <div className="relative z-10 flex flex-col h-full uppercase tracking-widest">
                 <div className="flex justify-between items-start mb-8">
@@ -112,7 +124,7 @@ const Customers = () => {
 
                   <div className="grid grid-cols-2 gap-4 py-6 border-y border-[var(--outline-variant)] group-hover:border-white/20 transition-colors">
                     <div>
-                      <p className="text-[8px] font-bold text-[var(--on-surface-variant)] mb-1 opacity-50">Manifest</p>
+                      <p className="text-[8px] font-bold text-[var(--on-surface-variant)] mb-1 opacity-50"></p>
                       <div className="flex items-center gap-1.5 text-[10px] font-extrabold text-[var(--on-surface)] truncate">
                         <Star size={10} className="text-[var(--desert-gold)]" />
                         {customer.group.split('(')[0]}

@@ -1,14 +1,21 @@
-import React from 'react';
-import { 
-   Plus, Search, Filter, 
-   Package, Hotel, Calendar, 
+import React, { useEffect } from 'react';
+import {
+   Plus, Search, Filter,
+   Package, Hotel, Calendar,
    ChevronRight, Star, Tag,
    MapPin, Users
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import usePackageStore from '../store/usePackageStore';
 
 const Packages = () => {
-   const packages = [
+   const { packages: storePackages, fetchPackages, isLoading } = usePackageStore();
+
+   useEffect(() => {
+      fetchPackages();
+   }, [fetchPackages]);
+
+   const packages = storePackages && storePackages.length > 0 ? storePackages : [
       {
          id: 1,
          title: "Premium 5-Star Executive Hajj",
@@ -44,15 +51,16 @@ const Packages = () => {
       }
    ];
 
+
    return (
       <div className="space-y-10 animate-in fade-in duration-700">
          {/* Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
                <h1 className="text-3xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Package Inventory</h1>
-               <p className="text-[var(--on-surface-variant)] text-sm mt-1 font-medium">Managing the collection of sacred travel manifests.</p>
+               <p className="text-[var(--on-surface-variant)] text-sm mt-1 font-medium">Managing the collection of sacred travel s.</p>
             </div>
-            <Link 
+            <Link
                to="/packages/add"
                className="btn-primary px-8 py-3 rounded-2xl text-white text-[11px] font-extrabold uppercase tracking-widest shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 w-fit"
             >
@@ -65,8 +73,8 @@ const Packages = () => {
          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div className="md:col-span-8 relative group">
                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={18} />
-               <input 
-                  type="text" 
+               <input
+                  type="text"
                   placeholder="Query package catalogue..."
                   className="w-full pl-14 pr-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all"
                />
@@ -83,28 +91,29 @@ const Packages = () => {
 
          {/* Packages Grid */}
          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-            {packages.map((pkg) => (
+            {isLoading ? (
+               <div className="col-span-full py-32 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">Auditing Package Manifest...</div>
+            ) : packages.map((pkg) => (
                <div key={pkg.id} className="bg-[var(--surface-container-lowest)] rounded-3xl border border-[var(--outline-variant)] overflow-hidden group hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 flex flex-col">
                   {/* Card Premium Header */}
-                  <div className="p-8 pb-0 flex justify-between items-start">
+                  <div className="p-8 pb-0 flex justify-between items-start text-black">
                      <div className="w-12 h-12 rounded-2xl bg-[var(--surface)] flex items-center justify-center border border-[var(--outline-variant)]">
                         <Package size={24} className="text-[var(--on-surface)]" strokeWidth={1.5} />
                      </div>
-                     <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                        pkg.category === 'Platinum' ? 'bg-amber-100 text-amber-700' :
-                        pkg.category === 'Economy' ? 'bg-emerald-100 text-emerald-700' :
-                        'bg-blue-100 text-blue-700'
-                     }`}>
+                     <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${pkg.category === 'Platinum' ? 'bg-amber-100 text-amber-700' :
+                           pkg.category === 'Economy' ? 'bg-emerald-100 text-emerald-700' :
+                               'bg-blue-100 text-blue-700'
+                        }`}>
                         {pkg.category}
                      </div>
                   </div>
 
                   <div className="p-8 flex-1">
                      <h3 className="text-xl font-manrope font-extrabold text-[var(--on-surface)] mb-6 leading-tight group-hover:text-[var(--primary)] transition-colors">{pkg.title}</h3>
-                     
+
                      <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                           <div className="w-8 h-8 rounded-xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)]">
+                           <div className="w-8 h-8 rounded-xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)] text-black">
                               <Hotel size={14} />
                            </div>
                            <div className="flex-1 min-w-0">
@@ -113,7 +122,7 @@ const Packages = () => {
                            </div>
                         </div>
                         <div className="flex items-center gap-3">
-                           <div className="w-8 h-8 rounded-xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)]">
+                           <div className="w-8 h-8 rounded-xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)] text-black">
                               <Hotel size={14} />
                            </div>
                            <div className="flex-1 min-w-0">
@@ -135,8 +144,8 @@ const Packages = () => {
                   </div>
 
                   {/* Card Footer */}
-                  <div className="p-8 pt-0 mt-auto">
-                     <div className="h-px bg-[var(--outline-variant)] mb-8 opacity-50"></div>
+                  <div className="p-8 pt-0 mt-auto text-black">
+                     <div className="h-px bg-[var(--outline-variant)] mb-8 opacity-50 text-black"></div>
                      <div className="flex items-center justify-between">
                         <div>
                            <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.2em] mb-1">Base Valuation</p>
@@ -150,13 +159,14 @@ const Packages = () => {
                </div>
             ))}
 
+
             {/* Empty State / Add New Card */}
             <Link to="/packages/add" className="bg-[var(--surface-container-lowest)] rounded-3xl border-2 border-dashed border-[var(--outline-variant)] p-8 flex flex-col items-center justify-center text-center group hover:border-[var(--on-surface)] transition-all min-h-[400px]">
                <div className="w-16 h-16 rounded-[2rem] bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)] mb-6 group-hover:scale-110 transition-transform border border-[var(--outline-variant)]">
                   <Plus size={32} strokeWidth={1} />
                </div>
                <h3 className="text-sm font-extrabold text-[var(--on-surface)] uppercase tracking-[0.2em]">Craft New Experience</h3>
-               <p className="text-[10px] text-[var(--on-surface-variant)] mt-4 font-medium max-w-[180px] leading-relaxed">Design and authorize a new pilgrimage manifest for the season.</p>
+               <p className="text-[10px] text-[var(--on-surface-variant)] mt-4 font-medium max-w-[180px] leading-relaxed">Design and authorize a new pilgrimage  for the season.</p>
             </Link>
          </div>
       </div>

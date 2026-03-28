@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search, Plus, Phone, MessageSquare, ChevronRight,
   Download, ListFilter, Calendar
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useLeadStore from '../store/useLeadStore';
 
 const Leads = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { leads, fetchLeads, isLoading, error } = useLeadStore();
 
-  const leadsData = [
+  useEffect(() => {
+    fetchLeads();
+  }, [fetchLeads]);
+
+  // Fallback for demo if API returns empty but we want to show something initially
+  const leadsToShow = (leads && leads.length > 0) ? leads : [
     { id: 'LD-1024', name: 'Ahmed Raza', phone: '+92 300 1234567', source: 'Facebook', status: 'New', date: '2024-03-27', agent: 'Zaid Khan' },
     { id: 'LD-1025', name: 'Fatima Zahra', phone: '+92 321 7654321', source: 'WhatsApp', status: 'Follow Up', date: '2024-03-26', agent: 'Sana Malik' },
     { id: 'LD-1026', name: 'Zubair Ahmed', phone: '+92 333 4567890', source: 'Referral', status: 'Converted', date: '2024-03-25', agent: 'Zaid Khan' },
@@ -16,6 +23,7 @@ const Leads = () => {
     { id: 'LD-1028', name: 'Bilal Siddiqui', phone: '+92 301 2233445', source: 'Instagram', status: 'Lost', date: '2024-03-24', agent: 'Sana Malik' },
     { id: 'LD-1029', name: 'Hina Pervez', phone: '+92 312 9988776', source: 'Facebook', status: 'New', date: '2024-03-24', agent: 'Zaid Khan' },
   ];
+
   const myArray =[
     {
       name: 'll',
@@ -97,7 +105,11 @@ const Leads = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {leadsData.map((lead) => (
+              {isLoading ? (
+                <tr><td colSpan="5" className="px-10 py-10 text-center text-sm text-gray-500 font-medium">Fetching inquiries from server...</td></tr>
+              ) : leadsToShow.length === 0 ? (
+                <tr><td colSpan="5" className="px-10 py-10 text-center text-sm text-gray-500 font-medium">No inquiries found in the archive.</td></tr>
+              ) : leadsToShow.map((lead) => (
                 <tr key={lead.id} className="group hover:bg-gray-50/50 transition-all cursor-pointer">
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-5">

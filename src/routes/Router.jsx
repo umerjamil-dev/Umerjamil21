@@ -22,6 +22,10 @@ import Operations from '../pages/Operations'
 
 import Reports from '../pages/Reports'
 import Settings from '../pages/Settings'
+import Visa from '../pages/Visa'
+import Hotels from '../pages/Hotels'
+import Flights from '../pages/Flights'
+import Transport from '../pages/Transport'
 
 const Router = () => {
   return (
@@ -45,6 +49,10 @@ const Router = () => {
         <Route path="/reports" element={<Layout><Reports /></Layout>} />
         <Route path="/settings" element={<Layout><Settings /></Layout>} />
         <Route path="/reservations" element={<Layout><Reservations /></Layout>} />
+        <Route path="/reservations/visa" element={<Layout><Visa /></Layout>} />
+        <Route path="/reservations/hotels" element={<Layout><Hotels /></Layout>} />
+        <Route path="/reservations/flights" element={<Layout><Flights /></Layout>} />
+        <Route path="/reservations/transport" element={<Layout><Transport /></Layout>} />
         <Route path="/packages" element={<Layout><Packages /></Layout>} />
         <Route path="/packages/add" element={<Layout><AddPackage /></Layout>} />
         <Route path="/live-booking" element={<Layout><LiveBooking /></Layout>} />

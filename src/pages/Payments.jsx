@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
    CreditCard, DollarSign, ArrowUpRight,
    ArrowDownLeft, Filter, Download,
@@ -8,14 +8,26 @@ import {
    AlertCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import usePaymentStore from '../store/usePaymentStore';
 
 const Payments = () => {
-   const transactions = [
+   const { payments, fetchPayments, isLoading } = usePaymentStore();
+
+   useEffect(() => {
+      fetchPayments();
+   }, [fetchPayments]);
+
+   const transactions = payments && payments.length > 0 ? payments : [
       { id: 'TRX-9001', customer: 'Ahmed Raza', method: 'Bank Transfer', amount: 5400, type: 'Credit', date: 'Mar 25, 2024', status: 'Verified' },
       { id: 'TRX-9002', customer: 'Fatima Zahra', method: 'Cash', amount: 4500, type: 'Credit', date: 'Mar 22, 2024', status: 'Processing' },
       { id: 'TRX-9003', customer: 'Vendor: Saudi Aviation', method: 'Online Payment', amount: 12000, type: 'Debit', date: 'Mar 20, 2024', status: 'Completed' },
       { id: 'TRX-9004', customer: 'Zubair Ahmed', method: 'Bank Transfer', amount: 2000, type: 'Credit', date: 'Mar 18, 2024', status: 'Verified' },
    ];
+
+   const totalCredits = transactions.filter(t => t.type === 'Credit').reduce((acc, curr) => acc + curr.amount, 0);
+   const totalDebits = transactions.filter(t => t.type === 'Debit').reduce((acc, curr) => acc + curr.amount, 0);
+   const netPosition = totalCredits - totalDebits;
+
 
    return (
       <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
@@ -27,7 +39,7 @@ const Payments = () => {
                   Treasury Reconciliation: Phase III
                </div>
                <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Multi-Ledger <span className="text-slate-300 italic font-light font-manrope">Verification</span>
+                  Multi-Ledger
                </h1>
                <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
                   Real-time reconciliation of pilgrim credits, operational debits, and global vendor settlements across the Al Bayan network.
@@ -55,7 +67,7 @@ const Payments = () => {
                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Net Cash Position</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">$142.8k</h3>
+                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">${(netPosition / 1000).toFixed(1)}k</h3>
                      <p className="text-[9px] font-black text-slate-400 mt-4 uppercase tracking-[0.2em] bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 w-fit">
                         Verified Liquidity
                      </p>
@@ -72,7 +84,7 @@ const Payments = () => {
                <p className="text-[10px] font-black text-[var(--sacred-emerald)] uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Inbound Receipts</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">$28.4k</h3>
+                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">${(totalCredits / 1000).toFixed(1)}k</h3>
                      <p className="text-[9px] font-black text-[var(--sacred-emerald)] flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 w-fit">
                         <TrendingUp size={12} strokeWidth={3} /> +8% Velocity
                      </p>
@@ -89,7 +101,7 @@ const Payments = () => {
                <p className="text-[10px] font-black text-red-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Outbound Debits</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">$12.2k</h3>
+                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">${(totalDebits / 1000).toFixed(1)}k</h3>
                      <p className="text-[9px] font-black text-red-500 flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-red-50 px-3 py-1.5 rounded-full border border-red-100 w-fit">
                         <AlertCircle size={12} strokeWidth={3} /> Pending Audit
                      </p>

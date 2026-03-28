@@ -47,7 +47,7 @@ const Calculator = () => {
       {/* Editorial Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4">
         <div>
-          <h1 className="text-[2.5rem] font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Package <span className="text-[var(--on-surface-variant)]/30 italic font-light">Synthesizer</span></h1>
+          <h1 className="text-[2.5rem] font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Packages Calculator</h1>
           <p className="mt-2 text-sm font-medium text-[var(--on-surface-variant)] tracking-wide">Algorithmic precision for sacred travel quotations.</p>
         </div>
         <button
