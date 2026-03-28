@@ -76,8 +76,8 @@ const Sidebar = () => {
       path: '/operations',
       submenu: [
         { title: 'Overview & Dispatch', path: '/operations' },
-        { title: 'Staff ', path: '/operations' },
-        { title: 'Logistics Feed', path: '/operations' }
+        { title: 'Staff', path: '/operations/staff' },
+        { title: 'Logistics Feed', path: '/operations/logistics' }
       ]
     },
 
@@ -87,9 +87,9 @@ const Sidebar = () => {
       path: '/reports',
       submenu: [
         { title: 'Operational Intelligence', path: '/reports' },
-        { title: 'Booking Analytics', path: '/reports' },
-        { title: 'Payment Reports', path: '/reports' },
-        { title: 'Sales Performance', path: '/reports' }
+        { title: 'Booking Analytics', path: '/reports/bookings' },
+        { title: 'Payment Reports', path: '/reports/payments' },
+        { title: 'Sales Performance', path: '/reports/sales' }
       ]
     },
 
@@ -98,11 +98,15 @@ const Sidebar = () => {
       icon: Settings,
       path: '/settings',
       submenu: [
+        { title: 'Company Core', path: '/settings/company' },
+        { title: 'Roles', path: '/settings/roles' },
+        { title: 'Permissions', path: '/settings/permissions' },
+        { title: 'Assign Permissions', path: '/settings/assign-permissions' },
+        { title: 'Master Types', path: '/settings/master-types' },
+        { title: 'API Sync', path: '/settings/api' },
+        { title: 'Subscription', path: '/settings/subscription' },
         { title: 'Personnel Registry', path: '/settings/users' },
-        { title: 'Identity Protocol', path: '/settings/profile' },
-        { title: 'System Parameters', path: '/settings' },
-        { title: 'Access Control', path: '/settings' },
-        { title: 'API Sync', path: '/settings' }
+        { title: 'Identity Protocol', path: '/settings/profile' }
       ]
     }
   ];
@@ -223,7 +227,7 @@ const Sidebar = () => {
                           to={subItem.path}
                           end={subItem.path === item.path}
                           className={`
-                            relative flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-300 group/sub
+                            relative flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group/sub
                             ${isSubActive
                               ? 'bg-gradient-to-r from-white/5 to-transparent'
                               : 'hover:bg-white/[0.03]'}

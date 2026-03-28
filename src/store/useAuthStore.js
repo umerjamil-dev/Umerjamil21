@@ -22,7 +22,7 @@ const useAuthStore = create((set) => ({
     try {
       const response = await api.post('/auth/login', credentials);
       const { user, access_token } = response.data;
-      
+
       const userData = user || response.data;
       const tokenData = access_token || (user && user.access_token) || response.data.token;
 
@@ -30,13 +30,13 @@ const useAuthStore = create((set) => ({
 
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', tokenData);
-      
+
       set({ user: userData, token: tokenData, isAuthenticated: true, isLoading: false });
       return true;
     } catch (err) {
-      set({ 
-        error: err.response?.data?.error || err.response?.data?.message || 'Login Failed', 
-        isLoading: false 
+      set({
+        error: err.response?.data?.error || err.response?.data?.message || 'Login Failed',
+        isLoading: false
       });
       return false;
     }
@@ -59,17 +59,17 @@ const useAuthStore = create((set) => ({
         headers: { Authorization: `Bearer ${useAuthStore.getState().token}` }
       });
       const { user, access_token } = response.data;
-      
+
       const userData = user || response.data;
       const tokenData = access_token || (user && user.access_token) || response.data.token;
-      
+
       if (tokenData) {
         localStorage.setItem('token', tokenData);
         if (userData) localStorage.setItem('user', JSON.stringify(userData));
-        set({ 
-          token: tokenData, 
-          user: userData || useAuthStore.getState().user, 
-          isAuthenticated: true 
+        set({
+          token: tokenData,
+          user: userData || useAuthStore.getState().user,
+          isAuthenticated: true
         });
         return tokenData;
       }
@@ -81,7 +81,7 @@ const useAuthStore = create((set) => ({
         set({ user: null, token: null, isAuthenticated: false, isLoading: false });
       }
       return null;
-      
+
     }
   },
 
@@ -100,18 +100,18 @@ const useAuthStore = create((set) => ({
         headers: { Authorization: `Bearer ${storedToken}` }
       });
       const { user, access_token } = response.data;
-      
+
       const userData = user || response.data;
       const tokenData = access_token || (user && user.access_token) || response.data.token;
-      
+
       if (tokenData) {
         localStorage.setItem('token', tokenData);
         if (userData) localStorage.setItem('user', JSON.stringify(userData));
-        set({ 
-          user: userData || useAuthStore.getState().user, 
-          token: tokenData, 
-          isAuthenticated: true, 
-          isLoading: false 
+        set({
+          user: userData || useAuthStore.getState().user,
+          token: tokenData,
+          isAuthenticated: true,
+          isLoading: false
         });
       } else {
         set({ isLoading: false, isAuthenticated: true });

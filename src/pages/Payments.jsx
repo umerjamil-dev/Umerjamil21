@@ -5,7 +5,8 @@ import {
    Search, MoreHorizontal, Calendar,
    Wallet, Landmark, Receipt, Plus,
    TrendingUp,
-   AlertCircle
+   AlertCircle,
+   Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import usePaymentStore from '../store/usePaymentStore';
@@ -180,6 +181,20 @@ const Payments = () => {
                                  <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
                                     <div className={`w-2 h-2 rounded-full ${trx.status === 'Verified' ? 'bg-[var(--sacred-emerald)]' : trx.status === 'Processing' ? 'bg-amber-400' : 'bg-slate-900 shadow-[0_0_8px_black]'}`}></div>
                                     <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.1em]">{trx.status}</span>
+                                 </div>
+                                 <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                   <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
+                                     <Wand2 size={14} strokeWidth={2.5} />
+                                   </button>
+                                   <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
+                                     <Shapes size={14} strokeWidth={2.5} />
+                                   </button>
+                                   <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
+                                     <Tag size={14} strokeWidth={2.5} />
+                                   </button>
+                                   <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
+                                     <Trash2 size={14} strokeWidth={2.5} />
+                                   </button>
                                  </div>
                               </div>
                            </td>

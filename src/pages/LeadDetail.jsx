@@ -46,9 +46,9 @@ const LeadDetail = () => {
         <div className="font-inter space-y-8 animate-in fade-in duration-700 pb-12 mx-auto">
             
             {/* Top Navigation & Actions */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                 <div className="flex items-center gap-6">
-                    <Link to="/leads" className="w-12 h-12 flex items-center justify-center bg-gray-50 text-gray-600 hover:bg-[#111827] hover:text-white rounded-2xl transition-all group">
+                    <Link to="/leads" className="w-12 h-12 flex items-center justify-center bg-gray-50 text-gray-600 hover:bg-[#111827] hover:text-white rounded-xl transition-all group">
                         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </Link>
                     <div>
@@ -76,7 +76,7 @@ const LeadDetail = () => {
                 <div className="xl:col-span-2 space-y-8">
                     
                     {/* Primary Info Card - Premium Bento Design */}
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+                    <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gray-50 to-transparent rounded-bl-full pointer-events-none"></div>
 
                         <div className="flex items-center justify-between mb-8 relative z-10">
@@ -87,7 +87,7 @@ const LeadDetail = () => {
                                 <select 
                                     value={currentStatus}
                                     onChange={(e) => setCurrentStatus(e.target.value)}
-                                    className={`appearance-none px-4 py-1.5 pr-8 rounded-lg text-[10px] font-black uppercase tracking-widest border outline-none cursor-pointer hover:shadow-md transition-all ${getStatusColor(currentStatus)}`}
+                                    className={`appearance-none px-4 py-1.5 pr-8 rounded-xl text-[10px] font-black uppercase tracking-widest border outline-none cursor-pointer hover:shadow-md transition-all ${getStatusColor(currentStatus)}`}
                                 >
                                     <option value="New" className="text-gray-900 font-bold bg-white">New</option>
                                     <option value="Contacted" className="text-gray-900 font-bold bg-white">Contacted</option>
@@ -122,7 +122,7 @@ const LeadDetail = () => {
                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                                         <Target size={14} /> Acquisition Source
                                     </p>
-                                    <div className="inline-flex py-1.5 px-4 bg-gray-50 border border-gray-100 rounded-lg text-sm font-bold text-gray-900 shadow-sm">
+                                    <div className="inline-flex py-1.5 px-4 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-900 shadow-sm">
                                         {lead.source}
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@ const LeadDetail = () => {
                                         <Activity size={14} /> Assigned Representative
                                     </p>
                                     <div className="flex items-center gap-3 p-2 bg-gray-50 rounded-xl border border-gray-100 w-max pr-4">
-                                        <div className="w-8 h-8 rounded-lg bg-[#111827] text-white flex items-center justify-center text-xs font-bold">
+                                        <div className="w-8 h-8 rounded-xl bg-[#111827] text-white flex items-center justify-center text-xs font-bold">
                                             {lead.assignedTo.split(' ').map(n => n[0]).join('')}
                                         </div>
                                         <p className="text-sm font-bold text-gray-900">{lead.assignedTo}</p>
@@ -142,13 +142,13 @@ const LeadDetail = () => {
 
                         {/* Quick Contact Actions */}
                         <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-4 relative z-10">
-                            <button className="w-full sm:flex-1 py-4 bg-gray-50 hover:bg-[#111827] text-gray-700 hover:text-white rounded-2xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-gray-200 hover:border-[#111827]">
+                            <button className="w-full sm:flex-1 py-4 bg-gray-50 hover:bg-[#111827] text-gray-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-gray-200 hover:border-[#111827]">
                                 <Phone size={18} className="group-hover:scale-110 transition-transform" /> Call Lead
                             </button>
-                            <button className="w-full sm:flex-1 py-4 bg-emerald-50 hover:bg-emerald-500 text-emerald-700 hover:text-white rounded-2xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-emerald-100 hover:border-emerald-500">
+                            <button className="w-full sm:flex-1 py-4 bg-emerald-50 hover:bg-emerald-500 text-emerald-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-emerald-100 hover:border-emerald-500">
                                 <MessageSquare size={18} className="group-hover:scale-110 transition-transform" /> WhatsApp
                             </button>
-                            <button className="w-full sm:flex-1 py-4 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-2xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-blue-100 hover:border-blue-600">
+                            <button className="w-full sm:flex-1 py-4 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-blue-100 hover:border-blue-600">
                                 <Mail size={18} className="group-hover:scale-110 transition-transform" /> Email
                             </button>
                         </div>
@@ -158,7 +158,7 @@ const LeadDetail = () => {
                             <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <MessageSquare size={14} /> Original Inquiry Message
                             </h3>
-                            <div className="p-6 bg-gray-50 rounded-2xl border-l-4 border-[#111827] text-gray-700 text-sm font-medium leading-relaxed">
+                            <div className="p-6 bg-gray-50 rounded-xl border-l-4 border-[#111827] text-gray-700 text-sm font-medium leading-relaxed">
                                 "{lead.message}"
                             </div>
                         </div>
@@ -170,7 +170,7 @@ const LeadDetail = () => {
                 <div className="space-y-8">
                     
                     {/* Follow up Action Card */}
-                    <div className="bg-[#111827] rounded-3xl p-8 text-white shadow-xl relative overflow-hidden group">
+                    <div className="bg-[#111827] rounded-xl p-8 text-white shadow-xl relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-white/10 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
                         
                         <div className="flex items-center gap-3 mb-6 relative z-10 text-gray-400">
@@ -189,12 +189,12 @@ const LeadDetail = () => {
                     </div>
 
                     {/* Timeline Log */}
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                    <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
                         <div className="flex items-center justify-between mb-8">
                             <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest flex items-center gap-2">
                                 <History size={18} className="text-gray-400" /> Activity Log
                             </h3>
-                            <button className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-[#111827] hover:text-white transition-colors">
+                            <button className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-[#111827] hover:text-white transition-colors">
                                 <Plus size={16} />
                             </button>
                         </div>

@@ -22,13 +22,27 @@ import Operations from '../pages/Operations'
 import ProtectedRoute from '../componenets/ProtectedRoute'
 
 import Reports from '../pages/Reports'
-import Settings from '../pages/Settings'
 import ManageUsers from '../pages/ManageUsers'
 import Profile from '../pages/settings/Profile'
 import Visa from '../pages/Visa'
 import Hotels from '../pages/Hotels'
 import Flights from '../pages/Flights'
 import Transport from '../pages/Transport'
+
+import CompanyParams from '../pages/settings/CompanyParams'
+import Roles from '../pages/settings/Roles'
+import Permissions from '../pages/settings/Permissions'
+import AssignPermissions from '../pages/settings/AssignPermissions'
+import MasterTypes from '../pages/settings/MasterTypes'
+import ApiConfig from '../pages/settings/ApiConfig'
+import Subscription from '../pages/settings/Subscription'
+
+// Stub imports for operations and reports
+const Staff = () => <div className="p-10 font-bold text-slate-400">Staff Management</div>;
+const Logistics = () => <div className="p-10 font-bold text-slate-400">Logistics Feed</div>;
+const BookingAnalytics = () => <div className="p-10 font-bold text-slate-400">Booking Analytics</div>;
+const PaymentReports = () => <div className="p-10 font-bold text-slate-400">Payment Reports</div>;
+const SalesPerformance = () => <div className="p-10 font-bold text-slate-400">Sales Performance</div>;
 
 const Router = () => {
   return (
@@ -50,11 +64,30 @@ const Router = () => {
         <Route path="/reservations/add" element={<ProtectedRoute><Layout><AddReservation /></Layout></ProtectedRoute>} />
         <Route path="/payments" element={<ProtectedRoute><Layout><Payments /></Layout></ProtectedRoute>} />
         <Route path="/payments/add" element={<ProtectedRoute><Layout><AddPayment /></Layout></ProtectedRoute>} />
+        
+        {/* Operations */}
         <Route path="/operations" element={<ProtectedRoute><Layout><Operations /></Layout></ProtectedRoute>} />
+        <Route path="/operations/staff" element={<ProtectedRoute><Layout><Staff /></Layout></ProtectedRoute>} />
+        <Route path="/operations/logistics" element={<ProtectedRoute><Layout><Logistics /></Layout></ProtectedRoute>} />
+        
+        {/* Reports */}
         <Route path="/reports" element={<ProtectedRoute><Layout><Reports /></Layout></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+        <Route path="/reports/bookings" element={<ProtectedRoute><Layout><BookingAnalytics /></Layout></ProtectedRoute>} />
+        <Route path="/reports/payments" element={<ProtectedRoute><Layout><PaymentReports /></Layout></ProtectedRoute>} />
+        <Route path="/reports/sales" element={<ProtectedRoute><Layout><SalesPerformance /></Layout></ProtectedRoute>} />
+
+        {/* Isolated Settings Pages */}
+        <Route path="/settings/company" element={<ProtectedRoute><Layout><CompanyParams /></Layout></ProtectedRoute>} />
+        <Route path="/settings/roles" element={<ProtectedRoute><Layout><Roles /></Layout></ProtectedRoute>} />
+        <Route path="/settings/permissions" element={<ProtectedRoute><Layout><Permissions /></Layout></ProtectedRoute>} />
+        <Route path="/settings/assign-permissions" element={<ProtectedRoute><Layout><AssignPermissions /></Layout></ProtectedRoute>} />
+        <Route path="/settings/master-types" element={<ProtectedRoute><Layout><MasterTypes /></Layout></ProtectedRoute>} />
+        <Route path="/settings/api" element={<ProtectedRoute><Layout><ApiConfig /></Layout></ProtectedRoute>} />
+        <Route path="/settings/subscription" element={<ProtectedRoute><Layout><Subscription /></Layout></ProtectedRoute>} />
+        
         <Route path="/settings/users" element={<ProtectedRoute><Layout><ManageUsers /></Layout></ProtectedRoute>} />
         <Route path="/settings/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
+        
         <Route path="/reservations/visa" element={<ProtectedRoute><Layout><Visa /></Layout></ProtectedRoute>} />
         <Route path="/reservations/hotels" element={<ProtectedRoute><Layout><Hotels /></Layout></ProtectedRoute>} />
         <Route path="/reservations/flights" element={<ProtectedRoute><Layout><Flights /></Layout></ProtectedRoute>} />

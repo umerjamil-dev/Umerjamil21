@@ -177,7 +177,7 @@ const Reports = () => {
                                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em]">{row.id}</p>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-none">
+                                                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-none">
                                                     {row.package}
                                                 </div>
                                             </td>
@@ -215,7 +215,7 @@ const Reports = () => {
                                     {paymentData.map((row) => (
                                         <tr key={row.ref} className="group hover:bg-slate-50 transition-all">
                                             <td className="px-8 py-6">
-                                                <div className="flex items-center gap-3 text-slate-900 font-mono tracking-widest text-xs bg-slate-100 px-3 py-1.5 rounded-lg inline-flex border border-slate-200">
+                                                <div className="flex items-center gap-3 text-slate-900 font-mono tracking-widest text-xs bg-slate-100 px-3 py-1.5 rounded-xl inline-flex border border-slate-200">
                                                     {row.ref}
                                                 </div>
                                             </td>
@@ -223,7 +223,7 @@ const Reports = () => {
                                             <td className="px-8 py-6 text-base font-manrope font-black text-emerald-600">{row.amount}</td>
                                             <td className="px-8 py-6 text-[11px] font-medium text-slate-500">{row.date}</td>
                                             <td className="px-8 py-6">
-                                                <span className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] bg-blue-50 text-blue-600 border border-blue-100 inline-block">
+                                                <span className="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] bg-blue-50 text-blue-600 border border-blue-100 inline-block">
                                                     {row.method}
                                                 </span>
                                             </td>

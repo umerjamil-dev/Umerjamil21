@@ -26,10 +26,10 @@ const Topbar = () => {
         <input
           type="text"
           placeholder="Search pilgrims, s, or ledgers..."
-          className="w-full pl-12 pr-16 py-4 bg-black/[0.02] hover:bg-black/[0.04] focus:bg-white focus:ring-[4px] focus:ring-[var(--desert-gold)]/20 border border-transparent focus:border-[var(--desert-gold)]/50 rounded-2xl text-sm transition-all duration-300 outline-none placeholder-gray-400 font-medium text-gray-800 shadow-sm focus:shadow-md"
+          className="w-full pl-12 pr-16 py-4 bg-black/[0.02] hover:bg-black/[0.04] focus:bg-white focus:ring-[4px] focus:ring-[var(--desert-gold)]/20 border border-transparent focus:border-[var(--desert-gold)]/50 rounded-xl text-sm transition-all duration-300 outline-none placeholder-gray-400 font-medium text-gray-800 shadow-sm focus:shadow-md"
         />
         <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-black/5 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden lg:flex border border-black/5">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-black/5 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden lg:flex border border-black/5">
             <Command size={12} /> K
           </div>
         </div>
@@ -40,11 +40,11 @@ const Topbar = () => {
 
         {/* Quick Actions */}
         <div className="flex items-center gap-2">
-          <button className="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-[var(--desert-gold)] hover:bg-[var(--desert-gold)]/5 rounded-2xl transition-all duration-300 border border-transparent hover:border-[var(--desert-gold)]/20">
+          <button className="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-[var(--desert-gold)] hover:bg-[var(--desert-gold)]/5 rounded-xl transition-all duration-300 border border-transparent hover:border-[var(--desert-gold)]/20">
             <Bell size={22} strokeWidth={1.5} />
             <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)] border-2 border-white rounded-full animate-pulse"></span>
           </button>
-          <button onClick={handleLogout} className="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all duration-300 border border-transparent hover:border-red-100 group">
+          <button onClick={handleLogout} className="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300 border border-transparent hover:border-red-100 group">
             <LogOut size={22} strokeWidth={1.5} />
             <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Terminate Session</div>
           </button>

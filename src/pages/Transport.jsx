@@ -3,16 +3,16 @@ import {
   Car, Search, Filter,
   Truck, Navigation, MoreHorizontal,
   MapPin, Clock, ShieldCheck,
-  UserCheck
+  UserCheck, Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
 import useTransportStore from '../store/useTransportStore';
 
 const Transport = () => {
   const { transports, fetchTransports, isLoading } = useTransportStore();
 
-  useEffect(() => {
-    fetchTransports();
-  }, [fetchTransports]);
+  // useEffect(() => {
+  //   fetchTransports();
+  // }, [fetchTransports]);
 
   const transportData = transports && transports.length > 0 ? transports : [
     {
@@ -83,10 +83,10 @@ const Transport = () => {
         <div className="p-8 border-b border-slate-100 flex flex-wrap gap-4 items-center justify-between bg-slate-50/50">
           <div className="relative w-full md:w-[400px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input type="text" placeholder="Search by occupant, driver, vehicle..." className="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium bg-white" />
+            <input type="text" placeholder="Search by occupant, driver, vehicle..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium bg-white" />
           </div>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-lg text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
+            <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
               <Filter size={14} /> Matrix Filter
             </button>
           </div>
@@ -128,7 +128,7 @@ const Transport = () => {
                   </td>
                   <td className="px-8 py-6 text-black">
                     <div className="flex flex-col gap-2">
-                      <span className="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg inline-block w-fit">
+                      <span className="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl inline-block w-fit">
                         {item.vehicle}
                       </span>
                       <span className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-500 flex items-center gap-2">
@@ -152,11 +152,22 @@ const Transport = () => {
                     </div>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end gap-2 text-black">
-                      <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-200">
-                        <MoreHorizontal size={20} />
-                      </button>
-                    </div>
+                     <div className="flex flex-col items-end gap-2 text-black">
+                        <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                          <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
+                            <Wand2 size={14} strokeWidth={2.5} />
+                          </button>
+                          <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
+                            <Shapes size={14} strokeWidth={2.5} />
+                          </button>
+                          <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
+                            <Tag size={14} strokeWidth={2.5} />
+                          </button>
+                          <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
+                            <Trash2 size={14} strokeWidth={2.5} />
+                          </button>
+                        </div>
+                     </div>
                   </td>
                 </tr>
               ))}

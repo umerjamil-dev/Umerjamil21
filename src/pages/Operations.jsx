@@ -51,7 +51,7 @@ const Operations = () => {
                   Real-time synchronization of ground staff, logistics, and pilgrim movements across the Saudi Arabian sectors.
                </p>
             </div>
-            <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+            <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-xl border border-slate-100">
                {['Overview', 'Staff', 'Logistics'].map((tab) => (
                   <button
                      key={tab}
@@ -83,7 +83,7 @@ const Operations = () => {
                         <span className="flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-widest">
                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span> 12 Active
                         </span>
-                        <button className="p-3 bg-white border border-slate-200 rounded-lg hover:border-black transition-all">
+                        <button className="p-3 bg-white border border-slate-200 rounded-xl hover:border-black transition-all">
                            <Filter size={14} />
                         </button>
                      </div>
@@ -97,7 +97,7 @@ const Operations = () => {
                      ) : taskData.map((task) => (
                         <div key={task.id} className="p-10 group hover:bg-slate-50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-8">
                            <div className="flex items-center gap-8">
-                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border transition-all ${task.status === 'In Transit' ? 'bg-blue-50 border-blue-100 text-blue-500' :
+                              <div className={`w-16 h-16 rounded-xl flex items-center justify-center border transition-all ${task.status === 'In Transit' ? 'bg-blue-50 border-blue-100 text-blue-500' :
                                     task.status === 'Completed' ? 'bg-emerald-50 border-emerald-100 text-emerald-500' :
                                        'bg-red-50 border-red-100 text-red-500'
                                  }`}>
@@ -173,7 +173,7 @@ const Operations = () => {
                            </div>
                            <div className="flex items-center justify-between pl-16">
                               <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em]">{member.status}</span>
-                              <button className="p-2 hover:bg-white/10 rounded-lg transition-all text-white/40 hover:text-white">
+                              <button className="p-2 hover:bg-white/10 rounded-xl transition-all text-white/40 hover:text-white">
                                  <Phone size={14} />
                               </button>
                            </div>

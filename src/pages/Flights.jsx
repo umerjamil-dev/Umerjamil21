@@ -87,10 +87,10 @@ const Flights = () => {
         <div className="p-8 border-b border-slate-100 flex flex-wrap gap-4 items-center justify-between bg-slate-50/50">
           <div className="relative w-full md:w-[400px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input type="text" placeholder="Search by passenger, ticket, airline..." className="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium bg-white" />
+            <input type="text" placeholder="Search by passenger, ticket, airline..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium bg-white" />
           </div>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-lg text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
+            <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
               <Filter size={14} /> Filter Routes
             </button>
           </div>
@@ -139,7 +139,7 @@ const Flights = () => {
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex flex-col gap-1.5 text-black">
-                      <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 inline-block w-fit">
+                      <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 inline-block w-fit">
                         {item.ticketNumber}
                       </span>
                       <span className={`text-[9px] font-black uppercase tracking-[0.2em] inline-flex items-center gap-1.5 ${item.status === 'Ticketed' ? 'text-[var(--sacred-emerald)]' :
@@ -151,7 +151,7 @@ const Flights = () => {
                     </div>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-200">
+                    <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-xl transition-all shadow-sm border border-transparent hover:border-slate-200">
                       <MoreHorizontal size={20} />
                     </button>
                   </td>

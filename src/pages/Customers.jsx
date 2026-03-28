@@ -34,13 +34,13 @@ const Customers = () => {
           <p className="mt-2 text-sm font-medium text-[var(--on-surface-variant)] tracking-wide">The definitive collective of sacred travelers.</p>
         </div>
         <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase   hover:text-[var(--on-surface)] transition-all group">
+          <button className="flex items-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase   hover:text-[var(--on-surface)] transition-all group">
             <Download size={16} strokeWidth={2} />
             Analytics Export
           </button>
           <Link
             to="/customers/add"
-            className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-2xl"
+            className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-xl"
           >
             <Plus size={18} strokeWidth={2.5} />
             Register Customer
@@ -51,20 +51,23 @@ const Customers = () => {
       {/* Stats Summary - Bento No-Line Style */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Customers', value: '1,245', icon: Users, grad: 'var(--grad-black)' },
-          { label: 'Visa Approved', value: '890', icon: ShieldCheck, grad: 'var(--grad-green)' },
-          { label: 'Flight Ready', value: '450', icon: Plane, grad: 'var(--grad-black)' },
-          { label: 'Hospitality', value: '1,120', icon: Hotel, grad: 'var(--grad-gold)' },
+          { label: 'Total Customers', value: '1,245', icon: Users, bg: '#616B7B' },
+          { label: 'Visa Approved', value: '890', icon: ShieldCheck, bg: '#636569' },
+          { label: 'Flight Ready', value: '450', icon: Plane, bg: '#726888' },
+          { label: 'Hospitality', value: '1,120', icon: Hotel, bg: '#A5413D' },
         ].map((stat, i) => (
-          <div key={i} className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)] shadow-sm flex flex-col gap-6 group hover:bg-[var(--surface-container-high)] transition-all cursor-default relative overflow-hidden">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface)] group-hover:bg-white group-hover:shadow-lg transition-all relative z-10">
-              <stat.icon size={20} strokeWidth={1.5} style={{ color: 'var(--on-surface)' }} />
+          <div key={i} className="bg-[var(--surface-container-lowest)] rounded-xl p-8 border border-[var(--outline-variant)] shadow-sm flex flex-col gap-6 group hover:bg-[var(--surface-container-high)] transition-all cursor-default relative overflow-hidden">
+            <div 
+               className="w-12 h-12 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-all relative z-10 shadow-lg"
+               style={{ backgroundColor: stat.bg }}
+            >
+              <stat.icon size={20} className="text-white" />
             </div>
             <div className="relative z-10">
               <p className="text-3xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">{stat.value}</p>
               <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mt-1.5">{stat.label}</p>
             </div>
-            <div className="absolute top-0 right-0 w-24 h-24 opacity-5 pointer-events-none" style={{ background: stat.grad }}></div>
+            <div className="absolute top-0 right-0 w-24 h-24 opacity-5 pointer-events-none" style={{ backgroundColor: stat.bg }}></div>
           </div>
         ))}
       </div>
@@ -158,7 +161,7 @@ const Customers = () => {
         </div>
 
         <div className="pt-10 flex justify-center">
-          <button className="px-12 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] hover:text-[var(--on-surface)] hover:shadow-xl transition-all shadow-sm active:scale-95">
+          <button className="px-12 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] hover:text-[var(--on-surface)] hover:shadow-xl transition-all shadow-sm active:scale-95">
             Load Historical Database
           </button>
         </div>

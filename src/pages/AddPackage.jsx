@@ -36,13 +36,13 @@ const AddPackage = () => {
             <div className="flex items-center gap-4">
                <Link
                   to="/packages"
-                  className="px-8 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.2em] hover:bg-white hover:text-[var(--on-surface)] transition-all flex items-center gap-3 shadow-sm"
+                  className="px-8 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.2em] hover:bg-white hover:text-[var(--on-surface)] transition-all flex items-center gap-3 shadow-sm"
                >
                   Discard
                </Link>
                <button
                   onClick={() => navigate('/packages')}
-                  className="btn-primary px-10 py-4 rounded-2xl text-white text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl flex items-center gap-3 active:scale-95 transition-all"
+                  className="btn-primary px-10 py-4 rounded-xl text-white text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl flex items-center gap-3 active:scale-95 transition-all"
                >
                   <Save size={18} strokeWidth={2.5} />
                   Authorize & Archive
@@ -175,7 +175,7 @@ const AddPackage = () => {
                               <button
                                  key={cat}
                                  onClick={() => setFormData({ ...formData, category: cat })}
-                                 className={`py-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border ${formData.category === cat
+                                 className={`py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border ${formData.category === cat
                                        ? 'bg-[var(--on-surface)] text-white border-transparent shadow-xl -translate-y-1'
                                        : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-white hover:border-[var(--on-surface)]'
                                     }`}
@@ -194,7 +194,7 @@ const AddPackage = () => {
                <div className="relative  rounded-xl p-12 text-white shadow-2xl overflow-hidden group min-h-[440px] flex flex-col justify-between" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}>
                   <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-bl-[6rem] group-hover:scale-125 transition-transform duration-700"></div>
                   <div className="relative z-10">
-                     <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 mb-10 group-hover:rotate-12 transition-transform">
+                     <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 mb-10 group-hover:rotate-12 transition-transform">
                         <Workflow className="text-[var(--desert-gold)]" size={32} strokeWidth={1.5} />
                      </div>
                      <h4 className="text-3xl font-manrope font-black tracking-tighter mb-6 leading-tight">Operational <br /><span className="italic font-light opacity-50">Guarantee</span></h4>
@@ -234,7 +234,7 @@ const AddPackage = () => {
                         <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest opacity-60">Executive Authority</p>
                      </div>
                   </div>
-                  <div className="p-6 bg-[var(--surface)] rounded-2xl italic text-[11px] font-medium text-[var(--on-surface-variant)]/60 leading-relaxed border-l-4 border-[var(--on-surface)]">
+                  <div className="p-6 bg-[var(--surface)] rounded-xl italic text-[11px] font-medium text-[var(--on-surface-variant)]/60 leading-relaxed border-l-4 border-[var(--on-surface)]">
                      "Ensure all hospitality allotments are synchronized with the KSA global hospitality  before commitment."
                   </div>
                </div>

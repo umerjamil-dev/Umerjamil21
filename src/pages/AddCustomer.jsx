@@ -58,7 +58,7 @@ const AddCustomer = () => {
             <button
                onClick={handleSubmit}
                disabled={isLoading}
-               className={`btn-emerald px-10 py-4 rounded-2xl text-white font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-emerald-900/20 hover:-translate-y-1 transition-all flex items-center gap-3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+               className={`btn-emerald px-10 py-4 rounded-xl text-white font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-emerald-900/20 hover:-translate-y-1 transition-all flex items-center gap-3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
                <Save size={18} strokeWidth={2.5} />
                {isLoading ? 'Officializing...' : 'Finalize Profile'}
@@ -78,7 +78,7 @@ const AddCustomer = () => {
                            <User size={40} strokeWidth={1.5} />
                         )}
                      </div>
-                     <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-[var(--on-surface)] text-white rounded-2xl flex items-center justify-center cursor-pointer hover:scale-110 transition-all z-20 shadow-lg">
+                     <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-[var(--on-surface)] text-white rounded-xl flex items-center justify-center cursor-pointer hover:scale-110 transition-all z-20 shadow-lg">
                         <FileText size={16} />
                         <input
                            type="file"

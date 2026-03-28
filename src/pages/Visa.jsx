@@ -107,9 +107,9 @@ const Visa = () => {
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="relative w-[400px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input type="text" placeholder="Search applicant by name, visa number..." className="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium" />
+            <input type="text" placeholder="Search applicant by name, visa number..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium" />
           </div>
-          <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-lg text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
+          <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
             <Filter size={14} /> Filter Queue
           </button>
         </div>
@@ -139,7 +139,7 @@ const Visa = () => {
                     </div>
                   </td>
                   <td className="px-8 py-6">
-                    <div className="flex items-center gap-3 text-slate-900 font-mono tracking-widest text-sm bg-slate-100 px-3 py-1.5 rounded-lg inline-flex">
+                    <div className="flex items-center gap-3 text-slate-900 font-mono tracking-widest text-sm bg-slate-100 px-3 py-1.5 rounded-xl inline-flex">
                       <FileText size={14} className="text-slate-400" />
                       {item.visaNumber}
                     </div>
@@ -159,7 +159,7 @@ const Visa = () => {
                     <p className="text-[11px] font-medium text-slate-600 max-w-[200px] truncate">{item.notes}</p>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-200">
+                    <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-xl transition-all shadow-sm border border-transparent hover:border-slate-200">
                       <MoreHorizontal size={20} />
                     </button>
                   </td>

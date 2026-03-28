@@ -51,7 +51,7 @@ const Calculator = () => {
           <p className="mt-2 text-sm font-medium text-[var(--on-surface-variant)] tracking-wide">Algorithmic precision for sacred travel quotations.</p>
         </div>
         <button
-          className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-2xl"
+          className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-xl"
         >
           <Save size={18} strokeWidth={2.5} />
           Archive Quotation
@@ -180,7 +180,7 @@ const Calculator = () => {
                   <span>50% Premium</span>
                 </div>
               </div>
-              <div className="w-28 h-28 rounded-3xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center text-center group-hover:btn-primary  transition-all shadow-sm">
+              <div className="w-28 h-28 rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center text-center group-hover:btn-primary  transition-all shadow-sm">
                 <p className="text-3xl font-manrope font-extrabold tracking-tighter">{inputs.markup}%</p>
               </div>
             </div>
@@ -236,7 +236,7 @@ const Calculator = () => {
                 <span className="text-[var(--on-surface)] font-manrope">${(inputs.transportCost * inputs.persons).toLocaleString()}</span>
               </div>
             </div>
-            <div className="mt-10 p-5 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-2xl flex items-center justify-center gap-3 text-[10px] font-extrabold text-[var(--on-surface)] uppercase tracking-widest group-hover:btn-primary group-hover:text-black transition-all">
+            <div className="mt-10 p-5 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-xl flex items-center justify-center gap-3 text-[10px] font-extrabold text-[var(--on-surface)] uppercase tracking-widest group-hover:btn-primary group-hover:text-black transition-all">
               <RefreshCw size={16} strokeWidth={2.5} className="text-[var(--on-surface-variant)] " />
               Algorithmic Sync Active
             </div>

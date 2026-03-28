@@ -3,7 +3,8 @@ import {
   ShieldCheck, Hotel, Plane, MapPin,
   ChevronRight, Search, Filter,
   CalendarDays, MoreHorizontal,
-  Clock, CheckCircle2, AlertCircle
+  Clock, CheckCircle2, AlertCircle,
+  Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -169,9 +170,20 @@ const Reservations = () => {
                       </div>
                     </td>
                     <td className="px-10 py-10 text-right">
-                      <button className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-black group-hover:bg-white border border-transparent group-hover:border-slate-200 shadow-sm group-hover:shadow-md transition-all">
-                        <ChevronRight size={24} strokeWidth={3} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
+                          <Wand2 size={14} strokeWidth={2.5} />
+                        </button>
+                        <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
+                          <Shapes size={14} strokeWidth={2.5} />
+                        </button>
+                        <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
+                          <Tag size={14} strokeWidth={2.5} />
+                        </button>
+                        <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
+                          <Trash2 size={14} strokeWidth={2.5} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

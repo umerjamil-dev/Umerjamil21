@@ -3,7 +3,8 @@ import {
    CreditCard, DollarSign, ArrowUpRight,
    Filter, Download, MoreHorizontal,
    CheckCircle2, Clock, AlertCircle, Search,
-   BookOpen, TrendingUp, Calendar
+   BookOpen, TrendingUp, Calendar,
+   Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useBookingStore from '../store/useBookingStore';
@@ -181,10 +182,20 @@ const Bookings = () => {
                               </div>
                            </td>
                            <td className="px-10 py-10 text-right">
-                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-1">{booking.date}</p>
-                              <div className="flex items-center justify-end gap-2 text-[var(--desert-gold)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
-                                 <span className="text-[8px] font-black uppercase tracking-widest">View Portfolio</span>
-                                 <ArrowUpRight size={12} strokeWidth={3} />
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-3">{booking.date}</p>
+                              <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                 <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
+                                   <Wand2 size={14} strokeWidth={2.5} />
+                                 </button>
+                                 <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
+                                   <Shapes size={14} strokeWidth={2.5} />
+                                 </button>
+                                 <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
+                                   <Tag size={14} strokeWidth={2.5} />
+                                 </button>
+                                 <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
+                                   <Trash2 size={14} strokeWidth={2.5} />
+                                 </button>
                               </div>
                            </td>
                         </tr>

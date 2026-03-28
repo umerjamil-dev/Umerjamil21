@@ -43,12 +43,12 @@ const Login = () => {
       
 
       {/* Login Card */}
-      <div className="bg-[var(--surface-container-lowest)]  rounded-2xl shadow-2xl shadow-black/5 border border-[var(--outline-variant)] p-12 max-w-[480px] w-full mb-16 animate-in zoom-in-95 duration-700 relative overflow-hidden">
+      <div className="bg-[var(--surface-container-lowest)]  rounded-xl shadow-2xl shadow-black/5 border border-[var(--outline-variant)] p-12 max-w-[480px] w-full mb-16 animate-in zoom-in-95 duration-700 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32  bg-[var(--surface)] rounded-bl-[5rem] translate-x-12 -translate-y-12"></div>
 
         {/* Card Icon */}
         <div className="flex justify-center mb-4 relative z-10  ">
-          <div className="bg-[var(--surface)] p-6 rounded-2xl  inline-block leading-none border border-[var(--outline-variant)]">
+          <div className="bg-[var(--surface)] p-6 rounded-xl  inline-block leading-none border border-[var(--outline-variant)]">
             <MosqueIcon className="w-12 h-12 text-[var(--on-surface)]" />
           </div>
         </div>
@@ -83,7 +83,7 @@ const Login = () => {
 
           <div className="flex items-center justify-between pt-2">
             <label className="flex items-center gap-3 cursor-pointer group">
-              <input type="checkbox" className="w-4 h-4 rounded-lg bg-[var(--surface)] border-[var(--outline-variant)] text-[var(--on-surface)] focus:ring-0 cursor-pointer" />
+              <input type="checkbox" className="w-4 h-4 rounded-xl bg-[var(--surface)] border-[var(--outline-variant)] text-[var(--on-surface)] focus:ring-0 cursor-pointer" />
               <span className="text-[10px] uppercase font-extrabold text-[var(--on-surface-variant)] group-hover:text-[var(--on-surface)] transition-all tracking-[0.1em]">Persist Session</span>
             </label>
             <button type="button" className="text-[10px] uppercase font-extrabold text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] transition-all tracking-[0.1em]">Recovery</button>
@@ -92,7 +92,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="btn-primary w-full py-5 rounded-2xl font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-black/20 transition-all duration-500 mt-6 flex items-center justify-center gap-3 group"
+            className="btn-primary w-full py-5 rounded-xl font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-black/20 transition-all duration-500 mt-6 flex items-center justify-center gap-3 group"
           >
             {isLoading ? 'Processing Protocol...' : 'Initiate Protocol'} 
             {!isLoading && <LogIn size={18} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />}

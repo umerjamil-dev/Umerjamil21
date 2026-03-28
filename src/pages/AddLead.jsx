@@ -73,14 +73,14 @@ const AddLead = () => {
             <div className="flex items-center gap-3">
                <Link
                   to="/leads"
-                  className="px-6 py-3 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[11px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all flex items-center gap-2"
+                  className="px-6 py-3 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[11px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all flex items-center gap-2"
                >
                   Discard & Exit
                </Link>
                <button
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className={`btn-primary px-8 py-3 rounded-2xl text-white text-[11px] font-extrabold uppercase shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`btn-primary px-8 py-3 rounded-xl text-white text-[11px] font-extrabold uppercase shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                >
                   <Save size={18} strokeWidth={2.5} />
                   {isLoading ? 'Officializing...' : 'Verify & Save'}
@@ -161,7 +161,7 @@ const AddLead = () => {
                   </h3>
                   <textarea
                      placeholder="Record the customer's spiritual requirements and package preferences..."
-                     className="w-full p-6 bg-[var(--surface)] border-none rounded-3xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
+                     className="w-full p-6 bg-[var(--surface)] border-none rounded-xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
                      value={formData.message}
                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   ></textarea>
@@ -173,7 +173,7 @@ const AddLead = () => {
                   </h3>
                   <textarea
                      placeholder="Add internal performance notes, staff comments, or special operational instructions..."
-                     className="w-full p-6 bg-[var(--surface)] border-none rounded-3xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
+                     className="w-full p-6 bg-[var(--surface)] border-none rounded-xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
                      value={formData.comments}
                      onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
                   ></textarea>
@@ -204,7 +204,7 @@ const AddLead = () => {
                            <button
                               key={srcId}
                               onClick={() => setFormData({ ...formData, source: srcId })}
-                              className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${formData.source === srcId
+                              className={`flex items-center justify-between p-4 rounded-xl border transition-all ${formData.source === srcId
                                  ? 'bg-white border-transparent shadow-xl shadow-black/5 ring-1 ring-[var(--on-surface)]/10'
                                  : 'bg-white/40 border-transparent hover:border-[var(--outline-variant)] text-[var(--on-surface-variant)]'
                                  }`}
@@ -227,7 +227,7 @@ const AddLead = () => {
                      <UserCheck size={14} /> Delegation Protocol
                   </h3>
                   <select
-                     className="w-full p-4 bg-[var(--surface)] rounded-2xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer"
+                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer"
                      value={formData.assignedUser}
                      onChange={(e) => setFormData({ ...formData, assignedUser: e.target.value })}
                   >
@@ -244,7 +244,7 @@ const AddLead = () => {
                   </h3>
                   <input
                      type="date"
-                     className="w-full p-4 bg-[var(--surface)] rounded-2xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer"
+                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer"
                      value={formData.followUpDate}
                      onChange={(e) => setFormData({ ...formData, followUpDate: e.target.value })}
                   />

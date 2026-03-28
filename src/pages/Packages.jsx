@@ -62,7 +62,7 @@ const Packages = () => {
             </div>
             <Link
                to="/packages/add"
-               className="btn-primary px-8 py-3 rounded-2xl text-white text-[11px] font-extrabold uppercase tracking-widest shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 w-fit"
+               className="btn-primary px-8 py-3 rounded-xl text-white text-[11px] font-extrabold uppercase tracking-widest shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 w-fit"
             >
                <Plus size={18} strokeWidth={2.5} />
                Assemble New Package
@@ -76,14 +76,14 @@ const Packages = () => {
                <input
                   type="text"
                   placeholder="Query package catalogue..."
-                  className="w-full pl-14 pr-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all"
+                  className="w-full pl-14 pr-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all"
                />
             </div>
             <div className="md:col-span-4 flex gap-4">
-               <button className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)] transition-all">
+               <button className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)] transition-all">
                   <Filter size={16} /> Filter
                </button>
-               <button className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)] transition-all">
+               <button className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)] transition-all">
                   Category
                </button>
             </div>
@@ -94,10 +94,10 @@ const Packages = () => {
             {isLoading ? (
                <div className="col-span-full py-32 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">Auditing Package Manifest...</div>
             ) : packages.map((pkg) => (
-               <div key={pkg.id} className="bg-[var(--surface-container-lowest)] rounded-3xl border border-[var(--outline-variant)] overflow-hidden group hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 flex flex-col">
+               <div key={pkg.id} className="bg-[var(--surface-container-lowest)] rounded-xl border border-[var(--outline-variant)] overflow-hidden group hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 flex flex-col">
                   {/* Card Premium Header */}
                   <div className="p-8 pb-0 flex justify-between items-start text-black">
-                     <div className="w-12 h-12 rounded-2xl bg-[var(--surface)] flex items-center justify-center border border-[var(--outline-variant)]">
+                     <div className="w-12 h-12 rounded-xl bg-[var(--surface)] flex items-center justify-center border border-[var(--outline-variant)]">
                         <Package size={24} className="text-[var(--on-surface)]" strokeWidth={1.5} />
                      </div>
                      <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${pkg.category === 'Platinum' ? 'bg-amber-100 text-amber-700' :
@@ -131,11 +131,11 @@ const Packages = () => {
                            </div>
                         </div>
                         <div className="flex items-center gap-3 pt-2">
-                           <div className="flex-1 bg-[var(--surface)] p-3 rounded-2xl border border-[var(--outline-variant)]">
+                           <div className="flex-1 bg-[var(--surface)] p-3 rounded-xl border border-[var(--outline-variant)]">
                               <p className="text-[9px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Makkah</p>
                               <p className="text-sm font-manrope font-black">{pkg.nightsMakkah} <span className="text-[10px] font-medium opacity-40 uppercase">Nights</span></p>
                            </div>
-                           <div className="flex-1 bg-[var(--surface)] p-3 rounded-2xl border border-[var(--outline-variant)]">
+                           <div className="flex-1 bg-[var(--surface)] p-3 rounded-xl border border-[var(--outline-variant)]">
                               <p className="text-[9px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Madinah</p>
                               <p className="text-sm font-manrope font-black">{pkg.nightsMadinah} <span className="text-[10px] font-medium opacity-40 uppercase">Nights</span></p>
                            </div>
@@ -151,7 +151,7 @@ const Packages = () => {
                            <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.2em] mb-1">Base Valuation</p>
                            <p className="text-2xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">${pkg.price.toLocaleString()}</p>
                         </div>
-                        <button className="w-12 h-12 rounded-2xl bg-[var(--on-surface)] text-white flex items-center justify-center hover:bg-[var(--primary)] transition-all group-hover:translate-x-1">
+                        <button className="w-12 h-12 rounded-xl bg-[var(--on-surface)] text-white flex items-center justify-center hover:bg-[var(--primary)] transition-all group-hover:translate-x-1">
                            <ChevronRight size={20} />
                         </button>
                      </div>
@@ -161,7 +161,7 @@ const Packages = () => {
 
 
             {/* Empty State / Add New Card */}
-            <Link to="/packages/add" className="bg-[var(--surface-container-lowest)] rounded-3xl border-2 border-dashed border-[var(--outline-variant)] p-8 flex flex-col items-center justify-center text-center group hover:border-[var(--on-surface)] transition-all min-h-[400px]">
+            <Link to="/packages/add" className="bg-[var(--surface-container-lowest)] rounded-xl border-2 border-dashed border-[var(--outline-variant)] p-8 flex flex-col items-center justify-center text-center group hover:border-[var(--on-surface)] transition-all min-h-[400px]">
                <div className="w-16 h-16 rounded-[2rem] bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)] mb-6 group-hover:scale-110 transition-transform border border-[var(--outline-variant)]">
                   <Plus size={32} strokeWidth={1} />
                </div>

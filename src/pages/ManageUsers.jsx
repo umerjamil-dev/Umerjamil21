@@ -138,7 +138,7 @@ const ManageUsers = () => {
             animate={{ opacity: 1, y: 0,  scale: 1   }}
             exit={{   opacity: 0, y: 14, scale: 0.97  }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+            className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
           >
             <div className="px-9 pt-8 mb-7">
               <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">Enroll New Identity</h2>
@@ -224,7 +224,7 @@ const ManageUsers = () => {
             animate={{ opacity: 1, y: 0  }}
             exit={{   opacity: 0, y: -14 }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+            className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
           >
             {/* Toolbar */}
             <div className="flex items-center gap-3 px-7 py-5 border-b border-gray-100 flex-wrap">

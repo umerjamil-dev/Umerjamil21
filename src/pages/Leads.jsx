@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   Search, Plus, Phone, MessageSquare, ChevronRight,
-  Download, ListFilter, Calendar
+  Download, ListFilter, Calendar,
+  Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useLeadStore from '../store/useLeadStore';
@@ -52,13 +53,13 @@ const Leads = () => {
           <p className="text-[var(--on-surface-variant)] text-sm mt-2 font-medium">Orchestrating every touchpoint of the professional journey.</p>
         </div>
         <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-6 py-3.5 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-2xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase   hover:text-[var(--on-surface)] transition-all group">
+          <button className="flex items-center gap-2 px-6 py-3.5 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase   hover:text-[var(--on-surface)] transition-all group">
             <Download size={16} strokeWidth={2} />
             Export Data
           </button>
           <Link
             to="/leads/add"
-            className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-2xl"
+            className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-xl"
           >
             <Plus size={18} strokeWidth={2.5} />
             Capture Inquiry
@@ -125,12 +126,12 @@ const Leads = () => {
                     </div>
                   </td>
                   <td className="px-10 py-6">
-                    <span className="text-[10px] font-bold text-gray-600 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm uppercase tracking-widest group-hover:border-gray-300 transition-colors">
+                    <span className="text-[10px] font-bold text-gray-600 bg-white px-3 py-1.5 rounded-xl border border-gray-200 shadow-sm uppercase tracking-widest group-hover:border-gray-300 transition-colors">
                       {lead.source}
                     </span>
                   </td>
                   <td className="px-10 py-6">
-                    <span className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-lg border ${
+                    <span className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-xl border ${
                         lead.status === 'New' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                         lead.status === 'Contacted' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                         lead.status === 'Qualified' ? 'bg-purple-50 text-purple-600 border-purple-100' :
@@ -142,23 +143,28 @@ const Leads = () => {
                   </td>
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-gray-100 text-[#111827] border border-gray-200 flex items-center justify-center text-[10px] font-bold">
+                      <div className="w-8 h-8 rounded-xl bg-gray-100 text-[#111827] border border-gray-200 flex items-center justify-center text-[10px] font-bold">
                         {lead.agent.split(' ').map(n => n[0]).join('')}
                       </div>
                       <span className="text-xs font-bold text-gray-700">{lead.agent}</span>
                     </div>
                   </td>
                   <td className="px-10 py-6 text-right">
-                    <div className="flex items-center justify-end gap-2 translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                      <button className="w-9 h-9 flex items-center justify-center bg-white rounded-xl border border-gray-200 text-gray-600 hover:text-[#111827] hover:border-[#111827] shadow-sm hover:shadow-md transition-all">
-                        <Phone size={14} strokeWidth={2.5} />
-                      </button>
-                      <button className="w-9 h-9 flex items-center justify-center bg-white rounded-xl border border-gray-200 text-gray-600 hover:text-green-600 hover:border-green-600 shadow-sm hover:shadow-md transition-all">
-                        <MessageSquare size={14} strokeWidth={2.5} />
-                      </button>
-                      <Link to={`/leads/${lead.id}`} className="w-9 h-9 flex items-center justify-center bg-[#111827] rounded-xl text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                        <ChevronRight size={16} strokeWidth={2.5} />
-                      </Link>
+                    <div className="flex flex-col items-end gap-2">
+                       <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                         <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
+                           <Wand2 size={14} strokeWidth={2.5} />
+                         </button>
+                         <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
+                           <Shapes size={14} strokeWidth={2.5} />
+                         </button>
+                         <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
+                           <Tag size={14} strokeWidth={2.5} />
+                         </button>
+                         <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
+                           <Trash2 size={14} strokeWidth={2.5} />
+                         </button>
+                       </div>
                     </div>
                   </td>
                 </tr>
@@ -174,8 +180,8 @@ const Leads = () => {
             <p className="text-xs font-bold text-[var(--on-surface-variant)] mt-1">Showing 6 of 1,245 operational leads</p>
           </div>
           <div className="flex items-center gap-4">
-            <button className="px-6 py-3 bg-[var(--surface-container-low)] rounded-2xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:text-[var(--primary)] transition-all shadow-sm">Decrement</button>
-            <button className="px-8 py-3 btn-primary rounded-2xl text-[10px] font-extrabold text-white uppercase   shadow-lg shadow-black/10 hover:shadow-xl transition-all">Increment</button>
+            <button className="px-6 py-3 bg-[var(--surface-container-low)] rounded-xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:text-[var(--primary)] transition-all shadow-sm">Decrement</button>
+            <button className="px-8 py-3 btn-primary rounded-xl text-[10px] font-extrabold text-white uppercase   shadow-lg shadow-black/10 hover:shadow-xl transition-all">Increment</button>
           </div>
         </div>
       </div>

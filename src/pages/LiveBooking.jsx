@@ -359,7 +359,7 @@ const LiveBooking = () => {
                      ].map(v => (
                         <div key={v.label} className="flex items-center justify-between group">
                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-slate-600 transition-all">{v.label}</span>
-                           <div className={`w-3 h-3 rounded-md transition-all ${v.active ? 'bg-[var(--sacred-emerald)] shadow-[0_0_12px_var(--sacred-emerald)]' : 'bg-slate-100'}`}></div>
+                           <div className={`w-3 h-3 rounded-xl transition-all ${v.active ? 'bg-[var(--sacred-emerald)] shadow-[0_0_12px_var(--sacred-emerald)]' : 'bg-slate-100'}`}></div>
                         </div>
                      ))}
                   </div>

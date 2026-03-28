@@ -88,7 +88,7 @@ const Profile = () => {
                whileHover={{ scale: 1.1 }}
                whileTap={{ scale: 0.9 }}
                type="button"
-               className="absolute -bottom-4 -right-4 w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center shadow-2xl border border-white/10 hover:bg-[var(--desert-gold)] hover:text-black transition-colors"
+               className="absolute -bottom-4 -right-4 w-16 h-16 bg-black text-white rounded-xl flex items-center justify-center shadow-2xl border border-white/10 hover:bg-[var(--desert-gold)] hover:text-black transition-colors"
              >
                 <Camera size={24} strokeWidth={2.5} />
              </motion.button>
@@ -99,7 +99,7 @@ const Profile = () => {
             <p className="text-[10px] font-black text-[var(--desert-gold)] uppercase tracking-[0.3em]">Prime Controller</p>
           </div>
 
-          <div className="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-6">
+          <div className="p-8 bg-white rounded-xl border border-slate-100 shadow-sm space-y-6">
              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                    <Zap size={18} />
@@ -181,7 +181,7 @@ const Profile = () => {
                whileHover={{ scale: 1.05 }}
                whileTap={{ scale: 0.95 }}
                disabled={isLoading}
-               className="px-12 py-6 bg-gradient-to-r from-[#111827] via-[#000000] to-[#1f2937] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] hover:shadow-black/40 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
+               className="px-12 py-6 bg-gradient-to-r from-[#111827] via-[#000000] to-[#1f2937] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] hover:shadow-black/40 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
              >
                 <Save size={18} strokeWidth={3} />
                 {isLoading ? 'Syncing...' : 'Save Changes'}
