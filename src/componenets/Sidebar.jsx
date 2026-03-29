@@ -142,11 +142,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   };
 
   const isMenuActive = (item) => {
-    if (location.pathname === item.path) return true;
+    // For items WITH a submenu, only activate based on submenu children (not the parent path)
+    // This prevents dual-active when parent.path === submenu[0].path
     if (item.submenu) {
       return item.submenu.some(sub => location.pathname === sub.path || (sub.path !== '/' && location.pathname.startsWith(sub.path + '/')));
     }
-    return false;
+    // For simple nav items (no submenu), match exactly
+    if (item.path === '/') return location.pathname === '/';
+    return location.pathname === item.path || location.pathname.startsWith(item.path + '/');
   };
 
   return (
@@ -214,7 +217,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   end={item.path === '/'}
                   className={({ isActive: isExactActive }) => `
                     flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group
-                    ${isExactActive || isActive
+                    ${isExactActive
                       ? 'bg-[var(--desert-gold)]/10 border border-[var(--desert-gold)]/20 shadow-lg shadow-[var(--desert-gold)]/5'
                       : 'hover:bg-white/5 border border-transparent'}
                   `}
