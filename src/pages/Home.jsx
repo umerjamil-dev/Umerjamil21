@@ -97,7 +97,7 @@ const Home = () => {
                 <motion.div 
                     variants={itemVariants}
                     whileHover={{ y: -5 }}
-                    className="bg-[#0B0F19] rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden group border border-white/5"
+                    className="bg-[#0B0F19]  rounded-xl p-8 text-white shadow-2xl relative overflow-hidden group border border-white/5"
                 >
                     <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#D4AF37]/20 to-transparent rounded-bl-full pointer-events-none transition-transform duration-1000 group-hover:scale-125"></div>
                     
@@ -120,7 +120,7 @@ const Home = () => {
                 <motion.div 
                     variants={itemVariants}
                     whileHover={{ y: -5 }}
-                    className="bg-white rounded-[2rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-[#10B981]/10 relative overflow-hidden group"
+                    className="bg-white  rounded-xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-[#10B981]/10 relative overflow-hidden group"
                 >
                     <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#10B981]/10 to-transparent rounded-bl-full pointer-events-none group-hover:scale-125 transition-transform duration-1000"></div>
                     
@@ -143,7 +143,7 @@ const Home = () => {
                 <motion.div 
                     variants={itemVariants}
                     whileHover={{ y: -5 }}
-                    className="bg-white rounded-[2rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-[#3B82F6]/10 relative overflow-hidden group"
+                    className="bg-white  rounded-xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-[#3B82F6]/10 relative overflow-hidden group"
                 >
                     <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#3B82F6]/10 to-transparent rounded-bl-full pointer-events-none group-hover:scale-125 transition-transform duration-1000"></div>
                     
@@ -166,7 +166,7 @@ const Home = () => {
             {/* Main Analytical Section */}
             <div className="grid gap-6 md:grid-cols-1 xl:grid-cols-3">
                 {/* Performance Matrix */}
-                <motion.div variants={itemVariants} className="xl:col-span-2 bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 flex flex-col">
+                <motion.div variants={itemVariants} className="xl:col-span-2 bg-white  rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                         <div>
                             <h3 className="text-2xl font-manrope font-black text-[#111827] tracking-tighter leading-none mb-2">Performance Matrix</h3>
@@ -232,7 +232,7 @@ const Home = () => {
                 </motion.div>
 
                 {/* Sources Matrix - PIE CHART */}
-                <motion.div variants={itemVariants} className="xl:col-span-1 bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 flex flex-col relative overflow-hidden group">
+                <motion.div variants={itemVariants} className="xl:col-span-1 bg-white  rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/5 rounded-bl-[4rem] group-hover:scale-110 transition-transform duration-1000"></div>
                     
                     <div className="mb-8 relative z-10">
@@ -280,7 +280,7 @@ const Home = () => {
             {/* Regional & Activity Hub */}
             <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-5">
                 {/* Regional Progress */}
-                <motion.div variants={itemVariants} className="lg:col-span-2 bg-white rounded-[2.5rem] p-10 shadow-sm border border-gray-100">
+                <motion.div variants={itemVariants} className="lg:col-span-2 bg-white  rounded-xl p-10 shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between mb-10">
                         <div>
                             <h3 className="text-2xl font-manrope font-black text-[#111827] tracking-tighter leading-none mb-2">Regional Dominance</h3>
@@ -317,7 +317,7 @@ const Home = () => {
                 </motion.div>
 
                 {/* System Pulse Feed */}
-                <motion.div variants={itemVariants} className="lg:col-span-3 bg-white rounded-[2.5rem] p-10 shadow-sm border border-gray-100 flex flex-col">
+                <motion.div variants={itemVariants} className="lg:col-span-3 bg-white  rounded-xl p-10 shadow-sm border border-gray-100 flex flex-col">
                     <div className="flex items-center justify-between mb-10">
                         <div>
                             <h3 className="text-2xl font-manrope font-black text-[#111827] tracking-tighter leading-none mb-2">System Pulse</h3>
@@ -331,7 +331,7 @@ const Home = () => {
 
                     <div className="flex-1 space-y-6 max-h-[350px] overflow-y-auto pr-4 custom-scrollbar">
                         {activities.map((act) => (
-                            <div key={act.id} className="flex items-start gap-6 p-5 rounded-[2rem] hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group cursor-default">
+                            <div key={act.id} className="flex items-start gap-6 p-5  rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group cursor-default">
                                 <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
                                     act.status === 'success' ? 'bg-[#10B981]/5 text-[#10B981]' : 
                                     act.status === 'warning' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'
@@ -364,7 +364,7 @@ const Home = () => {
                     <Link
                         key={idx}
                         to="#"
-                        className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:border-transparent transition-all group relative overflow-hidden"
+                        className="bg-white p-8  rounded-xl border border-gray-100 shadow-sm hover:shadow-2xl hover:border-transparent transition-all group relative overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-24 h-24 bg-gray-50 rounded-bl-[4rem] -translate-x-2 -translate-y-2 group-hover:bg-[#111827] group-hover:scale-110 transition-all duration-500"></div>
                         <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-[#A5413D] text-white group-hover:scale-110 transition-all duration-500 relative z-10 shadow-lg">

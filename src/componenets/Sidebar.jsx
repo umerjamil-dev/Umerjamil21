@@ -11,10 +11,11 @@ import {
   LogOut,
   ChevronDown,
   FileText,
-  Settings
+  Settings,
+  X
 } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
 
   const menuItems = [
@@ -126,7 +127,12 @@ const Sidebar = () => {
       }
     });
     setOpenMenus(initialState);
-  }, [location.pathname]);
+
+    // Close sidebar on mobile when route changes
+    if (window.innerWidth < 768 && setIsOpen) {
+      setIsOpen(false);
+    }
+  }, [location.pathname, setIsOpen]);
 
   const toggleMenu = (title) => {
     setOpenMenus(prev => ({
@@ -145,21 +151,34 @@ const Sidebar = () => {
 
   return (
     <div
-      className="w-[280px] h-screen fixed left-0 top-0 bg-[#0B0F19] text-white flex flex-col z-50 transition-all duration-300 font-inter border-r border-white/5 shadow-2xl shadow-black/50"
+      className={`
+        w-[280px] h-screen fixed left-0 top-0 bg-[#0B0F19] text-white flex flex-col z-50 
+        transition-transform duration-300 font-inter border-r border-white/5 shadow-2xl shadow-black/50
+        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}
     >
       {/* Brand Section - High-End Editorial */}
-      <div className="p-7 pb-8 flex flex-col relative border-b border-white/[0.05] bg-white/[0.01]">
+      <div className="p-6 md:p-7 pb-8 flex flex-col relative border-b border-white/[0.05] bg-white/[0.01]">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[var(--primary)]/10 to-transparent rounded-bl-full pointer-events-none"></div>
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="w-11 h-11 bg-gradient-to-br from-[#1E293B] to-[#0F172A] rounded-xl flex items-center justify-center text-white shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-white/10 shrink-0 group hover:scale-105 transition-transform">
-            <Plane size={22} strokeWidth={1.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
+        <div className="flex items-center justify-between relative z-10 w-full">
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 bg-gradient-to-br from-[#1E293B] to-[#0F172A] rounded-xl flex items-center justify-center text-white shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-white/10 shrink-0 group hover:scale-105 transition-transform">
+              <Plane size={22} strokeWidth={1.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-lg font-manrope font-black tracking-tighter text-white uppercase leading-none">
+                Al Bayan
+              </h1>
+              <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-[var(--desert-gold)] mt-1.5 opacity-90">Premium</span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-lg font-manrope font-black tracking-tighter text-white uppercase leading-none">
-              Al Bayan
-            </h1>
-            <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-[] mt-1.5 opacity-90">Premium</span>
-          </div>
+          {/* Mobile Close Button */}
+          <button 
+            className="md:hidden p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+            onClick={() => setIsOpen && setIsOpen(false)}
+          >
+            <X size={20} />
+          </button>
         </div>
       </div>
 
