@@ -1,38 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Search, Plus, Phone, MessageSquare, ChevronRight,
+  Search, Plus, Phone, MessageSquare, MessageCircle, ChevronRight,
   Download, ListFilter, Calendar,
   Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useLeadStore from '../store/useLeadStore';
+import useMasterTypeStore from '../store/useMasterTypeStore';
 
 const Leads = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { leads, fetchLeads, isLoading, error } = useLeadStore();
+  const { masterData, fetchMasterData } = useMasterTypeStore();
 
   useEffect(() => {
     fetchLeads();
-  }, [fetchLeads]);
+    fetchMasterData();
+  }, [fetchLeads, fetchMasterData]);
+
+  // Helper to map IDs to Names
+  const getMasterLabel = (id, list) => {
+    if (!id || !list) return '-';
+    // List can be array of objects {id, name} or array of simple strings
+    const item = list.find(l => (l.id === id || String(l.id) === String(id) || l === id));
+    return item?.name || (typeof item === 'string' ? item : id);
+  };
 
   // Fallback for demo if API returns empty but we want to show something initially
   const leadsToShow = (leads && leads.length > 0) ? leads : [
-    { id: 'LD-1024', name: 'Ahmed Raza', phone: '+92 300 1234567', source: 'Facebook', status: 'New', date: '2024-03-27', agent: 'Zaid Khan' },
-    { id: 'LD-1025', name: 'Fatima Zahra', phone: '+92 321 7654321', source: 'WhatsApp', status: 'Follow Up', date: '2024-03-26', agent: 'Sana Malik' },
-    { id: 'LD-1026', name: 'Zubair Ahmed', phone: '+92 333 4567890', source: 'Referral', status: 'Converted', date: '2024-03-25', agent: 'Zaid Khan' },
-    { id: 'LD-1027', name: 'Ayesha Bibi', phone: '+92 345 0987654', source: 'Direct', status: 'No Response', date: '2024-03-25', agent: 'Omar Farooq' },
-    { id: 'LD-1028', name: 'Bilal Siddiqui', phone: '+92 301 2233445', source: 'Instagram', status: 'Lost', date: '2024-03-24', agent: 'Sana Malik' },
-    { id: 'LD-1029', name: 'Hina Pervez', phone: '+92 312 9988776', source: 'Facebook', status: 'New', date: '2024-03-24', agent: 'Zaid Khan' },
+    { id: 24, name: 'Ahmed Raza', phone: '+92 300 1234567', source_id: 'Facebook', status_id: 10, created_at: '2024-03-27', assigned_to_id: 'Zaid Khan' },
+    { id: 25, name: 'Fatima Zahra', phone: '+92 321 7654321', source_id: 'WhatsApp', status_id: 11, created_at: '2024-03-26', assigned_to_id: 'Sana Malik' },
+    { id: 26, name: 'Zubair Ahmed', phone: '+92 333 4567890', source_id: 'Referral', status_id: 12, created_at: '2024-03-25', assigned_to_id: 'Zaid Khan' },
   ];
-
-  const myArray =[
-    {
-      name: 'll',
-      age:12,
-
-    }
-  ]   
-  console.log(myArray);
 
   const getStatusStyle = (status) => {
     switch (status) {
@@ -99,27 +98,27 @@ const Leads = () => {
             <thead>
               <tr className="bg-[var(--surface)] border-b border-[var(--outline-variant)]">
                 <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Inquiry Identification</th>
-                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Provenance</th>
-                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Disposition</th>
-                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Controller</th>
-                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] text-right">Cadence</th>
+                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Source</th>
+                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Status</th>
+                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">User</th>
+                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] text-right">Contact</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {isLoading ? (
                 <tr><td colSpan="5" className="px-10 py-10 text-center text-sm text-gray-500 font-medium">Fetching inquiries from server...</td></tr>
-              ) : leadsToShow.length === 0 ? (
+              ) : leads.length === 0 ? (
                 <tr><td colSpan="5" className="px-10 py-10 text-center text-sm text-gray-500 font-medium">No inquiries found in the archive.</td></tr>
-              ) : leadsToShow.map((lead) => (
+              ) : leads.map((lead) => (
                 <tr key={lead.id} className="group hover:bg-gray-50/50 transition-all cursor-pointer">
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-5">
                       <div className="w-12 h-12 rounded-xl bg-[#111827] text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:shadow-md transition-all">
-                        {lead.name.split(' ').map(n => n[0]).join('')}
+                        {(lead.lead_name || 'U').split(' ').map(n => n[0]).join('')}
                       </div>
                       <div>
                         <Link to={`/leads/${lead.id}`} className="block text-sm font-manrope font-extrabold text-gray-900 group-hover:text-[#111827] transition-colors tracking-tight">
-                          {lead.name}
+                          {lead.lead_name || 'Unnamed Inquiry'}
                         </Link>
                         <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1.5">{lead.id} <span className="mx-1 text-gray-300">•</span> {lead.phone}</p>
                       </div>
@@ -127,44 +126,56 @@ const Leads = () => {
                   </td>
                   <td className="px-10 py-6">
                     <span className="text-[10px] font-bold text-gray-600 bg-white px-3 py-1.5 rounded-xl border border-gray-200 shadow-sm uppercase tracking-widest group-hover:border-gray-300 transition-colors">
-                      {lead.source}
+                      {lead.source_name || 'N/A'}
                     </span>
                   </td>
                   <td className="px-10 py-6">
-                    <span className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-xl border ${
-                        lead.status === 'New' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                        lead.status === 'Contacted' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                        lead.status === 'Qualified' ? 'bg-purple-50 text-purple-600 border-purple-100' :
-                        lead.status === 'Converted' ? 'bg-green-50 text-green-600 border-green-100' :
-                        'bg-gray-50 text-gray-600 border-gray-100'
-                    }`}>
-                      {lead.status}
+                    <span className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-xl border ${lead.status_id === 10 ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                        lead.status_id === 11 ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                          'bg-gray-50 text-gray-600 border-gray-100'
+                      }`}>
+                      {lead.status_name || 'N/A'}
                     </span>
                   </td>
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-gray-100 text-[#111827] border border-gray-200 flex items-center justify-center text-[10px] font-bold">
-                        {lead.agent.split(' ').map(n => n[0]).join('')}
+                        {lead.assigned_to_name}
                       </div>
-                      <span className="text-xs font-bold text-gray-700">{lead.agent}</span>
+                      {/* <span className="text-xs font-bold text-gray-700">{getMasterLabel(lead.assigned_to_id, masterData.assigned_to) || 'Unassigned'}</span> */}
                     </div>
                   </td>
                   <td className="px-10 py-6 text-right">
-                    <div className="flex flex-col items-end gap-2">
-                       <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                         <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
-                           <Wand2 size={14} strokeWidth={2.5} />
-                         </button>
-                         <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
-                           <Shapes size={14} strokeWidth={2.5} />
-                         </button>
-                         <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
-                           <Tag size={14} strokeWidth={2.5} />
-                         </button>
-                         <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
-                           <Trash2 size={14} strokeWidth={2.5} />
-                         </button>
-                       </div>
+                    <div className="flex items-center justify-end gap-3">
+                      {/* Communication Suite */}
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={`tel:${lead.phone}`}
+                          className="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                          title="Call Lead"
+                        >
+                          <Phone size={14} strokeWidth={2.5} />
+                        </a>
+                        <a
+                          href={`sms:${lead.phone}`}
+                          className="w-8 h-8 flex items-center justify-center bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                          title="Send SMS"
+                        >
+                          <MessageSquare size={14} strokeWidth={2.5} />
+                        </a>
+                        <a
+                          href={`https://wa.me/${(lead.phone || '').replace(/\D/g, '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-8 h-8 flex items-center justify-center bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm"
+                          title="WhatsApp"
+                        >
+                          <MessageCircle size={14} strokeWidth={2.5} />
+                        </a>
+                      </div>
+
+                      {/* Operational Actions - Unveiled on Row Hover */}
+                     
                     </div>
                   </td>
                 </tr>
@@ -177,7 +188,7 @@ const Leads = () => {
         <div className="px-10 py-8 bg-[var(--surface)] flex items-center justify-between border-t border-[var(--outline-variant)]">
           <div>
             <p className="text-[10px] text-[var(--on-surface-variant)] font-bold uppercase  ">Inventory Visualization</p>
-            <p className="text-xs font-bold text-[var(--on-surface-variant)] mt-1">Showing 6 of 1,245 operational leads</p>
+            <p className="text-xs font-bold text-[var(--on-surface-variant)] mt-1">Showing {leads.length} operational leads</p>
           </div>
           <div className="flex items-center gap-4">
             <button className="px-6 py-3 bg-[var(--surface-container-low)] rounded-xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:text-[var(--primary)] transition-all shadow-sm">Decrement</button>

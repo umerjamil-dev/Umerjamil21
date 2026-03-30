@@ -11,7 +11,10 @@ import Bookings from '../pages/Bookings'
 import Payments from '../pages/Payments'
 import Reservations from '../pages/Reservations'
 import AddLead from '../pages/AddLead'
+import UpdateLead from '../pages/UpdateLead'
 import AddCustomer from '../pages/AddCustomer'
+import CustomerDetail from '../pages/CustomerDetail'
+import UpdateCustomer from '../pages/UpdateCustomer'
 import AddBooking from '../pages/AddBooking'
 import AddPayment from '../pages/AddPayment'
 import AddReservation from '../pages/AddReservation'
@@ -55,8 +58,11 @@ const Router = () => {
         <Route path="/leads" element={<ProtectedRoute><Layout><Leads /></Layout></ProtectedRoute>} />
         <Route path="/leads/add" element={<ProtectedRoute><Layout><AddLead /></Layout></ProtectedRoute>} />
         <Route path="/leads/:id" element={<ProtectedRoute><Layout><LeadDetail /></Layout></ProtectedRoute>} />
+        <Route path="/leads/:id/edit" element={<ProtectedRoute><Layout><UpdateLead /></Layout></ProtectedRoute>} />
         <Route path="/customers" element={<ProtectedRoute><Layout><Customers /></Layout></ProtectedRoute>} />
         <Route path="/customers/add" element={<ProtectedRoute><Layout><AddCustomer /></Layout></ProtectedRoute>} />
+        <Route path="/customers/:id" element={<ProtectedRoute><Layout><CustomerDetail /></Layout></ProtectedRoute>} />
+        <Route path="/customers/:id/edit" element={<ProtectedRoute><Layout><UpdateCustomer /></Layout></ProtectedRoute>} />
         <Route path="/calculator" element={<ProtectedRoute><Layout><Calculator /></Layout></ProtectedRoute>} />
         <Route path="/bookings" element={<ProtectedRoute><Layout><Bookings /></Layout></ProtectedRoute>} />
         <Route path="/bookings/add" element={<ProtectedRoute><Layout><AddBooking /></Layout></ProtectedRoute>} />

@@ -10,7 +10,11 @@ const useLeadStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await api.get('/leads');
-      set({ leads: response.data, isLoading: false });
+      // Normalize response data: look for nested 'data' or 'requested_names' property
+      const leadsArray = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data?.data || response.data?.requested_names || []);
+      set({ leads: Array.isArray(leadsArray) ? leadsArray : [], isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
     }
@@ -19,14 +23,15 @@ const useLeadStore = create((set, get) => ({
   addLead: async (leadData) => {
     set({ isLoading: true });
     try {
-      console.log(leadData);
-      
       const response = await api.post('/leads', leadData);
+      // Prepend the new lead, ensuring we extract it correctly from potential wrapper
+      const newLead = response.data?.data || response.data || leadData;
+      
       set((state) => ({ 
-        leads: [response.data, ...state.leads], 
+        leads: [newLead, ...(Array.isArray(state.leads) ? state.leads : [])], 
         isLoading: false 
       }));
-      return response.data;
+      return newLead;
     } catch (err) {
       set({ error: err.message, isLoading: false });
       throw err;
@@ -37,11 +42,13 @@ const useLeadStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await api.patch(`/leads/${id}`, updateData);
+      const updatedLead = response.data?.data || response.data;
+
       set((state) => ({
-        leads: state.leads.map((l) => (l.id === id ? response.data : l)),
+        leads: (Array.isArray(state.leads) ? state.leads : []).map((l) => (l.id === id ? updatedLead : l)),
         isLoading: false
       }));
-      return response.data;
+      return updatedLead;
     } catch (err) {
       set({ error: err.message, isLoading: false });
       throw err;
@@ -53,9 +60,35 @@ const useLeadStore = create((set, get) => ({
     try {
       await api.delete(`/leads/${id}`);
       set((state) => ({
-        leads: state.leads.filter((l) => l.id !== id),
+        leads: (Array.isArray(state.leads) ? state.leads : []).filter((l) => l.id !== id),
         isLoading: false
       }));
+    } catch (err) {
+      set({ error: err.message, isLoading: false });
+      throw err;
+    }
+  },
+
+  getLead: async (id) => {
+    set({ isLoading: true });
+    try {
+      const response = await api.get(`/leads/${id}`);
+      const lead = response.data?.data || response.data;
+      set({ isLoading: false });
+      return lead;
+    } catch (err) {
+      set({ error: err.message, isLoading: false });
+      throw err;
+    }
+  },
+
+  addLeadNote: async (id, noteText) => {
+    set({ isLoading: true });
+    try {
+      const response = await api.post(`/leads/${id}/comment`, { comment: noteText });
+      const newNote = response.data?.data || response.data;
+      set({ isLoading: false });
+      return newNote;
     } catch (err) {
       set({ error: err.message, isLoading: false });
       throw err;

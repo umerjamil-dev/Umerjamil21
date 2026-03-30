@@ -1,46 +1,97 @@
 import React from 'react';
 import {
     ArrowLeft, Phone, Mail, MapPin,
-    Calendar, Clock, User, MessageSquare,
+    Calendar, Clock, User, MessageSquare, MessageCircle,
     Save, Trash2, CheckCircle, AlertCircle,
     History, Plus, ExternalLink, Activity, Target
 } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import useLeadStore from '../store/useLeadStore';
+import useMasterTypeStore from '../store/useMasterTypeStore';
+import toast from 'react-hot-toast';
 
 const LeadDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
+    const { getLead, updateLead, deleteLead, addLeadNote } = useLeadStore();
+    const { masterData, fetchMasterData } = useMasterTypeStore();
     
-    // State for the status dropdown
-    const [currentStatus, setCurrentStatus] = React.useState('Contacted');
+    const [lead, setLead] = React.useState(null);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [currentStatus, setCurrentStatus] = React.useState('');
+    const [newNote, setNewNote] = React.useState('');
 
-    // Mock data based on requirements
-    const lead = {
-        id: id || 'LD-1024',
-        name: 'Ahmed Raza',
-        phone: '+92 300 1234567',
-        email: 'ahmed.raza@example.com',
-        source: 'WhatsApp', // (Facebook / Website / WhatsApp / Email)
-        status: 'Contacted', // (New, Contacted, Qualified, Converted, Lost)
-        assignedTo: 'Zaid Khan',
-        followUpDate: '2024-03-29',
-        createdDate: '2024-03-27',
-        message: 'Interested in 15-day Umrah package for 4 persons. Looking for 5-star hotels near Haram.',
-        notes: [
-            { id: 1, text: 'Sent package details via WhatsApp.', date: '2 hrs ago', user: 'Zaid Khan' },
-            { id: 2, text: 'Customer requested a quote for VIP transport.', date: 'Yesterday', user: 'Zaid Khan' }
-        ]
+    const fetchAll = React.useCallback(async () => {
+        setIsLoading(true);
+        try {
+            await fetchMasterData();
+            const leadData = await getLead(id);
+            setLead(leadData);
+            setCurrentStatus(leadData?.status_id);
+        } catch (err) {
+            console.error('LeadDetail Error:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [id, getLead, fetchMasterData]);
+
+    React.useEffect(() => {
+        fetchAll();
+    }, [fetchAll]);
+
+    const handleUpdateDetails = () => {
+        navigate(`/leads/${id}/edit`);
     };
 
-    const getStatusColor = (status) => {
-        switch(status.toLowerCase()) {
-            case 'new': return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
-            case 'contacted': return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
-            case 'qualified': return 'bg-purple-500/10 text-purple-600 border-purple-500/20';
-            case 'converted': return 'bg-green-500/10 text-green-600 border-green-500/20';
-            case 'lost': return 'bg-red-500/10 text-red-600 border-red-500/20';
-            default: return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
+    const handleDeleteLead = async () => {
+        if (!window.confirm('Are you sure you want to delete this lead?')) return;
+        try {
+            await deleteLead(id);
+            toast.success('Lead deleted');
+            navigate('/leads');
+        } catch (err) {
+            toast.error('Delete failed');
         }
     };
+
+    const handleSaveNote = async () => {
+        if (!newNote.trim()) {
+            toast.error('Note cannot be empty');
+            return;
+        }
+        try {
+            await addLeadNote(id, newNote);
+            toast.success('Note added');
+            setNewNote('');
+            fetchAll();
+        } catch (err) {
+            toast.error('Failed to add note');
+        }
+    };
+
+    const getMasterLabel = (id, list) => {
+        if (!id || !list) return 'Unassigned';
+        const item = list.find(l => (l.id === id || String(l.id) === String(id) || l === id));
+        return item?.name || (typeof item === 'string' ? item : id);
+    };
+
+    const getStatusText = (statusId) => {
+        return getMasterLabel(statusId, masterData.lead);
+    };
+
+    const getStatusColor = (statusId) => {
+        const statusText = getStatusText(statusId).toLowerCase();
+        if (statusText.includes('new')) return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
+        if (statusText.includes('contact')) return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
+        if (statusText.includes('qualif')) return 'bg-purple-500/10 text-purple-600 border-purple-500/20';
+        if (statusText.includes('convert')) return 'bg-green-500/10 text-green-600 border-green-500/20';
+        if (statusText.includes('lost')) return 'bg-red-500/10 text-red-600 border-red-500/20';
+        return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
+    };
+
+    if (isLoading) return <div className="p-20 text-center font-manrope font-extrabold text-gray-400 animate-pulse tracking-widest uppercase text-xs">Retrieving Intelligence Dossier...</div>;
+    if (!lead) return <div className="p-20 text-center font-manrope font-extrabold text-red-400 tracking-widest uppercase text-xs">Intelligence Outdated: Lead not found.</div>;
+
 
     return (
         <div className="font-inter space-y-8 animate-in fade-in duration-700 pb-12 mx-auto">
@@ -57,14 +108,20 @@ const LeadDetail = () => {
                             <div className="w-1 h-1 rounded-full bg-gray-300"></div>
                             <span className="text-xs font-black text-gray-900">{lead.id}</span>
                         </div>
-                        <h1 className="text-2xl font-manrope font-extrabold text-gray-900">{lead.name}</h1>
+                        <h1 className="text-2xl font-manrope font-extrabold text-gray-900">{lead.lead_name}</h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    <button className="px-5 py-2.5 bg-red-50 text-red-600 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-red-100 transition-colors flex items-center gap-2">
+                    <button 
+                        onClick={handleDeleteLead}
+                        className="px-5 py-2.5 bg-red-50 text-red-600 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-red-100 transition-colors flex items-center gap-2"
+                    >
                         <Trash2 size={16} /> Delete
                     </button>
-                    <button className="px-8 py-3 bg-[#111827] text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                    <button 
+                        onClick={handleUpdateDetails}
+                        className="px-8 py-3 bg-[#111827] text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                    >
                         <Save size={16} /> Update Details
                     </button>
                 </div>
@@ -89,11 +146,11 @@ const LeadDetail = () => {
                                     onChange={(e) => setCurrentStatus(e.target.value)}
                                     className={`appearance-none px-4 py-1.5 pr-8 rounded-xl text-[10px] font-black uppercase tracking-widest border outline-none cursor-pointer hover:shadow-md transition-all ${getStatusColor(currentStatus)}`}
                                 >
-                                    <option value="New" className="text-gray-900 font-bold bg-white">New</option>
-                                    <option value="Contacted" className="text-gray-900 font-bold bg-white">Contacted</option>
-                                    <option value="Qualified" className="text-gray-900 font-bold bg-white">Qualified</option>
-                                    <option value="Converted" className="text-gray-900 font-bold bg-white">Converted</option>
-                                    <option value="Lost" className="text-gray-900 font-bold bg-white">Lost</option>
+                                    {masterData.lead.map(s => (
+                                        <option key={s.id || s} value={s.id || s} className="text-gray-900 font-bold bg-white">
+                                            {s.name || s}
+                                        </option>
+                                    ))}
                                 </select>
                                 <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors ${getStatusColor(currentStatus).split(' ')[1]}`}>
                                     <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"></path></svg>
@@ -123,18 +180,16 @@ const LeadDetail = () => {
                                         <Target size={14} /> Acquisition Source
                                     </p>
                                     <div className="inline-flex py-1.5 px-4 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-900 shadow-sm">
-                                        {lead.source}
+                                        {lead.source_name}
                                     </div>
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                        <Activity size={14} /> Assigned Representative
+                                        <Activity size={14} /> Assigned User
                                     </p>
                                     <div className="flex items-center gap-3 p-2 bg-gray-50 rounded-xl border border-gray-100 w-max pr-4">
-                                        <div className="w-8 h-8 rounded-xl bg-[#111827] text-white flex items-center justify-center text-xs font-bold">
-                                            {lead.assignedTo.split(' ').map(n => n[0]).join('')}
-                                        </div>
-                                        <p className="text-sm font-bold text-gray-900">{lead.assignedTo}</p>
+                                       
+                                        <p className="text-sm font-bold text-gray-900">{lead.assigned_to_name}</p>
                                     </div>
                                 </div>
                             </div>
@@ -142,15 +197,26 @@ const LeadDetail = () => {
 
                         {/* Quick Contact Actions */}
                         <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-4 relative z-10">
-                            <button className="w-full sm:flex-1 py-4 bg-gray-50 hover:bg-[#111827] text-gray-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-gray-200 hover:border-[#111827]">
+                            <a 
+                                href={`tel:${lead.phone}`}
+                                className="w-full sm:flex-1 py-4 bg-gray-50 hover:bg-[#111827] text-gray-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-gray-200 hover:border-[#111827]"
+                            >
                                 <Phone size={18} className="group-hover:scale-110 transition-transform" /> Call Lead
-                            </button>
-                            <button className="w-full sm:flex-1 py-4 bg-emerald-50 hover:bg-emerald-500 text-emerald-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-emerald-100 hover:border-emerald-500">
-                                <MessageSquare size={18} className="group-hover:scale-110 transition-transform" /> WhatsApp
-                            </button>
-                            <button className="w-full sm:flex-1 py-4 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-blue-100 hover:border-blue-600">
+                            </a>
+                            <a 
+                                href={`https://wa.me/${(lead.phone || '').replace(/\D/g, '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full sm:flex-1 py-4 bg-emerald-50 hover:bg-emerald-500 text-emerald-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-emerald-100 hover:border-emerald-500"
+                            >
+                                <MessageCircle size={18} className="group-hover:scale-110 transition-transform" /> WhatsApp
+                            </a>
+                            <a 
+                                href={`mailto:${lead.email}`}
+                                className="w-full sm:flex-1 py-4 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-blue-100 hover:border-blue-600"
+                            >
                                 <Mail size={18} className="group-hover:scale-110 transition-transform" /> Email
-                            </button>
+                            </a>
                         </div>
 
                         {/* Message Box */}
@@ -180,7 +246,7 @@ const LeadDetail = () => {
 
                         <div className="relative z-10 mb-8">
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Scheduled Follow-up</p>
-                            <h2 className="text-3xl font-manrope font-black tracking-tighter text-white">{lead.followUpDate}</h2>
+                            <h2 className="text-3xl font-manrope font-black tracking-tighter text-white">{lead.follow_up_date || 'No Date'}</h2>
                         </div>
 
                         <button className="w-full py-4 bg-white text-[#111827] rounded-xl text-xs font-extrabold uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-lg relative z-10">
@@ -202,7 +268,7 @@ const LeadDetail = () => {
                         <div className="space-y-8 relative">
                             <div className="absolute left-[15px] top-2 bottom-2 w-px bg-gray-100"></div>
 
-                            {lead.notes.map((note) => (
+                            {lead.notes?.map((note) => (
                                 <div key={note.id} className="relative pl-12 group">
                                     <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-gray-400 group-hover:border-[#111827] group-hover:text-[#111827] transition-colors z-10">
                                         <MessageSquare size={12} />
@@ -224,7 +290,7 @@ const LeadDetail = () => {
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-gray-800 mb-1">Lead Created in System</p>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{lead.createdDate}</p>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{new Date(lead.created_at).toLocaleDateString()}</p>
                                 </div>
                             </div>
                         </div>
@@ -232,9 +298,14 @@ const LeadDetail = () => {
                         <div className="mt-8 pt-6 border-t border-gray-100">
                             <textarea
                                 placeholder="Add a new note..."
+                                value={newNote}
+                                onChange={(e) => setNewNote(e.target.value)}
                                 className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-gray-200 text-sm font-medium outline-none resize-none h-24 placeholder-gray-400"
                             ></textarea>
-                            <button className="w-full mt-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors">
+                            <button 
+                                onClick={handleSaveNote}
+                                className="w-full mt-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors"
+                            >
                                 Save Note
                             </button>
                         </div>

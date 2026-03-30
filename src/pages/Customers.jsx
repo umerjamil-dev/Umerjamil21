@@ -5,7 +5,8 @@ import {
   ChevronRight, ShieldCheck,
   Plane, Hotel, Star,
   Download,
-  Plus
+  Plus,
+  Globe
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useCustomerStore from '../store/useCustomerStore';
@@ -17,14 +18,7 @@ const Customers = () => {
     fetchCustomers();
   }, [fetchCustomers]);
 
-  const customersToShow = customers && customers.length > 0 ? customers : [
-    { id: 'CID-5001', name: 'Zaid bin Harith', location: 'Lahore, PK', group: 'Hajj 2024 (Group A)', status: 'Active', phone: '+92 312 0000000', travelDate: '2024-06-12', docs: 4 },
-    { id: 'CID-5002', name: 'Mariam Ali', location: 'Islamabad, PK', group: 'Umrah Premium', status: 'Completed', phone: '+92 333 1111111', travelDate: '2024-02-15', docs: 3 },
-    { id: 'CID-5003', name: 'Omar Farooq', location: 'Karachi, PK', group: 'Hajj 2024 (Group B)', status: 'Active', phone: '+92 301 2222222', travelDate: '2024-06-15', docs: 5 },
-    { id: 'CID-5004', name: 'Ayesha Siddiqa', location: 'Peshawar, PK', group: 'Umrah Standard', status: 'Processing', phone: '+92 345 3333333', travelDate: '2024-04-10', docs: 2 },
-  ];
-
-
+  const customersToShow = customers;
   return (
     <div className="space-y-12 animate-in fade-in duration-1000 font-inter">
       {/* Editorial Header */}
@@ -38,6 +32,7 @@ const Customers = () => {
             <Download size={16} strokeWidth={2} />
             Analytics Export
           </button>
+          
           <Link
             to="/customers/add"
             className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-xl"
@@ -51,10 +46,10 @@ const Customers = () => {
       {/* Stats Summary - Bento No-Line Style */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Customers', value: '1,245', icon: Users, bg: '#616B7B' },
-          { label: 'Visa Approved', value: '890', icon: ShieldCheck, bg: '#636569' },
-          { label: 'Flight Ready', value: '450', icon: Plane, bg: '#726888' },
-          { label: 'Hospitality', value: '1,120', icon: Hotel, bg: '#A5413D' },
+          { label: 'Total Registries', value: customers.length, icon: Users, bg: '#616B7B' },
+          { label: 'Visa Approved', value: Math.floor(customers.length * 0.7), icon: ShieldCheck, bg: '#636569' },
+          { label: 'Flight Ready', value: Math.floor(customers.length * 0.4), icon: Plane, bg: '#726888' },
+          { label: 'Hospitality', value: Math.floor(customers.length * 0.9), icon: Hotel, bg: '#A5413D' },
         ].map((stat, i) => (
           <div key={i} className="bg-[var(--surface-container-lowest)] rounded-xl p-8 border border-[var(--outline-variant)] shadow-sm flex flex-col gap-6 group hover:bg-[var(--surface-container-high)] transition-all cursor-default relative overflow-hidden">
             <div 
@@ -94,70 +89,90 @@ const Customers = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading ? (
-            <div className="col-span-full py-20 text-center text-sm font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50">Querying Customer Registry...</div>
-          ) : customersToShow.length === 0 ? (
-            <div className="col-span-full py-20 text-center text-sm font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50">No pilgrims found in the current cycle.</div>
-          ) : customersToShow.map((customer) => (
-            <div key={customer.id} className="group bg-[var(--surface-container-lowest)] hover:bg-[var(--surface-container-high)] rounded-xl p-8 border border-[var(--outline-variant)] shadow-sm transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
-              <div className="relative z-10 flex flex-col h-full uppercase tracking-widest">
-                <div className="flex justify-between items-start mb-8">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface)] font-manrope font-extrabold text-base group-hover:bg-white group-hover:shadow-lg transition-all border border-[var(--outline-variant)]">
-                      {customer.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-manrope font-extrabold text-[var(--on-surface)] tracking-tight leading-none mb-1.5">{customer.name}</h4>
-                      <p className="text-[9px] font-bold text-[var(--on-surface-variant)] opacity-60 italic">{customer.id}</p>
-                    </div>
-                  </div>
-                  <span className={`px-2.5 py-1 rounded-full text-[8px] font-black shadow-sm ${customer.status === 'Active' ? 'bg-[var(--grad-green)] text-black' :
-                    customer.status === 'Completed' ? 'bg-[var(--grad-black)] text-black' : 'bg-[var(--grad-gold)] text-black'
-                    }`}>
-                    {customer.status}
-                  </span>
-                </div>
+        {/* Ledger Table - No Line Philosophy */}
+        <div className="bg-[var(--surface-container-lowest)] rounded-3xl shadow-sm border border-[var(--outline-variant)] overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[var(--surface)] border-b border-[var(--outline-variant)]">
+                  <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Pilgrim Nomenclature</th>
+                  <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Passport Registry</th>
+                  <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Status Index</th>
+                  <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Residency</th>
+                  <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] text-right">Operation</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--outline-variant)]/30">
+                {isLoading ? (
+                  <tr>
+                    <td colSpan="5" className="px-10 py-20 text-center text-sm font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50 italic">
+                      Querying Customer Registry...
+                    </td>
+                  </tr>
+                ) : customersToShow.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-10 py-20 text-center text-sm font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50 italic">
+                      No pilgrims found in the current cycle.
+                    </td>
+                  </tr>
+                ) : customersToShow.map((customer) => {
+                  const fullName = `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || customer.name || 'Unnamed Pilgrim';
+                  const initials = fullName.split(' ').map(n => n[0]).join('').slice(0, 2);
 
-                <div className="space-y-6 flex-grow">
-                  <div className="flex items-center gap-2">
-                    <MapPin size={10} className="text-[var(--on-surface-variant)]" />
-                    <span className="text-[9px] font-bold text-[var(--on-surface-variant)]">{customer.location}</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 py-6 border-y border-[var(--outline-variant)] group-hover:border-white/20 transition-colors">
-                    <div>
-                      <p className="text-[8px] font-bold text-[var(--on-surface-variant)] mb-1 opacity-50"></p>
-                      <div className="flex items-center gap-1.5 text-[10px] font-extrabold text-[var(--on-surface)] truncate">
-                        <Star size={10} className="text-[var(--desert-gold)]" />
-                        {customer.group.split('(')[0]}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-[8px] font-bold text-[var(--on-surface-variant)] mb-1 opacity-50">Departure</p>
-                      <p className="text-[10px] font-extrabold text-[var(--on-surface)] truncate">{customer.travelDate}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between mt-8">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-[8px] font-bold text-[var(--on-surface-variant)]">
-                      <FileText size={12} strokeWidth={2} />
-                      <span>{customer.docs}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[8px] font-bold text-[var(--on-surface-variant)]">
-                      <Phone size={12} strokeWidth={2} />
-                      <span>{customer.phone.slice(-4)}</span>
-                    </div>
-                  </div>
-                  <button className="w-10 h-10 rounded-xl bg-[var(--surface-container-low)] border border-[var(--outline-variant)] flex items-center justify-center text-[var(--on-surface)] group-hover:btn-midnight transition-all">
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+                  return (
+                    <tr key={customer.id} className="group hover:bg-[var(--surface-container-high)] transition-all cursor-pointer">
+                      <td className="px-10 py-6">
+                        <div className="flex items-center gap-5">
+                          <div className="w-12 h-12 rounded-xl bg-[#111827] text-white flex items-center justify-center font-manrope font-extrabold text-base border border-[var(--outline-variant)] overflow-hidden">
+                            {customer.photo ? (
+                              <img src={customer.photo} alt="" className="w-full h-full object-cover" />
+                            ) : initials}
+                          </div>
+                          <div>
+                            <Link to={`/customers/${customer.id}`} className="block text-[13px] font-manrope font-extrabold text-[var(--on-surface)] group-hover:text-[var(--primary)] transition-colors tracking-tight">
+                              {fullName}
+                            </Link>
+                            <p className="text-[9px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mt-1.5 opacity-60">ID: {customer.id} <span className="mx-1 opacity-20">•</span> {customer.phone}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-10 py-6">
+                        <div className="flex items-center gap-2">
+                           <ShieldCheck size={12} className="text-[var(--sacred-emerald)]" />
+                           <span className="text-[11px] font-extrabold text-[var(--on-surface)] tracking-widest uppercase">{customer.passportNo || 'Required'}</span>
+                        </div>
+                      </td>
+                      <td className="px-10 py-6">
+                        <span className={`px-4 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest border shadow-sm ${
+                          customer.status === 'Active' ? 'bg-[var(--grad-green)] text-black border-green-200' :
+                          customer.status === 'Completed' ? 'bg-[var(--grad-black)] text-black border-black/10' : 
+                          'bg-[var(--grad-gold)] text-black border-amber-200'
+                        }`}>
+                          {customer.status || 'Active'}
+                        </span>
+                      </td>
+                      <td className="px-10 py-6">
+                        <div className="flex items-center gap-2">
+                           <MapPin size={12} className="text-[var(--on-surface-variant)]" />
+                           <span className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest">{customer.city || 'Pending'}</span>
+                        </div>
+                      </td>
+                      <td className="px-10 py-6 text-right">
+                        <div className="flex items-center justify-end">
+                           <Link 
+                            to={`/customers/${customer.id}`}
+                            className="w-10 h-10 rounded-xl bg-[var(--surface-container-low)] border border-[var(--outline-variant)] flex items-center justify-center text-[var(--on-surface)] group-hover:bg-[#111827] group-hover:text-white transition-all shadow-sm"
+                          >
+                            <ChevronRight size={16} />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="pt-10 flex justify-center">

@@ -4,14 +4,14 @@ import {
   User, Mail, Smartphone, ShieldCheck,
   Plus, Search, Filter,
   Edit2, Trash2, X,
-  Activity, ShieldAlert, Zap, Users,
+  Activity, ShieldAlert, Zap, Users, Lock
 } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 import toast from 'react-hot-toast';
 
 /* ─── Constants ──────────────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1];
-const DEFAULT_FORM = { name: '', email: '', phone: '', role_id: '3', status_id: '1' };
+const DEFAULT_FORM = { name: '', email: '', phone: '', password: '', role_id: '3', status_id: '1' };
 
 const ROLE_MAP = {
   '1': { label: 'Admin',     cls: 'bg-gray-900 text-white border border-gray-900' },
@@ -28,6 +28,7 @@ const FORM_FIELDS = [
   { label: 'Full Name', key: 'name',  type: 'text',  placeholder: 'Umar Jamil',      Icon: User },
   { label: 'Email',     key: 'email', type: 'email', placeholder: 'umar@albayan.com', Icon: Mail },
   { label: 'Phone',     key: 'phone', type: 'text',  placeholder: '+971 50 000 0000', Icon: Smartphone },
+  { label: 'Password',  key: 'password', type: 'password', placeholder: '••••••••', Icon: Lock },
 ];
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -89,7 +90,7 @@ const ManageUsers = () => {
             Personnel Management
           </div>
           <h1 className="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">
-            User <span className="text-gray-400">Matrix</span>
+            User 
           </h1>
           <p className="text-sm text-gray-400">
             Manage access, roles, and system-level permissions.
