@@ -20,6 +20,8 @@ import AddPayment from '../pages/AddPayment'
 import AddReservation from '../pages/AddReservation'
 import Packages from '../pages/Packages'
 import AddPackage from '../pages/AddPackage'
+import PackageDetail from '../pages/PackageDetail'
+import UpdatePackage from '../pages/UpdatePackage'
 import LiveBooking from '../pages/LiveBooking'
 import Operations from '../pages/Operations'
 import ProtectedRoute from '../componenets/ProtectedRoute'
@@ -100,6 +102,8 @@ const Router = () => {
         <Route path="/reservations/transport" element={<ProtectedRoute><Layout><Transport /></Layout></ProtectedRoute>} />
         <Route path="/packages" element={<ProtectedRoute><Layout><Packages /></Layout></ProtectedRoute>} />
         <Route path="/packages/add" element={<ProtectedRoute><Layout><AddPackage /></Layout></ProtectedRoute>} />
+        <Route path="/packages/:id" element={<ProtectedRoute><Layout><PackageDetail /></Layout></ProtectedRoute>} />
+        <Route path="/packages/:id/edit" element={<ProtectedRoute><Layout><UpdatePackage /></Layout></ProtectedRoute>} />
         <Route path="/live-booking" element={<ProtectedRoute><Layout><LiveBooking /></Layout></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>

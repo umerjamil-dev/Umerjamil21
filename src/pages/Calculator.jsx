@@ -2,10 +2,18 @@ import React, { useState, useEffect } from 'react';
 import {
   Calculator as CalcIcon, DollarSign, Users,
   Hotel, Plane, ShieldCheck, MapPin,
-  RefreshCw, Save, ArrowRight, Info, TrendingUp
+  RefreshCw, Save, ArrowRight, Info, TrendingUp, Package, UserCheck
 } from 'lucide-react';
+import useCalculatorStore from '../store/useCalculatorStore';
+import useCustomerStore from '../store/useCustomerStore';
 
 const Calculator = () => {
+  const { packages, fetchPackages, isLoading: pkgsLoading } = useCalculatorStore();
+  const { customers, fetchCustomers, isLoading: custsLoading } = useCustomerStore();
+  const [selectedPkgId, setSelectedPkgId] = useState('');
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
+  const selectedCustomer = customers.find((c) => String(c.id) === String(selectedCustomerId)) || null;
+
   const [inputs, setInputs] = useState({
     persons: 1,
     makkahNights: 7,
@@ -23,6 +31,23 @@ const Calculator = () => {
     profit: 0,
     finalPrice: 0
   });
+
+  useEffect(() => {
+    fetchPackages();
+    fetchCustomers();
+  }, [fetchPackages, fetchCustomers]);
+  const handlePackageSelect = (pkgId) => {
+    setSelectedPkgId(pkgId);
+    if (!pkgId) return;
+    const pkg = packages.find((p) => String(p.id) === String(pkgId));
+    if (!pkg) return;
+    setInputs((prev) => ({
+      ...prev,
+      makkahNights: pkg.nights_makkah || prev.makkahNights,
+      madinahNights: pkg.nights_madinah || prev.madinahNights,
+      flightCost: pkg.base_price ? Number(pkg.base_price) : prev.flightCost,
+    }));
+  };
 
   const calculate = () => {
     const hotelRate = inputs.hotelCategory === '5-star' ? 150 : inputs.hotelCategory === '4-star' ? 100 : 60;
@@ -58,10 +83,104 @@ const Calculator = () => {
         </button>
       </div>
 
+      {/* Selector Bar — Package + Customer */}
+      <div className="bg-[var(--surface-container-lowest)] rounded-xl border border-[var(--outline-variant)] shadow-sm divide-y divide-[var(--outline-variant)]">
+        {/* Package Row */}
+        <div className="p-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center">
+                <Package size={18} className="text-[var(--on-surface-variant)]" strokeWidth={1.5} />
+              </div>
+              <div>
+                <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Load Package</p>
+                <p className="text-[11px] font-bold text-[var(--on-surface)] opacity-60">Pre-fill inputs from existing package</p>
+              </div>
+            </div>
+            <div className="flex-1 relative border-b-2 border-[var(--outline-variant)] focus-within:border-[var(--on-surface)] transition-all pb-2">
+              <select
+                className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none appearance-none cursor-pointer pr-4"
+                value={selectedPkgId}
+                onChange={(e) => handlePackageSelect(e.target.value)}
+                disabled={pkgsLoading}
+              >
+                <option value="">{pkgsLoading ? 'Loading packages...' : '— Select a package to load —'}</option>
+                {packages.map((pkg) => (
+                  <option key={pkg.id} value={pkg.id}>
+                    {pkg.title} ({pkg.nights_makkah}N Makkah · {pkg.nights_madinah}N Madinah · ${Number(pkg.base_price).toLocaleString()})
+                  </option>
+                ))}
+              </select>
+            </div>
+            {selectedPkgId && (
+              <button
+                onClick={() => setSelectedPkgId('')}
+                className="shrink-0 px-5 py-2.5 border border-[var(--outline-variant)] rounded-xl text-[9px] font-black uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-white transition-all"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Customer Row */}
+        <div className="p-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center">
+                <UserCheck size={18} className="text-[var(--on-surface-variant)]" strokeWidth={1.5} />
+              </div>
+              <div>
+                <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Assign Customer</p>
+                <p className="text-[11px] font-bold text-[var(--on-surface)] opacity-60">Link quotation to a registered pilgrim</p>
+              </div>
+            </div>
+            <div className="flex-1 relative border-b-2 border-[var(--outline-variant)] focus-within:border-[var(--on-surface)] transition-all pb-2">
+              <select
+                className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none appearance-none cursor-pointer pr-4"
+                value={selectedCustomerId}
+                onChange={(e) => setSelectedCustomerId(e.target.value)}
+                disabled={custsLoading}
+              >
+                <option value="">{custsLoading ? 'Loading customers...' : '— Select a customer —'}</option>
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name || c.full_name || `Customer #${c.id}`}{c.phone ? ` · ${c.phone}` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {selectedCustomerId && (
+              <button
+                onClick={() => setSelectedCustomerId('')}
+                className="shrink-0 px-5 py-2.5 border border-[var(--outline-variant)] rounded-xl text-[9px] font-black uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-white transition-all"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          {/* Selected customer badge */}
+          {selectedCustomer && (
+            <div className="mt-5 flex items-center gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)]">
+              <div className="w-9 h-9 rounded-full bg-[var(--surface-container-high)] border border-[var(--outline-variant)] flex items-center justify-center overflow-hidden">
+                {selectedCustomer.customer_image
+                  ? <img src={selectedCustomer.customer_image} alt="" className="w-full h-full object-cover" />
+                  : <UserCheck size={16} className="text-[var(--on-surface-variant)]" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-manrope font-extrabold text-[var(--on-surface)] truncate">{selectedCustomer.name || selectedCustomer.full_name}</p>
+                <p className="text-[9px] font-bold text-[var(--on-surface-variant)] opacity-60 tracking-widest uppercase">{selectedCustomer.phone || selectedCustomer.email || 'No contact info'}</p>
+              </div>
+              <span className="text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full">Linked</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
         {/* Configuration Matrix - 8 Columns */}
         <div className="xl:col-span-8 space-y-10">
-          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
+          <div className="bg-[var(--surface-container-lowest)] rounded-xl p-12 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
             <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-12 flex items-center gap-3">
               <CalcIcon size={16} strokeWidth={2} /> Operational Variables
             </h3>
@@ -69,7 +188,7 @@ const Calculator = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
               {/* Persons */}
               <div className="group">
-                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase   mb-3 block">Pilgrim Quota</label>
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Pilgrim Quota</label>
                 <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                   <Users className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
                   <input
@@ -83,7 +202,7 @@ const Calculator = () => {
 
               {/* Hotel Category */}
               <div className="group">
-                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase   mb-3 block">Hospitality Grade</label>
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Hospitality Grade</label>
                 <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                   <Hotel className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
                   <select
@@ -100,7 +219,7 @@ const Calculator = () => {
 
               {/* Makkah Nights */}
               <div className="group">
-                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase   mb-3 block">Makkah Residency (Nights)</label>
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Makkah Residency (Nights)</label>
                 <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                   <MapPin className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
                   <input
@@ -114,7 +233,7 @@ const Calculator = () => {
 
               {/* Madinah Nights */}
               <div className="group">
-                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase   mb-3 block">Madinah Residency (Nights)</label>
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Madinah Residency (Nights)</label>
                 <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                   <MapPin className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
                   <input
@@ -128,7 +247,7 @@ const Calculator = () => {
 
               {/* Flight Cost */}
               <div className="group">
-                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase   mb-3 block">Aviation Cost (Unit)</label>
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Aviation Cost (Unit)</label>
                 <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                   <Plane className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
                   <input
@@ -142,7 +261,7 @@ const Calculator = () => {
 
               {/* Visa Cost */}
               <div className="group">
-                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase   mb-3 block">Visa Allotment (Unit)</label>
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Visa Allotment (Unit)</label>
                 <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                   <ShieldCheck className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
                   <input
@@ -157,7 +276,7 @@ const Calculator = () => {
           </div>
 
           {/* Revenue Optimization Map */}
-          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-12 shadow-sm border border-[var(--outline-variant)] ">
+          <div className="bg-[var(--surface-container-lowest)] rounded-xl p-12 shadow-sm border border-[var(--outline-variant)]">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
               <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Revenue Yield Strategy</h3>
               <div className="px-4 py-2 bg-[var(--tertiary)]/5 text-[var(--tertiary)] text-[9px] font-extrabold uppercase tracking-widest rounded-full border border-[var(--tertiary)]/10">
@@ -180,7 +299,7 @@ const Calculator = () => {
                   <span>50% Premium</span>
                 </div>
               </div>
-              <div className="w-28 h-28 rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center text-center group-hover:btn-primary  transition-all shadow-sm">
+              <div className="w-28 h-28 rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center text-center transition-all shadow-sm">
                 <p className="text-3xl font-manrope font-extrabold tracking-tighter">{inputs.markup}%</p>
               </div>
             </div>
@@ -189,11 +308,26 @@ const Calculator = () => {
 
         {/* Monolithic Result Engine - 4 Columns */}
         <div className="xl:col-span-4 space-y-12">
-          {/* Synthesized Estimation with Black Gradient */}
+          {/* Synthesized Estimation */}
           <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-[2.5rem] p-14 text-white shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-white/5 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-bl-[8rem] translate-x-16 -translate-y-16 group-hover:translate-x-8 group-hover:-translate-y-8 transition-all duration-700"></div>
 
             <h3 className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] mb-16 relative z-10">Synthesized Estimation</h3>
+
+            {selectedPkgId && (
+              <p className="text-[9px] font-black text-[var(--desert-gold,#f59e0b)] uppercase tracking-widest mb-6 relative z-10 opacity-70">
+                ↑ Loaded from package
+              </p>
+            )}
+            {selectedCustomer && (
+              <div className="mb-6 relative z-10 flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                <UserCheck size={14} className="text-white/40 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-0.5">Customer</p>
+                  <p className="text-xs font-manrope font-extrabold text-white/70 truncate">{selectedCustomer.name || selectedCustomer.full_name}</p>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-8 relative z-10">
               <div className="flex justify-between items-center">
@@ -206,19 +340,19 @@ const Calculator = () => {
               </div>
               <div className="pt-10 mt-2 border-t border-white/10 text-center">
                 <p className="text-[10px] text-gray-500 font-extrabold uppercase tracking-[0.25em] mb-4">Official Quoted Value</p>
-                <p className="text-6xl font-manrope font-extrabold tracking-tighter shadow-sm text-white ">
+                <p className="text-6xl font-manrope font-extrabold tracking-tighter shadow-sm text-white">
                   ${results.finalPrice.toLocaleString()}
                 </p>
               </div>
             </div>
 
-            <button className="w-full mt-12 py-5 bg-white text-[var(--on-surface)]    rounded-xl font-extrabold text-[10px] uppercase tracking-[0.3em] hover:bg-gray-100 transition-all shadow-xl flex items-center justify-center gap-3">
+            <button className="w-full mt-12 py-5 bg-white text-[var(--on-surface)] rounded-xl font-extrabold text-[10px] uppercase tracking-[0.3em] hover:bg-gray-100 transition-all shadow-xl flex items-center justify-center gap-3">
               Generate PDF Protocol <ArrowRight size={18} strokeWidth={2.5} />
             </button>
           </div>
 
           {/* Granular Allotment Data */}
-          <div className="bg-[var(--surface-container-lowest)]  rounded-xl p-10 border border-[var(--outline-variant)] shadow-sm group">
+          <div className="bg-[var(--surface-container-lowest)] rounded-xl p-10 border border-[var(--outline-variant)] shadow-sm group">
             <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
               <Info size={16} strokeWidth={2} /> Expenditure Allotment
             </h3>
@@ -236,8 +370,8 @@ const Calculator = () => {
                 <span className="text-[var(--on-surface)] font-manrope">${(inputs.transportCost * inputs.persons).toLocaleString()}</span>
               </div>
             </div>
-            <div className="mt-10 p-5 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-xl flex items-center justify-center gap-3 text-[10px] font-extrabold text-[var(--on-surface)] uppercase tracking-widest group-hover:btn-primary group-hover:text-black transition-all">
-              <RefreshCw size={16} strokeWidth={2.5} className="text-[var(--on-surface-variant)] " />
+            <div className="mt-10 p-5 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-xl flex items-center justify-center gap-3 text-[10px] font-extrabold text-[var(--on-surface)] uppercase tracking-widest transition-all">
+              <RefreshCw size={16} strokeWidth={2.5} className="text-[var(--on-surface-variant)]" />
               Algorithmic Sync Active
             </div>
           </div>

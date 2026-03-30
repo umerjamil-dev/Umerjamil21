@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
    ArrowLeft, Save, Package,
    Hotel, MapPin, Calendar,
@@ -8,9 +8,16 @@ import {
    Workflow
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import useMasterTypeStore from '../store/useMasterTypeStore';
+import usePackageStore from '../store/usePackageStore';
+import toast from 'react-hot-toast';
+import { selectClasses } from '@mui/material/Select';
 
 const AddPackage = () => {
    const navigate = useNavigate();
+   const { masterData, fetchMasterData } = useMasterTypeStore();
+   const { addPackage, isLoading } = usePackageStore();
+
    const [formData, setFormData] = useState({
       title: '',
       makkahHotel: '',
@@ -18,10 +25,29 @@ const AddPackage = () => {
       nightsMakkah: 7,
       nightsMadinah: 7,
       basePrice: '',
-      category: 'Standard'
+      category: '',
+      status_id: 1
    });
 
+   useEffect(() => {
+      fetchMasterData();
+   }, [fetchMasterData]);
+
+   const handleSubmit = async () => {
+      if (!formData.title || !formData.basePrice) {
+         toast.error('Designation and Valuation are mandatory.');
+         return;
+      }
+      try {
+         await addPackage(formData);
+         toast.success('Package successfully authorized and archived.');
+         navigate('/packages');
+      } catch (err) {
+         toast.error('Failed to archive package: ' + err.message);
+      }
+   };
    return (
+    <>
       <div className="font-inter space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-24">
          {/* Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-4">
@@ -30,7 +56,7 @@ const AddPackage = () => {
                   <Package size={14} className="text-[var(--desert-gold)]" />
                   Inventory Forge
                </div>
-               <h1 className="text-4xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">Assemble <span className="text-[var(--on-surface-variant)]/40 italic font-light font-manrope">Travel </span></h1>
+               <h1 className="text-4xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">Add Packages </h1>
                <p className="text-[var(--on-surface-variant)] text-sm font-medium max-w-lg">Archiving a new travel  for the upcoming pilgrimage season with verified hospitality and transit nodes.</p>
             </div>
             <div className="flex items-center gap-4">
@@ -41,11 +67,12 @@ const AddPackage = () => {
                   Discard
                </Link>
                <button
-                  onClick={() => navigate('/packages')}
-                  className="btn-primary px-10 py-4 rounded-xl text-white text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl flex items-center gap-3 active:scale-95 transition-all"
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className={`btn-primary px-10 py-4 rounded-xl text-white text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl flex items-center gap-3 active:scale-95 transition-all ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                >
                   <Save size={18} strokeWidth={2.5} />
-                  Authorize & Archive
+                  {isLoading ? 'Archiving...' : 'Authorize & Archive'}
                </button>
             </div>
          </div>
@@ -145,6 +172,30 @@ const AddPackage = () => {
                               </div>
                            </div>
                         </div>
+                        <div className="p-10 bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)] group/slider hover:bg-white transition-all shadow-sm col-span-1 md:col-span-2">
+                           <div className="flex items-center justify-between mb-8">
+                              <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Operational Status</p>
+                              <ShieldCheck size={18} className="text-[var(--on-surface-variant)]" strokeWidth={2.5} />
+                           </div>
+                           <div className="flex gap-4">
+                              {[{ label: 'Active', value: 1 }, { label: 'Inactive', value: 0 }].map((opt) => (
+                                 <button
+                                    key={opt.value}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, status_id: opt.value })}
+                                    className={`flex-1 py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] transition-all border ${
+                                       formData.status_id === opt.value
+                                          ? opt.value === 1
+                                             ? 'bg-emerald-600 text-white border-transparent shadow-lg'
+                                             : 'bg-[var(--on-surface)] text-white border-transparent shadow-lg'
+                                          : 'bg-[var(--surface-container-lowest)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-white hover:border-[var(--on-surface)]'
+                                    }`}
+                                 >
+                                    {opt.label}
+                                 </button>
+                              ))}
+                           </div>
+                        </div>
                      </div>
                   </div>
                </div>
@@ -171,18 +222,22 @@ const AddPackage = () => {
                      <div className="group">
                         <label className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-6 block ml-1 opacity-70">Strategic Categorization</label>
                         <div className="grid grid-cols-3 gap-3">
-                           {['Economy', 'Market', 'Elite'].map((cat) => (
-                              <button
-                                 key={cat}
-                                 onClick={() => setFormData({ ...formData, category: cat })}
-                                 className={`py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border ${formData.category === cat
-                                       ? 'bg-[var(--on-surface)] text-white border-transparent shadow-xl -translate-y-1'
-                                       : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-white hover:border-[var(--on-surface)]'
-                                    }`}
-                              >
-                                 {cat}
-                              </button>
-                           ))}
+                           {(masterData.strategiccategorization || []).map((cat) => {
+                              const label = cat.name || cat;
+                              const value = cat.id || cat;
+                              return (
+                                 <button
+                                    key={value}
+                                    onClick={() => setFormData({ ...formData, category: value })}
+                                    className={`py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border ${formData.category === value
+                                          ? 'bg-[var(--on-surface)] text-white border-transparent shadow-xl -translate-y-1'
+                                          : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-white hover:border-[var(--on-surface)]'
+                                       }`}
+                                 >
+                                    {label}
+                                 </button>
+                               );
+                           })}
                         </div>
                      </div>
                   </div>
@@ -225,12 +280,12 @@ const AddPackage = () => {
                      <div className="w-16 h-16 rounded-[1.5rem] bg-[var(--surface)] flex items-center justify-center border border-[var(--outline-variant)] group-hover:bg-white transition-all overflow-hidden relative">
                         <img
                            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Umar"
-                           alt="Umar Jamil"
+                           alt="Admin User"
                            className="w-full h-full object-cover p-2"
                         />
                      </div>
                      <div>
-                        <p className="text-sm font-manrope font-black text-[var(--on-surface)] tracking-tight">Umar Jamil</p>
+                        <p className="text-sm font-manrope font-black text-[var(--on-surface)] tracking-tight">Admin User</p>
                         <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest opacity-60">Executive Authority</p>
                      </div>
                   </div>
@@ -238,9 +293,11 @@ const AddPackage = () => {
                      "Ensure all hospitality allotments are synchronized with the KSA global hospitality  before commitment."
                   </div>
                </div>
+               
             </div>
          </div>
       </div>
+    </>
    );
 };
 
