@@ -142,14 +142,30 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   };
 
   const isMenuActive = (item) => {
-    // For items WITH a submenu, only activate based on submenu children (not the parent path)
-    // This prevents dual-active when parent.path === submenu[0].path
+    // For items WITH a submenu, only activate if the menu itself is open or a child is active
     if (item.submenu) {
-      return item.submenu.some(sub => location.pathname === sub.path || (sub.path !== '/' && location.pathname.startsWith(sub.path + '/')));
+      return item.submenu.some(sub => isSubPathActive(sub.path, item.submenu));
     }
-    // For simple nav items (no submenu), match exactly
-    if (item.path === '/') return location.pathname === '/';
-    return location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+    // For simple nav items (no submenu), use the same best-match logic
+    return isSubPathActive(item.path, menuItems);
+  };
+
+  const isSubPathActive = (path, currentSiblings) => {
+    if (location.pathname === path) return true;
+    if (path === '/') return location.pathname === '/';
+    
+    // Check if current path starts with this path
+    if (location.pathname.startsWith(path + '/')) {
+      // It's a prefix match. But is it the BEST prefix match among siblings?
+      // If there's another sibling that also matches and is longer, then THIS one is not the "active" one.
+      const hasBetterSibling = currentSiblings.some(sibling => 
+        sibling.path !== path && 
+        location.pathname.startsWith(sibling.path) && 
+        sibling.path.length > path.length
+      );
+      return !hasBetterSibling;
+    }
+    return false;
   };
 
   return (
@@ -242,7 +258,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     <div className="absolute left-[20px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-white/20 via-white/10 to-transparent"></div>
 
                     {item.submenu.map((subItem, subIndex) => {
-                      const isSubActive = location.pathname === subItem.path || (subItem.path !== '/' && location.pathname.startsWith(subItem.path + '/'));
+                      const isSubActive = isSubPathActive(subItem.path, item.submenu);
                       return (
                         <NavLink
                           key={subIndex}

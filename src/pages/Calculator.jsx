@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import {
   Calculator as CalcIcon, DollarSign, Users,
   Hotel, Plane, ShieldCheck, MapPin,
-  RefreshCw, Save, ArrowRight, Info, TrendingUp, Package, UserCheck
+  RefreshCw, Save, ArrowRight, Info, TrendingUp, Package, UserCheck, Mail, Phone
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import useCalculatorStore from '../store/useCalculatorStore';
 import useCustomerStore from '../store/useCustomerStore';
+import toast from 'react-hot-toast';
 
 const Calculator = () => {
-  const { packages, fetchPackages, isLoading: pkgsLoading } = useCalculatorStore();
+  const navigate = useNavigate();
+  const { packages, fetchPackages, saveCalculation, isLoading: savingLoading } = useCalculatorStore();
   const { customers, fetchCustomers, isLoading: custsLoading } = useCustomerStore();
   const [selectedPkgId, setSelectedPkgId] = useState('');
   const [selectedCustomerId, setSelectedCustomerId] = useState('');
@@ -63,11 +66,40 @@ const Calculator = () => {
     });
   };
 
+  const handleSave = async () => {
+    try {
+      const payload = {
+        customer_id: selectedCustomerId,
+        persons: inputs.persons,
+        makkah_nights: inputs.makkahNights,
+        madinah_nights: inputs.madinahNights,
+        hotel_category: inputs.hotelCategory,
+        flight_cost: inputs.flightCost,
+        visa_cost: inputs.visaCost,
+        transport_cost: inputs.transportCost,
+        markup: inputs.markup,
+        hotel_total: results.hotelTotal,
+        total_cost: results.totalCost,
+        profit: results.profit,
+        final_price: results.finalPrice
+      };
+
+      const response = await saveCalculation(payload);
+      toast.success('Quotation archived successfully!');
+      return response;
+    } catch (err) {
+      toast.error('Failed to archive: ' + err.message);
+      return null;
+    }
+  };
+
   useEffect(() => {
     calculate();
-  }, [inputs]);
+  }, [inputs]); 
+  const baseUrl = "http://192.168.5.178:8000/" 
 
   return (
+    <>
     <div className="space-y-12 animate-in fade-in duration-1000 font-inter">
       {/* Editorial Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4">
@@ -76,52 +108,18 @@ const Calculator = () => {
           <p className="mt-2 text-sm font-medium text-[var(--on-surface-variant)] tracking-wide">Algorithmic precision for sacred travel quotations.</p>
         </div>
         <button
-          className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-xl"
+          onClick={handleSave}
+          disabled={savingLoading}
+          className={`btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-extrabold uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-xl ${savingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <Save size={18} strokeWidth={2.5} />
-          Archive Quotation
+          {savingLoading ? 'Archiving...' : 'Archive Quotation'}
         </button>
       </div>
 
       {/* Selector Bar — Package + Customer */}
       <div className="bg-[var(--surface-container-lowest)] rounded-xl border border-[var(--outline-variant)] shadow-sm divide-y divide-[var(--outline-variant)]">
-        {/* Package Row */}
-        <div className="p-8">
-          <div className="flex flex-col md:flex-row md:items-center gap-6">
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center">
-                <Package size={18} className="text-[var(--on-surface-variant)]" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Load Package</p>
-                <p className="text-[11px] font-bold text-[var(--on-surface)] opacity-60">Pre-fill inputs from existing package</p>
-              </div>
-            </div>
-            <div className="flex-1 relative border-b-2 border-[var(--outline-variant)] focus-within:border-[var(--on-surface)] transition-all pb-2">
-              <select
-                className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none appearance-none cursor-pointer pr-4"
-                value={selectedPkgId}
-                onChange={(e) => handlePackageSelect(e.target.value)}
-                disabled={pkgsLoading}
-              >
-                <option value="">{pkgsLoading ? 'Loading packages...' : '— Select a package to load —'}</option>
-                {packages.map((pkg) => (
-                  <option key={pkg.id} value={pkg.id}>
-                    {pkg.title} ({pkg.nights_makkah}N Makkah · {pkg.nights_madinah}N Madinah · ${Number(pkg.base_price).toLocaleString()})
-                  </option>
-                ))}
-              </select>
-            </div>
-            {selectedPkgId && (
-              <button
-                onClick={() => setSelectedPkgId('')}
-                className="shrink-0 px-5 py-2.5 border border-[var(--outline-variant)] rounded-xl text-[9px] font-black uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-white transition-all"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
+       
 
         {/* Customer Row */}
         <div className="p-8">
@@ -145,7 +143,7 @@ const Calculator = () => {
                 <option value="">{custsLoading ? 'Loading customers...' : '— Select a customer —'}</option>
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name || c.full_name || `Customer #${c.id}`}{c.phone ? ` · ${c.phone}` : ''}
+                    {c.firstName || c.lastName }
                   </option>
                 ))}
               </select>
@@ -161,18 +159,69 @@ const Calculator = () => {
           </div>
           {/* Selected customer badge */}
           {selectedCustomer && (
-            <div className="mt-5 flex items-center gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)]">
-              <div className="w-9 h-9 rounded-full bg-[var(--surface-container-high)] border border-[var(--outline-variant)] flex items-center justify-center overflow-hidden">
-                {selectedCustomer.customer_image
-                  ? <img src={selectedCustomer.customer_image} alt="" className="w-full h-full object-cover" />
-                  : <UserCheck size={16} className="text-[var(--on-surface-variant)]" />}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-manrope font-extrabold text-[var(--on-surface)] truncate">{selectedCustomer.name || selectedCustomer.full_name}</p>
-                <p className="text-[9px] font-bold text-[var(--on-surface-variant)] opacity-60 tracking-widest uppercase">{selectedCustomer.phone || selectedCustomer.email || 'No contact info'}</p>
-              </div>
-              <span className="text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full">Linked</span>
-            </div>
+         <div className="mt-5 p-4 bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)]">
+  
+  <table className="w-full text-left">
+    <tbody>
+
+      <tr className="border-b border-[var(--outline-variant)]">
+
+        {/* Image */}
+        <td className="py-2">
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--outline-variant)] flex items-center justify-center">
+            {selectedCustomer?.customer_image ? (
+              <img
+                src={baseUrl + selectedCustomer.customer_image}
+                alt="customer"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <UserCheck size={16} className="text-[var(--on-surface-variant)]" />
+            )}
+          </div>
+        </td>
+
+        {/* Name */}
+        <td className="py-2 font-bold">
+          {selectedCustomer
+            ? `${selectedCustomer.firstName || ''} ${selectedCustomer.lastName || ''}`
+            : 'No Name'}
+        </td>
+
+        {/* Contact (Phone + Email) */}
+        <td className="py-2 text-xs space-y-1">
+
+          {/* Phone */}
+          <div className="flex items-center gap-2">
+            <Phone size={12} className="text-green-600" />
+            <span>
+              {selectedCustomer?.phone || 'No Phone'}
+            </span>
+          </div>
+
+          {/* Email */}
+          <div className="flex items-center gap-2">
+            <Mail size={12} className="text-blue-600" />
+            <span className="truncate">
+              {selectedCustomer?.email || 'No Email'}
+            </span>
+          </div>
+
+        </td>
+
+        {/* Status */}
+        <td className="py-2">
+          <span className="text-[10px] font-black uppercase px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full">
+            Linked
+          </span>
+        </td>
+
+      </tr>
+
+    </tbody>
+  </table>
+
+</div>
           )}
         </div>
       </div>
@@ -346,8 +395,24 @@ const Calculator = () => {
               </div>
             </div>
 
-            <button className="w-full mt-12 py-5 bg-white text-[var(--on-surface)] rounded-xl font-extrabold text-[10px] uppercase tracking-[0.3em] hover:bg-gray-100 transition-all shadow-xl flex items-center justify-center gap-3">
-              Generate PDF Protocol <ArrowRight size={18} strokeWidth={2.5} />
+            <button
+              onClick={async () => {
+                const res = await handleSave();
+                console.log('Save Result:', res);
+                const newId = res?.data?.id || res?.id;
+                console.log('Navigation ID:', newId);
+                if (newId) {
+                  navigate(`/customer-profile/${newId}`, { 
+                    state: { customer: selectedCustomer, inputs, results } 
+                  });
+                } else {
+                  console.error('No ID found in save response');
+                }
+              }}
+              disabled={savingLoading}
+              className={`w-full mt-12 py-5 bg-white text-[var(--on-surface)] rounded-xl font-extrabold text-[10px] uppercase tracking-[0.3em] hover:bg-gray-100 transition-all shadow-xl flex items-center justify-center gap-3 ${savingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {savingLoading ? 'Archiving...' : 'Save & View Profile'} <ArrowRight size={18} strokeWidth={2.5} />
             </button>
           </div>
 
@@ -378,6 +443,7 @@ const Calculator = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
