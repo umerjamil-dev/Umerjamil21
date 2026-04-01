@@ -13,48 +13,7 @@ const Hotels = () => {
     fetchHotels();
   }, [fetchHotels]);
 
-  const hotelData = hotels && hotels.length > 0 ? hotels : [
-    {
-      id: 'HTL-901',
-      customer: 'Ahmed Raza',
-      hotelName: 'Swissôtel Makkah',
-      city: 'Makkah',
-      checkIn: '10 Apr 2024',
-      checkOut: '17 Apr 2024',
-      rooms: '2 Double, 1 Suite',
-      status: 'Confirmed'
-    },
-    {
-      id: 'HTL-902',
-      customer: 'Ahmed Raza',
-      hotelName: 'Pullman Zamzam',
-      city: 'Madinah',
-      checkIn: '17 Apr 2024',
-      checkOut: '25 Apr 2024',
-      rooms: '2 Double, 1 Suite',
-      status: 'Confirmed'
-    },
-    {
-      id: 'HTL-903',
-      customer: 'Fatima Zahra',
-      hotelName: 'Fairmont Makkah Clock Royal',
-      city: 'Makkah',
-      checkIn: '05 Jun 2024',
-      checkOut: '15 Jun 2024',
-      rooms: '1 Executive Suite',
-      status: 'Awaiting Voucher'
-    },
-    {
-      id: 'HTL-904',
-      customer: 'Zubair Ahmed',
-      hotelName: 'Dar Al Taqwa',
-      city: 'Madinah',
-      checkIn: '02 May 2024',
-      checkOut: '09 May 2024',
-      rooms: '1 Triple Room',
-      status: 'Pending'
-    }
-  ];
+  const hotelData = hotels;
 
 
   return (

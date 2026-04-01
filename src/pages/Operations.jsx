@@ -16,23 +16,9 @@ const Operations = () => {
       fetchOperationsData();
    }, [fetchOperationsData]);
 
-   const staffData = staff && staff.length > 0 ? staff : [
-      { id: 'STF-001', name: 'Zaid Al-Harbi', role: 'Mutawwif', status: 'On Task', location: 'Makkah', contact: '+966 50 123 4567' },
-      { id: 'STF-002', name: 'Omar Bakr', role: 'Driver', status: 'Available', location: 'Jeddah', contact: '+966 50 987 6543' },
-      { id: 'STF-003', name: 'Hassan Idris', role: 'Guide', status: 'Resting', location: 'Madinah', contact: '+966 50 555 0192' },
-   ];
-
-   const taskData = liveTasks && liveTasks.length > 0 ? liveTasks : [
-      { id: 'TSK-901', customer: 'Ahmed Raza', service: 'Airport Pickup', staff: 'Omar Bakr', status: 'In Transit', time: '14:30 AST' },
-      { id: 'TSK-902', customer: 'Fatima Zahra', service: 'Ziyarat Guide', staff: 'Zaid Al-Harbi', status: 'Completed', time: '10:00 AST' },
-      { id: 'TSK-903', customer: 'Zubair Ahmed', service: 'Hotel Check-in', staff: 'Hassan Idris', status: 'Delayed', time: '16:45 AST' },
-   ];
-
-   const saturationData = sectorSaturation && sectorSaturation.length > 0 ? sectorSaturation : [
-      { sector: 'Makkah', value: '82%', color: 'bg-black' },
-      { sector: 'Madinah', value: '45%', color: 'bg-slate-200' },
-      { sector: 'Jeddah', value: '18%', color: 'bg-slate-100' }
-   ];
+   const staffData = staff;
+   const taskData = liveTasks;
+   const saturationData = sectorSaturation;
 
 
    return (

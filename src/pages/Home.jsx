@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
     const [timeFilter, setTimeFilter] = useState('Yearly');
-
+// here's the char data will appear 
     const chartData = {
         Weekly: {
             categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -31,7 +31,7 @@ const Home = () => {
             engagement: [2000, 2500, 2800, 3500, 4200, 5000, 5500, 6200, 7000, 7500, 8200, 9000]
         }
     };
-
+// here the pie chart will be appear 
     const pieData = [
         { id: 0, value: 35, label: 'Direct', color: '#D4AF37' },
         { id: 1, value: 25, label: 'Agents', color: '#111827' },
@@ -39,20 +39,20 @@ const Home = () => {
         { id: 3, value: 15, label: 'Referral', color: '#3B82F6' },
         { id: 4, value: 5, label: 'Other', color: '#6366F1' },
     ];
-
+// here the activities will appear  
     const activities = [
         { id: 1, type: 'lead', title: 'New Lead: Ahmed Khan', desc: 'Premium Umrah Inquiry', time: '2 mins ago', status: 'new' },
         { id: 2, type: 'booking', title: 'Booking Confirmed', desc: 'Family Hajj Package #442', time: '15 mins ago', status: 'success' },
         { id: 3, type: 'payment', title: 'Payment Received', desc: '$4,500 - Jameel Zubair', time: '1 hour ago', status: 'success' },
         { id: 4, type: 'visa', title: 'Visa Processing', desc: 'Waitlist for October Batch', time: '3 hours ago', status: 'warning' },
     ];
-
+// here the regions will appear 
     const regions = [
         { name: 'Makkah Al-Mukarramah', value: 85, color: '#D4AF37', leads: '420' },
         { name: 'Madinah Al-Munawwarah', value: 72, color: '#10B981', leads: '315' },
         { name: 'Jeddah Operations', value: 45, color: '#3B82F6', leads: '180' },
     ];
-
+// here the container variants will appear 
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -60,7 +60,7 @@ const Home = () => {
             transition: { staggerChildren: 0.1 }
         }
     };
-
+// here the item variants will appear 
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
         visible: {
@@ -69,8 +69,9 @@ const Home = () => {
             transition: { duration: 0.5, ease: "easeOut" }
         }
     };
-
+ 
     return (
+
         <motion.div 
             variants={containerVariants}
             initial="hidden"

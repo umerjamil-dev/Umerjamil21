@@ -52,6 +52,7 @@ const SalesPerformance = () => <div className="p-10 font-bold text-slate-400">Sa
 
 const Router = () => {
   return (
+    <>
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -109,6 +110,7 @@ const Router = () => {
         <Route path="/live-booking" element={<ProtectedRoute><Layout><LiveBooking /></Layout></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
+    </>
   )
 }
 

@@ -2,16 +2,15 @@
 @import "tailwindcss";
 
 :root {
-  /* Al Bayan Premium Palette */
-  --primary: #111827;           /* Deep Midnight Navy */
-  --secondary: #78777D;         /* Slate Grey */
-  --tertiary: #777491;          /* Muted Indigo */
-  --neutral: #F9FAFB;           /* Professional Off-White Background */
-  --desert-gold: #CA9323;       /* Premium Gold */
-  --sacred-emerald: #10B981;    /* Success Emerald */
+  --primary: #111827;          
+  --secondary: #78777D;         
+  --tertiary: #777491;          
+  --neutral: #F9FAFB;           
+  --desert-gold: #CA9323;       
+  --sacred-emerald: #10B981;    
 
   /* Surface Hierarchy */
-  --surface: #F9FAFB;           /* Base background */
+  --surface: #F9FAFB;           
   --surface-container-low: #F3F4F6;
   --surface-container-lowest: #FFFFFF;
   --surface-container-high: #E5E7EB;
@@ -62,6 +61,7 @@ body {
 .bento-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  
 }
 
 /* Button Utilities */
@@ -101,7 +101,8 @@ body {
 .sidebar-theme .nav-link-inactive {
   color: var(--sidebar-on-surface-variant) !important;
 }
-
+ 
+ 
 .sidebar-theme .nav-link-inactive:hover {
   background-color: var(--surface-container-low)/50 !important;
   color: var(--primary) !important;

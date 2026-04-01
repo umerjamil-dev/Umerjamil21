@@ -2,15 +2,15 @@ import { create } from 'zustand';
 import api from '../api/axios';
 
 const useTransportStore = create((set) => ({
-  transportList: [],
+  transports: [],
   isLoading: false,
   error: null,
 
-  fetchTransport: async () => {
+  fetchTransports: async () => {
     set({ isLoading: true });
     try {
       const response = await api.get('/reservations/transport');
-      set({ transportList: response.data, isLoading: false });
+      set({ transports: response.data, isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
     }
@@ -20,7 +20,7 @@ const useTransportStore = create((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.post('/reservations/transport', data);
-      set((state) => ({ transportList: [response.data, ...state.transportList], isLoading: false }));
+      set((state) => ({ transports: [response.data, ...state.transports], isLoading: false }));
       return response.data;
     } catch (err) {
       set({ error: err.message, isLoading: false });

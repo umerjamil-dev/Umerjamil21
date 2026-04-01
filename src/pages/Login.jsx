@@ -13,7 +13,7 @@ const MosqueIcon = ({ className }) => (
     <path d="M12 15V22" />
     <path d="M8 18H8.01" />
     <path d="M16 18H16.01" />
-  </svg>
+  </svg> 
 );
 
 const Login = () => {

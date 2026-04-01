@@ -15,44 +15,7 @@ const Visa = () => {
     fetchVisas();
   }, [fetchVisas]);
 
-  const visaData = visas && visas.length > 0 ? visas : [
-    {
-      id: 'V-8091',
-      customer: 'Ahmed Raza',
-      package: 'Premium Ramadan Umrah',
-      visaNumber: 'E-78291034',
-      status: 'Approved',
-      notes: 'Biometrics cleared, passport stamped.',
-      dateAssigned: '12 Mar 2024'
-    },
-    {
-      id: 'V-8092',
-      customer: 'Fatima Zahra',
-      package: 'Executive Hajj 2024',
-      visaNumber: 'Pending',
-      status: 'Processing',
-      notes: 'Awaiting MOFA clearance verification.',
-      dateAssigned: '15 Mar 2024'
-    },
-    {
-      id: 'V-8093',
-      customer: 'Zubair Ahmed',
-      package: 'Economy Umrah Plus',
-      visaNumber: 'Waiting',
-      status: 'Not Started',
-      notes: 'Documents incomplete. Missing passport copy.',
-      dateAssigned: '18 Mar 2024'
-    },
-    {
-      id: 'V-8094',
-      customer: 'Omar Jamil',
-      package: 'VIP Ziyarat Express',
-      visaNumber: 'E-78291155',
-      status: 'Approved',
-      notes: 'Ready for travel dispatch.',
-      dateAssigned: '20 Mar 2024'
-    }
-  ];
+  const visaData = visas;
 
   const stats = {
     total: visaData.length,

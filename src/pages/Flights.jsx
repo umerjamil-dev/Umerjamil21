@@ -13,44 +13,7 @@ const Flights = () => {
     fetchFlights();
   }, [fetchFlights]);
 
-  const flightData = flights && flights.length > 0 ? flights : [
-    {
-      id: 'FLT-101',
-      customer: 'Ahmed Raza',
-      airline: 'Saudia',
-      departure: '10 Apr 2024, 08:30 AM',
-      arrival: '10 Apr 2024, 01:15 PM',
-      ticketNumber: '065-8910293845',
-      status: 'Ticketed'
-    },
-    {
-      id: 'FLT-102',
-      customer: 'Ahmed Raza',
-      airline: 'Saudia',
-      departure: '25 Apr 2024, 09:40 PM',
-      arrival: '26 Apr 2024, 02:00 AM',
-      ticketNumber: '065-8910293846',
-      status: 'Ticketed'
-    },
-    {
-      id: 'FLT-103',
-      customer: 'Fatima Zahra',
-      airline: 'Qatar Airways',
-      departure: '05 Jun 2024, 11:20 AM',
-      arrival: '05 Jun 2024, 06:10 PM',
-      ticketNumber: 'Pending Queue',
-      status: 'Processing'
-    },
-    {
-      id: 'FLT-104',
-      customer: 'Zubair Ahmed',
-      airline: 'Emirates',
-      departure: '02 May 2024, 04:00 AM',
-      arrival: '02 May 2024, 08:30 AM',
-      ticketNumber: '176-9921238472',
-      status: 'Ticketed'
-    }
-  ];
+  const flightData = flights;
 
 
   return (

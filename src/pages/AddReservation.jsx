@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    ArrowLeft, Plane, Hotel,
    MapPin, ShieldCheck, Clock,
@@ -7,9 +7,21 @@ import {
    ArrowRight
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import useBookingStore from '../store/useBookingStore';
+import useHotelStore from '../store/useHotelStore';
+import useVisaStore from '../store/useVisaStore';
+import useFlightStore from '../store/useFlightStore';
+import useTransportStore from '../store/useTransportStore';
+import toast from 'react-hot-toast';
 
 const AddReservation = () => {
    const navigate = useNavigate();
+   const { bookings, fetchBookings } = useBookingStore();
+   const { addHotel } = useHotelStore();
+   const { addVisa } = useVisaStore();
+   const { addFlight } = useFlightStore();
+   const { addTransport } = useTransportStore();
+
    const [formData, setFormData] = useState({
       type: 'Hotel', // Hotel, Visa, Flight, Transport
       bookingId: '',
@@ -17,8 +29,75 @@ const AddReservation = () => {
       checkIn: '',
       checkOut: '',
       referenceNumber: '',
-      status: 'Confirmed'
+      status: 'Confirmed',
+      // Dynamic fields for different types
+      hotelName: '',
+      city: 'Makkah',
+      roomType: '',
+      visaNumber: '',
+      airline: '',
+      ticketNumber: '',
+      departure: '',
+      arrival: '',
+      vehicle: '',
+      driver: '',
+      notes: ''
    });
+
+   useEffect(() => {
+      fetchBookings();
+   }, [fetchBookings]);
+
+   const handleSubmit = async () => {
+      if (!formData.bookingId) {
+         toast.error('Parent booking reference is mandatory.');
+         return;
+      }
+
+      try {
+         let result;
+         if (formData.type === 'Hotel') {
+            result = await addHotel({
+               booking_id: formData.bookingId,
+               hotel_name: formData.hotelName,
+               city: formData.city,
+               check_in: formData.checkIn,
+               check_out: formData.checkOut,
+               rooms: formData.roomType,
+               status: formData.status
+            });
+         } else if (formData.type === 'Visa') {
+            result = await addVisa({
+               booking_id: formData.bookingId,
+               visa_number: formData.visaNumber,
+               status: formData.status,
+               notes: formData.notes
+            });
+         } else if (formData.type === 'Flight') {
+            result = await addFlight({
+               booking_id: formData.bookingId,
+               airline: formData.airline,
+               ticket_number: formData.ticketNumber,
+               departure: formData.departure,
+               arrival: formData.arrival,
+               status: formData.status
+            });
+         } else if (formData.type === 'Transport') {
+            result = await addTransport({
+               booking_id: formData.bookingId,
+               type: formData.type, // specific subtype if needed
+               vehicle: formData.vehicle,
+               driver: formData.driver,
+               status: formData.status
+            });
+         }
+
+         toast.success(`${formData.type} segment finalized.`);
+         navigate('/reservations');
+      } catch (err) {
+         toast.error('Registry failure: ' + err.message);
+      }
+   };
 
    const types = [
       { id: 'Hotel', icon: Hotel, color: 'text-[var(--desert-gold)]' },
@@ -40,7 +119,7 @@ const AddReservation = () => {
             <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Add Reservation </h1>
             <div className="flex items-center gap-4">
                <button
-                  onClick={() => navigate('/reservations')}
+                  onClick={handleSubmit}
                   className="px-10 py-5 bg-black text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
                >
                   <Save size={18} strokeWidth={2.5} />
@@ -121,8 +200,9 @@ const AddReservation = () => {
                            onChange={(e) => setFormData({ ...formData, bookingId: e.target.value })}
                         >
                            <option value="" className="bg-white">Query Registry...</option>
-                           <option value="1" className="bg-white">BK-9123 (Ahmed Raza)</option>
-                           <option value="2" className="bg-white">BK-4421 (Fatima Zahra)</option>
+                           {bookings.map(b => (
+                              <option key={b.id} value={b.id} className="bg-white">{b.id} ({b.customer_name || 'N/A'})</option>
+                           ))}
                         </select>
                      </div>
                   </div>
@@ -134,13 +214,24 @@ const AddReservation = () => {
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Number</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="E-VISA #82934..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-widest" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="E-VISA #82934..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-widest"
+                                    value={formData.visaNumber}
+                                    onChange={(e) => setFormData({ ...formData, visaNumber: e.target.value })}
+                                 />
                               </div>
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Status</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer">
+                                 <select 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
+                                    value={formData.status}
+                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                 >
+                                    <option className="bg-white">Confirmed</option>
                                     <option className="bg-white">Pending</option>
                                     <option className="bg-white">Processing</option>
                                     <option className="bg-white">Approved</option>
@@ -151,7 +242,13 @@ const AddReservation = () => {
                            <div className="md:col-span-2 group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Internal Notes</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="MOFA verification pending..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="MOFA verification pending..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.notes}
+                                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                 />
                               </div>
                            </div>
                         </>
@@ -162,13 +259,23 @@ const AddReservation = () => {
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Hotel Name</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="Fairmont Makkah..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="Fairmont Makkah..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.hotelName}
+                                    onChange={(e) => setFormData({ ...formData, hotelName: e.target.value })}
+                                 />
                               </div>
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">City</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer">
+                                 <select 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
+                                    value={formData.city}
+                                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                 >
                                     <option className="bg-white">Makkah</option>
                                     <option className="bg-white">Madinah</option>
                                     <option className="bg-white">Jeddah</option>
@@ -178,15 +285,31 @@ const AddReservation = () => {
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Check-in / Check-out</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4 flex items-center gap-4">
-                                 <input type="date" className="bg-transparent text-xs font-black text-slate-900 outline-none" />
+                                 <input 
+                                    type="date" 
+                                    className="bg-transparent text-xs font-black text-slate-900 outline-none" 
+                                    value={formData.checkIn}
+                                    onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
+                                 />
                                  <ArrowRight size={14} className="text-slate-300" />
-                                 <input type="date" className="bg-transparent text-xs font-black text-slate-900 outline-none" />
+                                 <input 
+                                    type="date" 
+                                    className="bg-transparent text-xs font-black text-slate-900 outline-none" 
+                                    value={formData.checkOut}
+                                    onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
+                                 />
                               </div>
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Room </label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="Double Quad, Triple... " className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="Double Quad, Triple... " 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.roomType}
+                                    onChange={(e) => setFormData({ ...formData, roomType: e.target.value })}
+                                 />
                               </div>
                            </div>
                         </>
@@ -197,25 +320,49 @@ const AddReservation = () => {
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Airline</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="Saudi Airlines (SV-001)..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="Saudi Airlines (SV-001)..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.airline}
+                                    onChange={(e) => setFormData({ ...formData, airline: e.target.value })}
+                                 />
                               </div>
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Ticket Number</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="TKT-#029384756..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-tighter" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="TKT-#029384756..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-tighter" 
+                                    value={formData.ticketNumber}
+                                    onChange={(e) => setFormData({ ...formData, ticketNumber: e.target.value })}
+                                 />
                               </div>
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Departure Loc / Time</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="JFK @ 14:00..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="JFK @ 14:00..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.departure}
+                                    onChange={(e) => setFormData({ ...formData, departure: e.target.value })}
+                                 />
                               </div>
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Arrival Loc / Time</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="JED @ 09:30..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="JED @ 09:30..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.arrival}
+                                    onChange={(e) => setFormData({ ...formData, arrival: e.target.value })}
+                                 />
                               </div>
                            </div>
                         </>
@@ -238,13 +385,25 @@ const AddReservation = () => {
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Vehicle Assignment</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="GMC Yukon / Bus-50..." className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="GMC Yukon / Bus-50..." 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.vehicle}
+                                    onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
+                                 />
                               </div>
                            </div>
                            <div className="md:col-span-2 group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Driver Name / Contact</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input type="text" placeholder="Muhammad Ali (+966...)" className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" />
+                                 <input 
+                                    type="text" 
+                                    placeholder="Muhammad Ali (+966...)" 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                    value={formData.driver}
+                                    onChange={(e) => setFormData({ ...formData, driver: e.target.value })}
+                                 />
                               </div>
                            </div>
                         </>

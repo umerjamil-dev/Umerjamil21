@@ -10,48 +10,11 @@ import useTransportStore from '../store/useTransportStore';
 const Transport = () => {
   const { transports, fetchTransports, isLoading } = useTransportStore();
 
-  // useEffect(() => {
-  //   fetchTransports();
-  // }, [fetchTransports]);
+  useEffect(() => {
+    fetchTransports();
+  }, [fetchTransports]);
 
-  const transportData = transports && transports.length > 0 ? transports : [
-    {
-      id: 'TRN-201',
-      customer: 'Ahmed Raza',
-      type: 'Pickup (JED -> Makkah)',
-      vehicle: 'GMC Yukon XL 2024',
-      driver: 'Omar Bakr',
-      date: '10 Apr 2024, 02:30 PM',
-      status: 'Confirmed'
-    },
-    {
-      id: 'TRN-202',
-      customer: 'Ahmed Raza',
-      type: 'City Transfer (Makkah -> Madinah)',
-      vehicle: 'Makkah VIP Bus (Seat 4A, 4B)',
-      driver: 'VIP Transport Core',
-      date: '17 Apr 2024, 09:00 AM',
-      status: 'Scheduled'
-    },
-    {
-      id: 'TRN-203',
-      customer: 'Fatima Zahra',
-      type: 'Ziyarat Madinah',
-      vehicle: 'Toyota Hiace Standard',
-      driver: 'Pending Assignment',
-      date: '08 Jun 2024, 07:30 AM',
-      status: 'Pending Verification'
-    },
-    {
-      id: 'TRN-204',
-      customer: 'Zubair Ahmed',
-      type: 'Drop-off (Madinah -> MED)',
-      vehicle: 'Hyundai Staria VIP',
-      driver: 'Hassan Idris',
-      date: '09 May 2024, 05:00 AM',
-      status: 'Confirmed'
-    }
-  ];
+  const transportData = transports;
 
 
   return (

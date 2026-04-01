@@ -53,29 +53,10 @@ const Reports = () => {
     ];
 
     // Normalized Data from Store
-    const bookingData = bookingReports && bookingReports.length > 0 ? bookingReports : [
-        { id: 'BKG-9921', customer: 'Ahmed Raza', package: 'Premium Ramadan', date: '10 Apr - 25 Apr', amount: '$4,500', status: 'Confirmed' },
-        { id: 'BKG-9922', customer: 'Fatima Zahra', package: 'Executive Hajj', date: '05 Jun - 25 Jun', amount: '$15,800', status: 'Pending' },
-        { id: 'BKG-9923', customer: 'Zubair Ahmed', package: 'Economy Umrah Plus', date: '02 May - 16 May', amount: '$2,100', status: 'Cancelled' },
-    ];
-
-    const paymentData = paymentReports && paymentReports.length > 0 ? paymentReports : [
-        { ref: 'TRX-1011', bookingId: 'BKG-9921', amount: '$2,500', date: '01 Mar 2024', method: 'Bank Transfer' },
-        { ref: 'TRX-1012', bookingId: 'BKG-9922', amount: '$5,000', date: '15 Mar 2024', method: 'Credit Card' },
-        { ref: 'TRX-1013', bookingId: 'BKG-9921', amount: '$2,000', date: '20 Mar 2024', method: 'Cash' },
-    ];
-
-    const salesData = salesReports && salesReports.length > 0 ? salesReports : [
-        { period: 'Q1 2024', leads: 450, conversions: 120, revenue: '$320,000', topPackage: 'Premium Ramadan' },
-        { period: 'Q4 2023', leads: 620, conversions: 185, revenue: '$480,500', topPackage: 'Executive Hajj' },
-        { period: 'Q3 2023', leads: 310, conversions: 85, revenue: '$150,000', topPackage: 'Economy Umrah Plus' },
-    ];
-
-    const customerData = customerReports && customerReports.length > 0 ? customerReports : [
-        { id: 'CUST-001', name: 'Ahmed Raza', email: 'ahmed@example.com', bookings: 3, spend: '$12,500', status: 'VIP' },
-        { id: 'CUST-002', name: 'Fatima Zahra', email: 'fatima@example.com', bookings: 1, spend: '$15,800', status: 'Active' },
-        { id: 'CUST-003', name: 'Zubair Ahmed', email: 'zubair@test.com', bookings: 5, spend: '$8,400', status: 'Loyal' },
-    ];
+    const bookingData = bookingReports;
+    const paymentData = paymentReports;
+    const salesData = salesReports;
+    const customerData = customerReports;
 
 
     return (

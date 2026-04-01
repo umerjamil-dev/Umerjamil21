@@ -302,7 +302,6 @@ const ManageUsers = () => {
                             {role.label}
                           </span>
                         </td>
-
                         {/* Status */}
                         <td className="px-7 py-5">
                           <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold ${status.cls}`}>

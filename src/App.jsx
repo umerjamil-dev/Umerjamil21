@@ -11,9 +11,12 @@ const App = () => {
   }, [checkAuth]);
 
   return (
+     
     <>
+    {/* heres the toaster  */}
       <Toaster position="top-right" />
       <Router />
+    {/* heres the toaster end  */}
     </>
   )
 }
