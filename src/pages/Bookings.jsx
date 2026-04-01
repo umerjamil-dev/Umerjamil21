@@ -16,11 +16,7 @@ const Bookings = () => {
       fetchBookings();
    }, [fetchBookings]);
 
-   const bookingsToShow = bookings && bookings.length > 0 ? bookings : [
-      { id: 'BK-1001', customer: 'Ahmed Raza', package: 'Umrah 15-Day Premium', amount: 5400, paid: 5400, status: 'Confirmed', date: 'Mar 15, 2024' },
-      { id: 'BK-1002', customer: 'Fatima Zahra', package: 'Hajj 2024 Economy', amount: 12000, paid: 4500, status: 'Partial', date: 'Mar 12, 2024' },
-      { id: 'BK-1003', customer: 'Zubair Ahmed', package: 'Umrah Luxury (Ramadan)', amount: 8200, paid: 0, status: 'Pending', date: 'Mar 10, 2024' },
-   ];
+   const bookingsToShow = bookings;
 
 
    return (

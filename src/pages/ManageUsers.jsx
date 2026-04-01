@@ -7,17 +7,12 @@ import {
   Activity, ShieldAlert, Zap, Users, Lock
 } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
+import useSettingsStore from '../store/useSettingsStore';
 import toast from 'react-hot-toast';
 
 /* ─── Constants ──────────────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1];
-const DEFAULT_FORM = { name: '', email: '', phone: '', password: '', role_id: '3', status_id: '1' };
-
-const ROLE_MAP = {
-  '1': { label: 'Admin',     cls: 'bg-gray-900 text-white border border-gray-900' },
-  '2': { label: 'Executive', cls: 'bg-gray-200 text-gray-700 border border-gray-300' },
-  '3': { label: 'Agent',     cls: 'bg-white text-gray-500 border border-gray-200' },
-};
+const DEFAULT_FORM = { name: '', email: '', phone: '', password: '', role_id: '', status_id: '1' };
 
 const STATUS_MAP = {
   '1': { label: 'Active',    dot: 'bg-gray-900', cls: 'bg-gray-100 text-gray-800' },
@@ -39,9 +34,15 @@ const ManageUsers = () => {
   const [search,   setSearch]   = useState('');
   const [form,     setForm]     = useState(DEFAULT_FORM);
 
-  const { users, fetchUsers, addUser, deleteUser, isLoading } = useUserStore();
+  const { users, fetchUsers, addUser, deleteUser, isLoading: usersLoading } = useUserStore();
+  const { roles, fetchSettings, isLoading: settingsLoading } = useSettingsStore();
 
-  useEffect(() => { fetchUsers(); }, [fetchUsers]);
+  const isLoading = usersLoading || settingsLoading;
+
+  useEffect(() => { 
+    fetchUsers(); 
+    fetchSettings();
+  }, [fetchUsers, fetchSettings]);
 
   const filtered = useMemo(() =>
     users.filter(u =>
@@ -175,10 +176,12 @@ const ManageUsers = () => {
                     value={form.role_id}
                     onChange={e => patchForm('role_id', e.target.value)}
                     className="flex-1 bg-transparent border-none outline-none text-[15px] font-semibold text-gray-900 cursor-pointer appearance-none"
+                    required
                   >
-                    <option value="1">System Administrator</option>
-                    <option value="2">Executive Operations</option>
-                    <option value="3">Field Agent</option>
+                    <option value="">Select Role Hierarchy...</option>
+                    {roles.map(role => (
+                      <option key={role.id} value={role.id}>{role.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="h-px bg-gray-200 group-focus-within:bg-gray-900 transition-colors rounded-full" />
@@ -297,9 +300,11 @@ const ManageUsers = () => {
 
                         {/* Role */}
                         <td className="px-7 py-5">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold ${role.cls}`}>
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold ${
+                            u.role_id === '1' ? 'bg-gray-900 text-white border border-gray-900' : 'bg-white text-gray-500 border border-gray-200'
+                          }`}>
                             <ShieldCheck size={12} />
-                            {role.label}
+                            {roles.find(r => r.id.toString() === u.role_id?.toString())?.name || 'Unassigned'}
                           </span>
                         </td>
                         {/* Status */}

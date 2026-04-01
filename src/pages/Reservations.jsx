@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   ShieldCheck, Hotel, Plane, MapPin,
   ChevronRight, Search, Filter,
@@ -7,50 +7,14 @@ import {
   Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useBookingStore from '../store/useBookingStore';
 
 const Reservations = () => {
-  const reservations = [
-    {
-      id: 'RES-9012',
-      customer: 'Ahmed Raza',
-      package: 'Premium Ramadan Umrah',
-      dates: 'Apr 10 - Apr 25',
-      amount: 4500,
-      status: 'Confirmed',
-      visaStatus: 'Approved',
-      type: 'Visa'
-    },
-    {
-      id: 'RES-9013',
-      customer: 'Fatima Zahra',
-      package: 'Executive Hajj 2024',
-      dates: 'Jun 05 - Jun 25',
-      amount: 15800,
-      status: 'Partial',
-      visaStatus: 'Processing',
-      type: 'Hotel'
-    },
-    {
-      id: 'RES-9014',
-      customer: 'Zubair Ahmed',
-      package: 'Economy Umrah Plus',
-      dates: 'May 02 - May 16',
-      amount: 2100,
-      status: 'Pending',
-      visaStatus: 'Not Started',
-      type: 'Flight'
-    },
-    {
-      id: 'RES-9015',
-      customer: 'Omar Jamil',
-      package: 'VIP Ziyarat Express',
-      dates: 'Jul 12 - Jul 18',
-      amount: 3200,
-      status: 'Confirmed',
-      visaStatus: 'Approved',
-      type: 'Transport'
-    }
-  ];
+  const { bookings: reservations, fetchBookings, isLoading } = useBookingStore();
+
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -124,8 +88,12 @@ const Reservations = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {reservations.map((res) => {
-                const typeInfo = getTypeIcon(res.type);
+              {isLoading ? (
+                <tr><td colSpan="5" className="px-10 py-20 text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing Reservations...</td></tr>
+              ) : reservations.length === 0 ? (
+                <tr><td colSpan="5" className="px-10 py-20 text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">No active protocols identified.</td></tr>
+              ) : reservations.map((res) => {
+                const typeInfo = getTypeIcon(res.type || 'Visa');
                 return (
                   <tr key={res.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                     <td className="px-10 py-10">
@@ -134,7 +102,7 @@ const Reservations = () => {
                           <typeInfo.icon size={28} strokeWidth={2} />
                         </div>
                         <div>
-                          <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">{res.customer}</p>
+                          <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">{res.customer || res.customer_name || 'Guest'}</p>
                           <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-slate-200"></span> ID: {res.id}
                           </p>

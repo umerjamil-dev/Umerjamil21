@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Database, Plus } from 'lucide-react';
+import useMasterTypeStore from '../../store/useMasterTypeStore';
 
 const MasterTypes = () => {
+   const { masterData, fetchMasterData, loading } = useMasterTypeStore();
+
+   useEffect(() => {
+      fetchMasterData();
+   }, [fetchMasterData]);
+
+   // Flatten the nested masterData object for display if needed, 
+   // or just show a selection. For this view, we'll show a consolidated list.
+   const allTypes = Object.entries(masterData).flatMap(([type, items]) => 
+      items.map(item => ({
+         id: item.id,
+         name: item.name || item.title || item.label || 'Unknown',
+         type: type.replace('_', ' ').toUpperCase()
+      }))
+   );
+
    return (
       <div className="space-y-16 animate-in fade-in duration-1000 font-inter pb-20 bg-[#f8f9fa] min-h-screen">
          {/* Architectural Header */}
@@ -28,23 +45,23 @@ const MasterTypes = () => {
 
          {/* Design Content Grid */}
          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 md:p-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-               {[
-                  { id: '1', name: 'Economy Plus', type: 'Package Variant' },
-                  { id: '2', name: 'Executive 5*', type: 'Package Variant' },
-                  { id: '3', name: 'Pakistan', type: 'Nationality' },
-                  { id: '4', name: 'Bank Transfer', type: 'Payment Medium' },
-                  { id: '5', name: 'Makkah Region', type: 'Geo Node' },
-               ].map((m, i) => (
-                  <div key={i} className="p-8 bg-gray-50 border border-gray-200 rounded-xl text-[#111827] hover:bg-white transition-all duration-300 cursor-pointer shadow-sm hover:border-[#D4AF37] hover:shadow-lg group flex flex-col justify-between min-h-[140px] hover:-translate-y-1">
-                     <div>
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 group-hover:text-gray-500 transition-colors">Type ID: {m.id}</p>
-                        <h4 className="text-lg font-manrope font-bold uppercase tracking-widest mb-3 text-[#111827]">{m.name}</h4>
+            {loading ? (
+               <div className="py-20 text-center text-sm font-bold uppercase tracking-widest text-gray-300">Synchronizing Data Schematics...</div>
+            ) : allTypes.length === 0 ? (
+               <div className="py-20 text-center text-sm font-bold uppercase tracking-widest text-gray-300">No architectural constructs found.</div>
+            ) : (
+               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {allTypes.map((m, i) => (
+                     <div key={i} className="p-8 bg-gray-50 border border-gray-200 rounded-xl text-[#111827] hover:bg-white transition-all duration-300 cursor-pointer shadow-sm hover:border-[#D4AF37] hover:shadow-lg group flex flex-col justify-between min-h-[140px] hover:-translate-y-1">
+                        <div>
+                           <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 group-hover:text-gray-500 transition-colors">Type ID: {m.id || i+1}</p>
+                           <h4 className="text-lg font-manrope font-bold uppercase tracking-widest mb-3 text-[#111827] line-clamp-1">{m.name}</h4>
+                        </div>
+                        <p className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.2em]">{m.type}</p>
                      </div>
-                     <p className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.2em]">{m.type}</p>
-                  </div>
-               ))}
-            </div>
+                  ))}
+               </div>
+            )}
          </div>
       </div>
    );
