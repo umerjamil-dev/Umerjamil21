@@ -44,6 +44,7 @@ const Leads = () => {
   };
 
   return (
+   <>
     <div className="animate-in fade-in duration-1000">
       {/* Header Section - Editorial */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
@@ -197,6 +198,7 @@ const Leads = () => {
         </div>
       </div>
     </div>
+   </>
   );
 };
 

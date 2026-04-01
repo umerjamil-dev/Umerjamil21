@@ -23,14 +23,13 @@ const AddReservation = () => {
    const { addTransport } = useTransportStore();
 
    const [formData, setFormData] = useState({
-      type: 'Hotel', // Hotel, Visa, Flight, Transport
+      type: 'Hotel', 
       bookingId: '',
       provider: '',
       checkIn: '',
       checkOut: '',
       referenceNumber: '',
       status: 'Confirmed',
-      // Dynamic fields for different types
       hotelName: '',
       city: 'Makkah',
       roomType: '',

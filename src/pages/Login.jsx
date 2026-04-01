@@ -39,6 +39,7 @@ const Login = () => {
   };
 
   return (
+   <>
     <div className="min-h-screen bg-[var(--surface)] flex flex-col items-center justify-center p-6 font-inter">
       
 
@@ -107,7 +108,7 @@ const Login = () => {
       </div>
 
     
-    </div>
+    </div></>
   );
 };
 

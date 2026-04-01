@@ -34,6 +34,8 @@ const LiveBooking = () => {
    const handlePrev = () => setStep(prev => Math.max(prev - 1, 1));
 
    return (
+     <>
+     
       <div className="font-inter space-y-12 animate-in fade-in duration-1000 pb-24">
          {/* Premium Header */}
          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200 relative">
@@ -367,6 +369,7 @@ const LiveBooking = () => {
             </div>
          </div>
       </div>
+     </>
    );
 };
 

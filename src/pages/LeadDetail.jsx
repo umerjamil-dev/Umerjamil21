@@ -94,6 +94,7 @@ const LeadDetail = () => {
 
 
     return (
+        <>
         <div className="font-inter space-y-8 animate-in fade-in duration-700 pb-12 mx-auto">
             
             {/* Top Navigation & Actions */}
@@ -314,6 +315,9 @@ const LeadDetail = () => {
                 </div>
             </div>
         </div>
+        
+        
+        </>
     );
 };
 

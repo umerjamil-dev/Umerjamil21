@@ -25,7 +25,6 @@ const Reports = () => {
 
     useEffect(() => {
         fetchReports(activeReport.toLowerCase());
-        // Also fetch general stats for the cards
         fetchBookings();
         fetchPayments();
         fetchCustomers();
