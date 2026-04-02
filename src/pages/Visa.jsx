@@ -135,5 +135,4 @@ const Visa = () => {
     </div>
   );
 };
-
 export default Visa;

@@ -42,6 +42,8 @@ const useCalculatorStore = create((set) => ({
     }
   },
 
+  
+
   confirmCalculation: async (token, status) => {
     set({ isLoading: true });
     try {

@@ -21,6 +21,7 @@ const useUserStore = create((set) => ({
 
   addUser: async (userData) => {
     set({ isLoading: true, error: null });
+    
     try {
       const response = await api.post('/users', userData);
       set((state) => ({ 

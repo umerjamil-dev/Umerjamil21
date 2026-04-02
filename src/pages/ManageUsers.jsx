@@ -12,11 +12,13 @@ import toast from 'react-hot-toast';
 
 /* ─── Constants ──────────────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1];
-const DEFAULT_FORM = { name: '', email: '', phone: '', password: '', role_id: '', status_id: '1' };
+const DEFAULT_FORM = { name: '', email: '', phone: '', password: '', is_admin: '0', role_id: '', status_id: '1' };
 
 const STATUS_MAP = {
-  '1': { label: 'Active',    dot: 'bg-gray-900', cls: 'bg-gray-100 text-gray-800' },
-  '2': { label: 'Suspended', dot: 'bg-gray-300',  cls: 'bg-gray-100 text-gray-400' },
+  '1': { label: 'Active',    dot: 'bg-green-500', cls: 'bg-green-50 text-green-700' },
+  '2': { label: 'Suspended', dot: 'bg-red-500',   cls: 'bg-red-50 text-red-700' },
+  '5': { label: 'Pending',   dot: 'bg-amber-500', cls: 'bg-amber-50 text-amber-700' },
+  'default': { label: 'Unknown', dot: 'bg-gray-300', cls: 'bg-gray-50 text-gray-500' }
 };
 
 const FORM_FIELDS = [
@@ -31,10 +33,12 @@ const FORM_FIELDS = [
    ════════════════════════════════════════════════════════════════════════ */
 const ManageUsers = () => {
   const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
   const [search,   setSearch]   = useState('');
   const [form,     setForm]     = useState(DEFAULT_FORM);
 
-  const { users, fetchUsers, addUser, deleteUser, isLoading: usersLoading } = useUserStore();
+  const { users, fetchUsers, addUser, updateUser, deleteUser, isLoading: usersLoading } = useUserStore();
   const { roles, fetchSettings, isLoading: settingsLoading } = useSettingsStore();
 
   const isLoading = usersLoading || settingsLoading;
@@ -50,16 +54,50 @@ const ManageUsers = () => {
       u.email?.toLowerCase().includes(search.toLowerCase())
     ), [users, search]);
 
-  const handleAdd = async (e) => {
+  const handleReset = () => {
+    setIsAdding(false);
+    setIsEditing(false);
+    setEditingUser(null);
+    setForm(DEFAULT_FORM);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await addUser(form);
-    if (result.success) {
-      toast.success('User enrolled successfully.');
-      setIsAdding(false);
-      setForm(DEFAULT_FORM);
+    
+    if (isEditing && editingUser) {
+      const result = await updateUser(editingUser.id, form);
+      if (result.success) {
+        toast.success('User updated successfully.');
+        await fetchUsers(); // Ensure UI is perfect with backend data
+        handleReset();
+      } else {
+        toast.error('Update failed: ' + result.error);
+      }
     } else {
-      toast.error('Failed: ' + result.error);
+      const result = await addUser(form);
+      if (result.success) {
+        toast.success('User enrolled successfully.');
+        await fetchUsers(); // Get backend-generated fields (like permission_status)
+        handleReset();
+      } else {
+        toast.error('Failed: ' + result.error);
+      }
     }
+  };
+
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setIsEditing(true);
+    setIsAdding(false); // Close add form if open
+    setForm({
+      name: user.name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      role_id: user.role_id || '',
+      status_id: user.status_id || '1',
+      is_admin: user.is_admin ?? '0',
+      password: '' // Don't pre-populate password for security
+    });
   };
 
   const handleDelete = async (id) => {
@@ -101,9 +139,9 @@ const ManageUsers = () => {
         {/* Stat pills */}
         <div className="flex items-center gap-3 flex-shrink-0">
           {[
-            { label: 'Total',     val: users.length,   Icon: Users,       valCls: 'text-gray-900'   },
-            { label: 'Active',    val: activeCount,    Icon: Activity,    valCls: 'text-gray-700' },
-            { label: 'Suspended', val: suspendedCount, Icon: ShieldAlert, valCls: 'text-gray-400'    },
+            { label: 'Total Users ',     val: users.length,   Icon: Users,       valCls: 'text-gray-900'   },
+            { label: 'Active Users',    val: activeCount,    Icon: Activity,    valCls: 'text-gray-700' },
+            // { label: 'Suspended', val: suspendedCount, Icon: ShieldAlert, valCls: 'text-gray-400'    },
           ].map(({ label, val, Icon, valCls }) => (
             <div key={label} className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
               <Icon size={15} className={valCls} />
@@ -117,23 +155,26 @@ const ManageUsers = () => {
         <motion.button
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.96 }}
-          onClick={() => setIsAdding(p => !p)}
+          onClick={() => {
+            if (isEditing || isAdding) handleReset();
+            else setIsAdding(true);
+          }}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold flex-shrink-0 transition-all duration-200 cursor-pointer ${
-            isAdding
+            isAdding || isEditing
               ? 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-100'
               : 'bg-gray-900 text-white border border-transparent hover:bg-gray-700'
           }`}
         >
-          {isAdding ? <X size={16} strokeWidth={2.5} /> : <Plus size={16} strokeWidth={2.5} />}
-          {isAdding ? 'Cancel' : 'Add User'}
+          {isAdding || isEditing ? <X size={16} strokeWidth={2.5} /> : <Plus size={16} strokeWidth={2.5} />}
+          {isAdding || isEditing ? 'Cancel' : 'Add User'}
         </motion.button>
       </motion.div>
 
       {/* ════════ BODY ════════ */}
       <AnimatePresence mode="wait">
 
-        {/* ── ADD FORM ── */}
-        {isAdding && (
+        {/* ── ADD/EDIT FORM ── */}
+        {(isAdding || isEditing) && (
           <motion.div
             key="form"
             initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -143,11 +184,13 @@ const ManageUsers = () => {
             className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
           >
             <div className="px-9 pt-8 mb-7">
-              <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">Enroll New Identity</h2>
+              <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">
+                {isEditing ? 'Modify Personnel Details' : 'Enroll New Identity'}
+              </h2>
               <div className="mt-2 w-9 h-[3px] bg-gray-900 rounded-full" />
             </div>
 
-            <form onSubmit={handleAdd} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8 px-9 pb-9">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8 px-9 pb-9">
 
               {FORM_FIELDS.map(({ label, key, type, placeholder, Icon }) => (
                 <div key={key} className="flex flex-col gap-1.5 group">
@@ -187,6 +230,25 @@ const ManageUsers = () => {
                 <div className="h-px bg-gray-200 group-focus-within:bg-gray-900 transition-colors rounded-full" />
               </div>
 
+              {/* Role */}
+              <div className="flex flex-col gap-1.5 group">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">isAdmin</label>
+                <div className="flex items-center gap-2.5 pb-2">
+                  <ShieldCheck size={16} className="text-gray-300 group-focus-within:text-gray-700 transition-colors flex-shrink-0" />
+                  <select
+                    value={form.is_admin}
+                    onChange={e => patchForm('is_admin', e.target.value)}
+                    className="flex-1 bg-transparent border-none outline-none text-[15px] font-semibold text-gray-900 cursor-pointer appearance-none"
+                    required
+                  >
+                    <option value="">Select Role Hierarchy...</option>
+                    <option value={1}>Yes</option>
+                    <option value={0}>No</option>
+                  </select>
+                </div>
+                <div className="h-px bg-gray-200 group-focus-within:bg-gray-900 transition-colors rounded-full" />
+              </div>
+
               {/* Status */}
               <div className="flex flex-col gap-1.5 group">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</label>
@@ -199,6 +261,7 @@ const ManageUsers = () => {
                   >
                     <option value="1">Active</option>
                     <option value="2">Suspended</option>
+                    <option value="5">Pending</option>
                   </select>
                 </div>
                 <div className="h-px bg-gray-200 group-focus-within:bg-gray-900 transition-colors rounded-full" />
@@ -213,7 +276,7 @@ const ManageUsers = () => {
                   whileTap={{ scale: 0.97 }}
                   className="bg-gray-900 text-white px-8 py-3.5 rounded-xl text-[13px] font-bold tracking-tight hover:bg-gray-700 transition-colors disabled:opacity-50 cursor-pointer"
                 >
-                  {isLoading ? 'Enrolling…' : 'Confirm Enrollment'}
+                  {isLoading ? (isEditing ? 'Updating…' : 'Enrolling…') : (isEditing ? 'Save Changes' : 'Confirm Enrollment')}
                 </motion.button>
               </div>
             </form>
@@ -221,7 +284,7 @@ const ManageUsers = () => {
         )}
 
         {/* ── TABLE ── */}
-        {!isAdding && (
+        {!(isAdding || isEditing) && (
           <motion.div
             key="table"
             initial={{ opacity: 0, y: 18 }}
@@ -256,10 +319,10 @@ const ManageUsers = () => {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-gray-50">
-                    {['User', 'Role', 'Status', 'Actions'].map((h, i) => (
+                    {['User', 'Contact', 'Role', 'Status', 'Joined', 'Actions'].map((h, i) => (
                       <th
                         key={h}
-                        className={`px-7 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 ${i === 3 ? 'text-right' : ''}`}
+                        className={`px-7 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 ${i === 5 ? 'text-right' : ''}`}
                       >
                         {h}
                       </th>
@@ -269,8 +332,8 @@ const ManageUsers = () => {
 
                 <tbody className="divide-y divide-gray-50">
                   {filtered.length > 0 ? filtered.map((u, i) => {
-                    const role   = ROLE_MAP[u.role_id]    || ROLE_MAP['3'];
-                    const status = STATUS_MAP[u.status_id] || STATUS_MAP['1'];
+                    const role   = roles.find(r => r.id?.toString() === u.role_id?.toString()) || { name: 'Personnel' };
+                    const status = STATUS_MAP[u.status_id] || STATUS_MAP['default'];
 
                     return (
                       <motion.tr
@@ -291,34 +354,50 @@ const ManageUsers = () => {
                             </div>
                             <div>
                               <div className="text-sm font-bold text-gray-900 tracking-tight group-hover:text-gray-600 transition-colors">
-                                {u.name}
+                                {u.name || 'Incognito User'}
                               </div>
-                              <div className="text-[11px] text-gray-400 mt-0.5">{u.email}</div>
+                              <div className="text-[11px] text-gray-400 mt-0.5 lowercase">{u.email || 'no-email@domain.com'}</div>
                             </div>
+                          </div>
+                        </td>
+
+                        {/* Contact */}
+                        <td className="px-7 py-5">
+                          <div className="flex flex-col">
+                             <span className="text-[12px] font-bold text-gray-700">{u.phone || 'N/A'}</span>
+                             {u.whatsapp && <span className="text-[9px] text-green-500 font-bold uppercase tracking-widest mt-1">WhatsApp Verified</span>}
                           </div>
                         </td>
 
                         {/* Role */}
                         <td className="px-7 py-5">
                           <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold ${
-                            u.role_id === '1' ? 'bg-gray-900 text-white border border-gray-900' : 'bg-white text-gray-500 border border-gray-200'
+                            u.is_admin ? 'bg-gray-900 text-white border border-gray-900' : 'bg-white text-gray-500 border border-gray-200'
                           }`}>
                             <ShieldCheck size={12} />
-                            {roles.find(r => r.id.toString() === u.role_id?.toString())?.name || 'Unassigned'}
+                            {u.permission_status || 'Unassigned'}
                           </span>
                         </td>
+
                         {/* Status */}
                         <td className="px-7 py-5">
                           <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold ${status.cls}`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${status.dot} flex-shrink-0`} />
-                            {status.label}
+                            {u.status_name}
                           </span>
+                        </td>
+
+                        {/* Joined At */}
+                        <td className="px-7 py-5">
+                          <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-tight">
+                            {u.created_at ? new Date(u.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown'}
+                          </div>
                         </td>
 
                         {/* Actions */}
                         <td className="px-7 py-5 text-right">
-                          <div className="flex items-center gap-2 justify-end opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-200">
-                            <ActionBtn icon={Edit2}  title="Edit"   onClick={() => {}} />
+                          <div className="flex items-center gap-2 justify-end text-black translate-x-2 group-hover:translate-x-0 transition-all duration-200">
+                            <ActionBtn icon={Edit2}  title="Edit"   onClick={() => handleEdit(u)} />
                             <ActionBtn icon={Trash2} title="Delete" onClick={() => handleDelete(u.id)} danger />
                           </div>
                         </td>

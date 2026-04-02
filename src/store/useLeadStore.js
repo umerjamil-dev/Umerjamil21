@@ -82,6 +82,7 @@ const useLeadStore = create((set, get) => ({
     }
   },
 
+
   addLeadNote: async (id, noteText) => {
     set({ isLoading: true });
     try {
@@ -95,5 +96,6 @@ const useLeadStore = create((set, get) => ({
     }
   }
 }));
+
 
 export default useLeadStore;
