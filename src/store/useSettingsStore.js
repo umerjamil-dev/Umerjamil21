@@ -69,6 +69,7 @@ const useSettingsStore = create((set) => ({
   },
 
   updateProfile: async (data) => {
+    
     set({ isLoading: true });
     try {
       const response = await api.patch('/settings/profile', data);
@@ -80,15 +81,21 @@ const useSettingsStore = create((set) => ({
   },
 
   addCompany: async (data) => {
+    if (data instanceof FormData) {
+      console.log('addCompany FormData:', Object.fromEntries(data.entries()));
+    } else {
+      console.log('addCompany data:', data);
+    }
+
     set({ isLoading: true });
     try {
       const isFormData = data instanceof FormData;
       const config = isFormData ? {
         headers: { 'Content-Type': 'multipart/form-data' }
       } : {};
- console.log(FormData);
  
       const response = await api.post('/settings/company', data, config);
+      console.log('addCompany response:', response.data);
       
       const store = useSettingsStore.getState();
       await store.fetchSettings();
@@ -96,12 +103,19 @@ const useSettingsStore = create((set) => ({
       set({ isLoading: false });
       return response.data;
     } catch (err) {
+      console.error('addCompany error:', err.response?.data || err.message);
       set({ error: err.message, isLoading: false });
       throw err;
     }
   },
 
   updateCompany: async (data) => {
+    if (data instanceof FormData) {
+      console.log('updateCompany FormData:', Object.fromEntries(data.entries()));
+    } else {
+      console.log('updateCompany data:', data);
+    }
+
     set({ isLoading: true });
     try {
       const isFormData = data instanceof FormData;
@@ -112,6 +126,7 @@ const useSettingsStore = create((set) => ({
       } : {};
 
       const response = await api.patch('/settings/company', data, config);
+      console.log('updateCompany response:', response.data);
       
       // Refresh all settings to ensure everything is in sync
       const store = useSettingsStore.getState();
@@ -120,6 +135,7 @@ const useSettingsStore = create((set) => ({
       set({ isLoading: false });
       return response.data;
     } catch (err) {
+      console.error('updateCompany error:', err.response?.data || err.message);
       set({ error: err.message, isLoading: false });
       throw err;
     }

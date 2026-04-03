@@ -43,9 +43,9 @@ const CompanyParams = () => {
          const data = new FormData();
          
          // Append all text fields
-         Object.keys(formData).forEach(key => {
-            data.append(`company[${key}]`, formData[key]);
-         });
+       Object.keys(formData).forEach(key => {
+   data.append(`company.${key}`, formData[key]);   // ← dot (.) use karo, bracket nahi
+});
 
          // Append the file if present
          if (logoFile) {
