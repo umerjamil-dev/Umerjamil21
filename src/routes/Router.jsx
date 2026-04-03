@@ -35,6 +35,7 @@ import Hotels from '../pages/Hotels'
 import Flights from '../pages/Flights'
 import Transport from '../pages/Transport'
 
+import PersonalDashboard from '../pages/PersonalDashboard'
 import CompanyParams from '../pages/settings/CompanyParams'
 import Roles from '../pages/settings/Roles'
 import Permissions from '../pages/settings/Permissions'
@@ -59,6 +60,7 @@ const Router = () => {
 
         {/* Protected Routes */}
         <Route path="/" element={ <ProtectedRoute permission="VIEW_DASHBOARD" > <Layout><Home /></Layout></ProtectedRoute>} />
+        <Route path="/personal-dashboard" element={ <ProtectedRoute permission="VIEW_PERSONAL_DASHBOARD" > <Layout><PersonalDashboard /></Layout></ProtectedRoute>} />
         <Route path="/leads" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><Leads /></Layout></ProtectedRoute>} />
         <Route path="/leads/add" element={<ProtectedRoute permission="CREATE_LEADS"><Layout><AddLead /></Layout></ProtectedRoute>} />
         <Route path="/leads/:id" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><LeadDetail /></Layout></ProtectedRoute>} />

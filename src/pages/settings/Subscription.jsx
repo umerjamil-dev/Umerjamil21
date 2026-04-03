@@ -1,73 +1,138 @@
 import React from 'react';
 import { CreditCard, Rocket } from 'lucide-react';
 
+const stats = [
+   { label: 'Passenger Units', used: 12450, total: 20000 },
+   { label: 'Bandwidth (GB)', used: 412, total: 1000 },
+   { label: 'Agent Seats', used: 12, total: 25 },
+];
+
 const Subscription = () => {
    return (
-      <div className="space-y-16 animate-in fade-in duration-1000 font-inter pb-20 bg-[#f8f9fa] min-h-screen">
-         {/* Architectural Header */}
-         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-12 border-b border-gray-200 mt-8">
-            <div className="space-y-5">
-               <div className="flex items-center gap-3 text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-black">
-                  <CreditCard size={14} strokeWidth={2.5} />
+      <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
+
+         {/* ── HEADER ── */}
+         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-14">
+            <div className="space-y-3">
+               <div
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.18em] text-white"
+                  style={{ background: '#1a1916' }}
+               >
+                  <CreditCard size={10} strokeWidth={3} />
                   System Configuration
                </div>
-               <h1 className="text-5xl md:text-6xl font-manrope font-extrabold tracking-tighter leading-tight text-[#111827]">
+               <h1
+                  className="text-5xl lg:text-6xl font-extrabold text-[#1a1916] leading-none"
+                  style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.03em' }}
+               >
                   License & Billing
                </h1>
-               <p className="text-gray-500 text-sm md:text-base font-medium max-w-xl leading-relaxed">
+               <p className="text-[12px] text-[#78776f] font-normal max-w-xs leading-relaxed" style={{ fontFamily: "'Sora', sans-serif" }}>
                   Monitor architectural consumption limits and maintain active enterprise subscriptions.
                </p>
             </div>
+
             <button
-               className="px-10 py-5 rounded-full text-[11px] font-black uppercase tracking-[0.3em] shadow-lg transition-all flex items-center gap-3 shrink-0 bg-[#111827] text-white hover:bg-[#D4AF37] hover:text-[#111827] hover:scale-105"
+               className="h-12 px-8 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer shrink-0"
+               style={{ background: '#1a1916', color: '#ffffff', border: '1.5px solid #1a1916' }}
+               onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
+               onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
             >
-               <Rocket size={18} strokeWidth={2.5} />
+               <Rocket size={14} strokeWidth={2.5} />
                Upgrade Tier
             </button>
          </div>
 
-         {/* Light Content Vessel */}
-         <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 md:p-10">
-            <div className="relative z-10">
-               {/* Deep Vault Card */}
-               <div className="bg-gray-50 text-[#111827] rounded-2xl p-8 md:p-12 border border-gray-200 shadow-sm">
-                  <div className="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-16 pb-10 border-b border-gray-200 relative">
-                     <div>
-                        <p className="text-[11px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4">Active Blueprint</p>
-                        <h3 className="text-4xl md:text-5xl font-manrope font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#bfa035] tracking-tighter">Enterprise Syndicate V2</h3>
-                     </div>
-                     <div className="text-left md:text-right">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">Fiscal Cycle Renews</p>
-                        <p className="text-xl md:text-2xl font-manrope font-black text-[#111827]">24 August 2024</p>
-                     </div>
-                     
-                     {/* Ambient Glow */}
-                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                     {[
-                        { label: 'Passenger Units', used: 12450, total: 20000 },
-                        { label: 'Bandwidth (GB)', used: 412, total: 1000 },
-                        { label: 'Agent Seats', used: 12, total: 25 },
-                     ].map((stat, i) => (
-                        <div key={i} className="bg-white border-2 border-gray-100 hover:border-[#D4AF37] hover:shadow-md transition-all duration-500 p-8 rounded-xl flex flex-col justify-between group">
-                           <div>
-                              <div className="flex justify-between items-center mb-6">
-                                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">{stat.label}</span>
-                                 <span className="text-[12px] font-black text-[#D4AF37]">{Math.round((stat.used / stat.total) * 100)}%</span>
-                              </div>
-                              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden mb-5">
-                                 <div className="h-full bg-gradient-to-r from-[#D4AF37] to-[#f2ca50] shadow-sm transition-all duration-1000 ease-out" style={{ width: `${(stat.used / stat.total) * 100}%` }}></div>
-                              </div>
-                           </div>
-                           <p className="text-[12px] font-bold font-mono text-gray-400 group-hover:text-[#111827] transition-colors tracking-wider">
-                              <span className="text-[#111827]">{stat.used.toLocaleString()}</span> / {stat.total.toLocaleString()} LIMIT
-                           </p>
-                        </div>
-                     ))}
-                  </div>
+         {/* ── PLAN CARD ── */}
+         <div
+            className="bg-white rounded-2xl overflow-hidden mb-3"
+            style={{ border: '1.5px solid #e2e0d8' }}
+         >
+            {/* Plan Header */}
+            <div
+               className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-8 py-8"
+               style={{ borderBottom: '1.5px solid #e2e0d8', background: '#1a1916' }}
+            >
+               <div className="flex flex-col gap-2">
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#78776f]">
+                     Active Blueprint
+                  </span>
+                  <h3
+                     className="text-3xl lg:text-4xl font-extrabold text-white leading-none"
+                     style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.02em' }}
+                  >
+                     Enterprise Syndicate V2
+                  </h3>
                </div>
+               <div className="flex flex-col md:items-end gap-1">
+                  <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                     Fiscal Cycle Renews
+                  </span>
+                  <span
+                     className="text-[15px] font-bold text-white"
+                     style={{ fontFamily: "'Sora', sans-serif" }}
+                  >
+                     24 August 2024
+                  </span>
+               </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: '#e2e0d8' }}>
+               {stats.map((stat, i) => {
+                  const pct = Math.round((stat.used / stat.total) * 100);
+                  const isHigh = pct >= 80;
+                  const isMid = pct >= 50 && pct < 80;
+
+                  return (
+                     <div
+                        key={i}
+                        className="flex flex-col justify-between gap-6 px-8 py-7 transition-all duration-150"
+                        style={{ background: '#ffffff' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#f5f4f0'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#ffffff'; }}
+                     >
+                        <div className="flex flex-col gap-4">
+                           <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                                 {stat.label}
+                              </span>
+                              <span
+                                 className="text-[10px] font-bold px-2 py-0.5 rounded"
+                                 style={
+                                    isHigh
+                                       ? { background: '#fff1f0', color: '#c23b2e', border: '1.5px solid #f7c1c1' }
+                                       : isMid
+                                       ? { background: '#faeeda', color: '#854f0b', border: '1.5px solid #fac775' }
+                                       : { background: '#edf7f1', color: '#1a7a4a', border: '1.5px solid #9fe1cb' }
+                                 }
+                              >
+                                 {pct}%
+                              </span>
+                           </div>
+
+                           {/* Progress Bar */}
+                           <div
+                              className="w-full h-1.5 rounded-full overflow-hidden"
+                              style={{ background: '#e2e0d8' }}
+                           >
+                              <div
+                                 className="h-full rounded-full transition-all duration-700"
+                                 style={{
+                                    width: `${pct}%`,
+                                    background: isHigh ? '#c23b2e' : isMid ? '#ba7517' : '#1a7a4a',
+                                 }}
+                              />
+                           </div>
+                        </div>
+
+                        <p className="text-[11px] font-medium text-[#b0aea5]">
+                           <span className="text-[#1a1916] font-bold">{stat.used.toLocaleString()}</span>
+                           {' '}/ {stat.total.toLocaleString()} limit
+                        </p>
+                     </div>
+                  );
+               })}
             </div>
          </div>
       </div>

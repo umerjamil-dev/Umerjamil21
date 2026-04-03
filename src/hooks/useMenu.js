@@ -41,6 +41,12 @@ export const useFilteredMenu = () => {
         path: '/', 
         permission: 'VIEW_DASHBOARD' 
       },
+      {
+        title: 'Personal Hub',
+        icon: UserCircle,
+        path: '/personal-dashboard',
+        permission: 'VIEW_PERSONAL_DASHBOARD'
+      },
       
       user?.calculation_id && {
         title: 'My Profile',
