@@ -398,9 +398,7 @@ const Calculator = () => {
             <button
               onClick={async () => {
                 const res = await handleSave();
-                console.log('Save Result:', res);
                 const newId = res?.data?.id || res?.id;
-                console.log('Navigation ID:', newId);
                 if (newId) {
                   navigate(`/customer-profile/${newId}`, { 
                     state: { customer: selectedCustomer, inputs, results } 

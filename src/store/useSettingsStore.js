@@ -54,10 +54,6 @@ const useSettingsStore = create((set) => ({
           })
         : [];
 
-      console.log('--- BACKEND SETTINGS DEBUG ---');
-      console.log('Roles:', roles);
-      console.log('Master Permissions:', normalizedPermissions);
-      console.log('-----------------------------');
 
       set((state) => ({ 
         profile: profile || state.profile,
@@ -83,11 +79,46 @@ const useSettingsStore = create((set) => ({
     }
   },
 
+  addCompany: async (data) => {
+    set({ isLoading: true });
+    try {
+      const isFormData = data instanceof FormData;
+      const config = isFormData ? {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      } : {};
+ console.log(FormData);
+ 
+      const response = await api.post('/settings/company', data, config);
+      
+      const store = useSettingsStore.getState();
+      await store.fetchSettings();
+      
+      set({ isLoading: false });
+      return response.data;
+    } catch (err) {
+      set({ error: err.message, isLoading: false });
+      throw err;
+    }
+  },
+
   updateCompany: async (data) => {
     set({ isLoading: true });
     try {
-      const response = await api.patch('/settings/company', data);
-      set({ company: response.data, isLoading: false });
+      const isFormData = data instanceof FormData;
+      
+      // If image is present, we might need to use POST with _method=PATCH for certain backend setups
+      const config = isFormData ? {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      } : {};
+
+      const response = await api.patch('/settings/company', data, config);
+      
+      // Refresh all settings to ensure everything is in sync
+      const store = useSettingsStore.getState();
+      await store.fetchSettings();
+      
+      set({ isLoading: false });
+      return response.data;
     } catch (err) {
       set({ error: err.message, isLoading: false });
       throw err;

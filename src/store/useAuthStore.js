@@ -22,26 +22,38 @@ const useAuthStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.post('/auth/login', credentials);
-      const { user, access_token } = response.data;
+      
+      // Handle both wrapped and unwrapped responses
+      let data = response.data;
+      if (data && data.data && !data.user && !data.access_token) {
+        data = data.data;
+      }
+      
+      const { user, access_token } = data;
 
-      const userData = user || response.data;
-      const tokenData = access_token || (user && user.access_token) || response.data.token;
+      const userData = user || data;
+      const tokenData = access_token || (user && user.access_token) || data.token;
 
-      if (!tokenData) throw new Error("No access token received");
+      if (!tokenData) throw new Error("No access token received from server.");
 
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', tokenData);
 
       set({ user: userData, token: tokenData, isAuthenticated: true });
       
-      // NEW: Fetch detailed permissions after successful login
-      await useAuthStore.getState().fetchUserPermissions();
+      // Fetch dynamic permissions - non-blocking for login flow
+      try {
+        await useAuthStore.getState().fetchUserPermissions();
+      } catch (pErr) {
+        console.error("Permission fetch failed but continuing login:", pErr);
+      }
       
       set({ isLoading: false });
       return true;
     } catch (err) {
+      console.error("Login attempt failed:", err);
       set({
-        error: err.response?.data?.error || err.response?.data?.message || 'Login Failed',
+        error: err.response?.data?.error || err.response?.data?.message || err.message || 'Login Failed',
         isLoading: false
       });
       return false;
@@ -60,14 +72,19 @@ const useAuthStore = create((set) => ({
 
   refresh: async () => {
     try {
-      // console.log("[useAuthStore] Manual Refresh calling with token:", useAuthStore.getState().token);
       const response = await api.post('/auth/refresh', {}, {
         headers: { Authorization: `Bearer ${useAuthStore.getState().token}` }
       });
-      const { user, access_token } = response.data;
+      
+      let data = response.data;
+      if (data && data.data && !data.user && !data.access_token) {
+        data = data.data;
+      }
 
-      const userData = user || response.data;
-      const tokenData = access_token || (user && user.access_token) || response.data.token;
+      const { user, access_token } = data;
+
+      const userData = user || data;
+      const tokenData = access_token || (user && user.access_token) || data.token;
 
       if (tokenData) {
         localStorage.setItem('token', tokenData);
@@ -94,31 +111,48 @@ const useAuthStore = create((set) => ({
   fetchUserPermissions: async () => {
     try {
       const response = await api.get('/user/permissions');
-      // console.log('[AuthStore] User Permissions Response Data:', response.data);
-      const { permissions, is_admin, role_id } = response.data;
+      let data = response.data;
+      if (data && data.data && !data.permissions) {
+        data = data.data;
+      }
+      
+      const { permissions, is_admin, role_id, calculation_id } = data;
+      console.log(data)
+      
+      
+      const newPermissions = Array.isArray(permissions) ? permissions : [];
       
       set((state) => ({
         user: { 
           ...state.user, 
-          permissions: permissions || [], 
+          permissions: newPermissions, 
           is_admin: is_admin,
-          role_id: role_id
+          role_id: role_id,
+          calculation_id: calculation_id
         }
       }));
       
-      // Also update localStorage to persist permissions for faster next-load
+      // Update persistent storage
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
-        const userObj = JSON.parse(storedUser);
-        localStorage.setItem('user', JSON.stringify({ 
-          ...userObj, 
-          permissions: permissions || [],
-          is_admin: is_admin,
-          role_id: role_id
-        }));
+        try {
+          const userObj = JSON.parse(storedUser);
+          localStorage.setItem('user', JSON.stringify({ 
+            ...userObj, 
+            permissions: newPermissions,
+            is_admin: is_admin,
+            role_id: role_id,
+            calculation_id: calculation_id
+          }));
+        } catch (e) {}
       }
     } catch (err) {
-      console.error('[AuthStore] Failed to fetch user permissions:', err);
+      console.error('[AuthStore] Failed to fetch user permissions:', {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message
+      });
+      // Don't throw, just log. We don't want to break the whole app for this.
     }
   },
 
@@ -135,10 +169,16 @@ const useAuthStore = create((set) => ({
       const response = await api.post('/auth/refresh', {}, {
         headers: { Authorization: `Bearer ${storedToken}` }
       });
-      const { user, access_token } = response.data;
+      
+      let data = response.data;
+      if (data && data.data && !data.user && !data.access_token) {
+        data = data.data;
+      }
 
-      const userData = user || response.data;
-      const tokenData = access_token || (user && user.access_token) || response.data.token;
+      const { user, access_token } = data;
+
+      const userData = user || data;
+      const tokenData = access_token || (user && user.access_token) || data.token;
 
       if (tokenData) {
         localStorage.setItem('token', tokenData);
@@ -149,8 +189,11 @@ const useAuthStore = create((set) => ({
           isAuthenticated: true
         });
         
-        // NEW: Fetch detailed permissions after successful auth check
-        await useAuthStore.getState().fetchUserPermissions();
+        // Non-blocking fetch
+        try {
+          await useAuthStore.getState().fetchUserPermissions();
+        } catch (e) {}
+        
         set({ isLoading: false });
       } else {
         set({ isLoading: false, isAuthenticated: true });

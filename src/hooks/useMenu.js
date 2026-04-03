@@ -8,32 +8,29 @@ import {
   BookOpen,
   CreditCard,
   FileText,
-  Settings
+  Settings,
+  UserCircle
 } from 'lucide-react';
 
 export const useFilteredMenu = () => {
   const { permissions: masterPermissions } = useSettingsStore();
   const { user } = useAuthStore();
   
-  console.log('[useMenu] User Data:', user);
-  console.log('[useMenu] Master Permissions:', masterPermissions);
+  const userPermissions = useMemo(() => {
+    return user?.permissions || user?.role?.permissions || [];
+  }, [user]);
 
-  const userPermissions = user?.permissions || user?.role?.permissions || [];
-  console.log('[useMenu] User Specific Permissions:', userPermissions);
+  const isAdmin = !!user?.is_admin;
 
   // Helper to check if user has a permission
   const hasPermission = (perm) => {
     if (!perm) return true;
+    if (isAdmin) return true; // Admin has all permissions
     
-    // STRICT MODE: Only show what is explicitly returned by the backend
-    const checkList = userPermissions.length > 0 ? userPermissions : [];
-    
-    const found = checkList.some(p => {
+    return userPermissions.some(p => {
       const pName = (typeof p === 'object' ? p.name : p) || '';
       return pName.toLowerCase() === perm.toLowerCase();
     });
-
-    return found;
   };
 
   return useMemo(() => {
@@ -43,6 +40,13 @@ export const useFilteredMenu = () => {
         icon: LayoutDashboard, 
         path: '/', 
         permission: 'VIEW_DASHBOARD' 
+      },
+      
+      user?.calculation_id && {
+        title: 'My Profile',
+        icon: UserCircle,
+        path: `/customer-profile/${user.calculation_id}`,
+        permission: 'VIEW_MY_PROFILE'
       },
 
       {
@@ -142,8 +146,8 @@ export const useFilteredMenu = () => {
     ];
 
     // Filter menu items based on permission
-    const filteredItems = menuItems
-      .filter(item => !item.permission || hasPermission(item.permission))
+    return menuItems
+      .filter(item => item && (!item.permission || hasPermission(item.permission)))
       .map(item => {
         if (item.submenu) {
           const filteredSubmenu = item.submenu.filter(sub => 
@@ -157,9 +161,11 @@ export const useFilteredMenu = () => {
         }
         return item;
       })
-      .filter(item => !item.submenu || (item.submenu && item.submenu.length > 0));
-
-    console.log('[useMenu] Final Filtered Menu:', filteredItems, "userPermissions", userPermissions);
-    return filteredItems;
-  }, [userPermissions, masterPermissions, hasPermission]);
+      .filter(item => {
+        // Keep Dashboard and My Profile even if they don't have submenus
+        if (item.title === 'Dashboard' || item.title === 'My Profile') return true;
+        // For others, only keep if they have no submenu OR an active submenu
+        return !item.submenu || (item.submenu && item.submenu.length > 0);
+      });
+  }, [user, userPermissions, isAdmin]);
 };

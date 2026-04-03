@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children, permission }) => {
   }
 
   // Permission Check (if provided)
-  if (permission) {
+  if (permission && !user?.is_admin) {
     const userPermissions = user?.permissions || [];
     const hasPermission = userPermissions.some(p => {
       const pName = (typeof p === 'object' ? p.name : p) || '';

@@ -32,7 +32,16 @@ const Login = () => {
     const success = await login({ email, password });
     if (success) {
       toast.success('Authentication Protocol Initialized.');
-      navigate('/');
+      
+      // Get the freshest state
+      const user = useAuthStore.getState().user;
+      
+      // If user is a Customer (non-admin) and has a calculation_id, redirect there
+      if (!user?.is_admin && user?.calculation_id) {
+        navigate(`/customer-profile/${user.calculation_id}`);
+      } else {
+        navigate('/');
+      }
     } else {
       toast.error(error || 'Authentication Failed.');
     }

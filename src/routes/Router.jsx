@@ -58,7 +58,7 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
 
         {/* Protected Routes */}
-        <Route path="/" element={<ProtectedRoute permission="VIEW_DASHBOARD"><Layout><Home /></Layout></ProtectedRoute>} />
+        <Route path="/" element={ <ProtectedRoute permission="VIEW_DASHBOARD" > <Layout><Home /></Layout></ProtectedRoute>} />
         <Route path="/leads" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><Leads /></Layout></ProtectedRoute>} />
         <Route path="/leads/add" element={<ProtectedRoute permission="CREATE_LEADS"><Layout><AddLead /></Layout></ProtectedRoute>} />
         <Route path="/leads/:id" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><LeadDetail /></Layout></ProtectedRoute>} />
