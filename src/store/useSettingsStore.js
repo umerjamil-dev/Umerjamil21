@@ -43,14 +43,28 @@ const useSettingsStore = create((set) => ({
 
       const [profile, company, users, roles, permissions] = results.map(extract);
 
-      console.log('API RESPONSE DEBUG [Store Data Sync]:', { users, roles, permissions });
+      // Backend Inconsistency Fix: Ensure permissions are always objects with IDs
+      // Scavenge IDs from roles if the master list only has names (common if backend fix not applied)
+      const normalizedPermissions = Array.isArray(permissions) 
+        ? permissions.map(p => {
+            if (typeof p !== 'string') return p;
+            // Scavenge the integer ID from roles if it exists there
+            const matchingPerm = roles?.flatMap(r => r.permissions || []).find(rp => rp.name === p);
+            return matchingPerm ? { id: matchingPerm.id, name: p } : { id: p, name: p };
+          })
+        : [];
+
+      console.log('--- BACKEND SETTINGS DEBUG ---');
+      console.log('Roles:', roles);
+      console.log('Master Permissions:', normalizedPermissions);
+      console.log('-----------------------------');
 
       set((state) => ({ 
         profile: profile || state.profile,
         company: company || state.company,
         users: Array.isArray(users) ? users : state.users,
         roles: Array.isArray(roles) ? roles : state.roles,
-        permissions: Array.isArray(permissions) ? permissions : state.permissions,
+        permissions: normalizedPermissions.length > 0 ? normalizedPermissions : state.permissions,
         isLoading: false 
       }));
     } catch (err) {
@@ -170,8 +184,15 @@ const useSettingsStore = create((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.post(`/settings/roles/${roleId}/permissions`, { permissions: permissionIds });
+      
+      // Refresh roles to get updated permissions
       const rolesRes = await api.get('/settings/roles');
-      set({ roles: Array.isArray(rolesRes.data) ? rolesRes.data : [], isLoading: false });
+      let rolesData = rolesRes.data;
+      if (rolesData && !Array.isArray(rolesData) && Array.isArray(rolesData.data)) {
+        rolesData = rolesData.data;
+      }
+      
+      set({ roles: Array.isArray(rolesData) ? rolesData : [], isLoading: false });
       return response.data;
     } catch (err) {
       set({ error: err.message, isLoading: false });

@@ -58,56 +58,56 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
 
         {/* Protected Routes */}
-        <Route path="/" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
-        <Route path="/leads" element={<ProtectedRoute><Layout><Leads /></Layout></ProtectedRoute>} />
-        <Route path="/leads/add" element={<ProtectedRoute><Layout><AddLead /></Layout></ProtectedRoute>} />
-        <Route path="/leads/:id" element={<ProtectedRoute><Layout><LeadDetail /></Layout></ProtectedRoute>} />
-        <Route path="/leads/:id/edit" element={<ProtectedRoute><Layout><UpdateLead /></Layout></ProtectedRoute>} />
-        <Route path="/customers" element={<ProtectedRoute><Layout><Customers /></Layout></ProtectedRoute>} />
-        <Route path="/customers/add" element={<ProtectedRoute><Layout><AddCustomer /></Layout></ProtectedRoute>} />
-        <Route path="/customers/:id" element={<ProtectedRoute><Layout><CustomerDetail /></Layout></ProtectedRoute>} />
-        <Route path="/customers/:id/edit" element={<ProtectedRoute><Layout><UpdateCustomer /></Layout></ProtectedRoute>} />
-        <Route path="/customer-profile/:id" element={<ProtectedRoute><Layout><CustomerProfile /></Layout></ProtectedRoute>} />
-        <Route path="/calculator" element={<ProtectedRoute><Layout><Calculator /></Layout></ProtectedRoute>} />
-        <Route path="/bookings" element={<ProtectedRoute><Layout><Bookings /></Layout></ProtectedRoute>} />
-        <Route path="/bookings/add" element={<ProtectedRoute><Layout><AddBooking /></Layout></ProtectedRoute>} />
-        <Route path="/reservations" element={<ProtectedRoute><Layout><Reservations /></Layout></ProtectedRoute>} />
-        <Route path="/reservations/add" element={<ProtectedRoute><Layout><AddReservation /></Layout></ProtectedRoute>} />
-        <Route path="/payments" element={<ProtectedRoute><Layout><Payments /></Layout></ProtectedRoute>} />
-        <Route path="/payments/add" element={<ProtectedRoute><Layout><AddPayment /></Layout></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute permission="VIEW_DASHBOARD"><Layout><Home /></Layout></ProtectedRoute>} />
+        <Route path="/leads" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><Leads /></Layout></ProtectedRoute>} />
+        <Route path="/leads/add" element={<ProtectedRoute permission="CREATE_LEADS"><Layout><AddLead /></Layout></ProtectedRoute>} />
+        <Route path="/leads/:id" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><LeadDetail /></Layout></ProtectedRoute>} />
+        <Route path="/leads/:id/edit" element={<ProtectedRoute permission="CREATE_LEADS"><Layout><UpdateLead /></Layout></ProtectedRoute>} />
+        <Route path="/customers" element={<ProtectedRoute permission="VIEW_CUSTOMERS"><Layout><Customers /></Layout></ProtectedRoute>} />
+        <Route path="/customers/add" element={<ProtectedRoute permission="VIEW_CUSTOMERS"><Layout><AddCustomer /></Layout></ProtectedRoute>} />
+        <Route path="/customers/:id" element={<ProtectedRoute permission="VIEW_CUSTOMERS"><Layout><CustomerDetail /></Layout></ProtectedRoute>} />
+        <Route path="/customers/:id/edit" element={<ProtectedRoute permission="VIEW_CUSTOMERS"><Layout><UpdateCustomer /></Layout></ProtectedRoute>} />
+        <Route path="/customer-profile/:id" element={<ProtectedRoute permission="customer-profile"><Layout><CustomerProfile /></Layout></ProtectedRoute>} />
+        <Route path="/calculator" element={<ProtectedRoute permission="USE_CALCULATOR"><Layout><Calculator /></Layout></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute permission="VIEW_BOOKINGS"><Layout><Bookings /></Layout></ProtectedRoute>} />
+        <Route path="/bookings/add" element={<ProtectedRoute permission="CREATE_BOOKINGS"><Layout><AddBooking /></Layout></ProtectedRoute>} />
+        <Route path="/reservations" element={<ProtectedRoute permission="VIEW_RESERVATIONS"><Layout><Reservations /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/add" element={<ProtectedRoute permission="CREATE_RESERVATIONS"><Layout><AddReservation /></Layout></ProtectedRoute>} />
+        <Route path="/payments" element={<ProtectedRoute permission="VIEW_PAYMENTS"><Layout><Payments /></Layout></ProtectedRoute>} />
+        <Route path="/payments/add" element={<ProtectedRoute permission="CREATE_PAYMENTS"><Layout><AddPayment /></Layout></ProtectedRoute>} />
         
         {/* Operations */}
-        <Route path="/operations" element={<ProtectedRoute><Layout><Operations /></Layout></ProtectedRoute>} />
-        <Route path="/operations/staff" element={<ProtectedRoute><Layout><Staff /></Layout></ProtectedRoute>} />
-        <Route path="/operations/logistics" element={<ProtectedRoute><Layout><Logistics /></Layout></ProtectedRoute>} />
+        <Route path="/operations" element={<ProtectedRoute permission="VIEW_OPERATIONS"><Layout><Operations /></Layout></ProtectedRoute>} />
+        <Route path="/operations/staff" element={<ProtectedRoute permission="VIEW_OPERATIONS_STAFF"><Layout><Staff /></Layout></ProtectedRoute>} />
+        <Route path="/operations/logistics" element={<ProtectedRoute permission="VIEW_LOGISTICS"><Layout><Logistics /></Layout></ProtectedRoute>} />
         
         {/* Reports */}
-        <Route path="/reports" element={<ProtectedRoute><Layout><Reports /></Layout></ProtectedRoute>} />
-        <Route path="/reports/bookings" element={<ProtectedRoute><Layout><BookingAnalytics /></Layout></ProtectedRoute>} />
-        <Route path="/reports/payments" element={<ProtectedRoute><Layout><PaymentReports /></Layout></ProtectedRoute>} />
-        <Route path="/reports/sales" element={<ProtectedRoute><Layout><SalesPerformance /></Layout></ProtectedRoute>} />
+        <Route path="/reports" element={<ProtectedRoute permission="VIEW_REPORTS"><Layout><Reports /></Layout></ProtectedRoute>} />
+        <Route path="/reports/bookings" element={<ProtectedRoute permission="VIEW_BOOKING_ANALYTICS"><Layout><BookingAnalytics /></Layout></ProtectedRoute>} />
+        <Route path="/reports/payments" element={<ProtectedRoute permission="VIEW_PAYMENT_REPORTS"><Layout><PaymentReports /></Layout></ProtectedRoute>} />
+        <Route path="/reports/sales" element={<ProtectedRoute permission="VIEW_SALES_PERFORMANCE"><Layout><SalesPerformance /></Layout></ProtectedRoute>} />
 
         {/* Isolated Settings Pages */}
-        <Route path="/settings/company" element={<ProtectedRoute><Layout><CompanyParams /></Layout></ProtectedRoute>} />
-        <Route path="/settings/roles" element={<ProtectedRoute><Layout><Roles /></Layout></ProtectedRoute>} />
-        <Route path="/settings/permissions" element={<ProtectedRoute><Layout><Permissions /></Layout></ProtectedRoute>} />
-        <Route path="/settings/assign-permissions" element={<ProtectedRoute><Layout><AssignPermissions /></Layout></ProtectedRoute>} />
-        <Route path="/settings/master-types" element={<ProtectedRoute><Layout><MasterTypes /></Layout></ProtectedRoute>} />
-        <Route path="/settings/api" element={<ProtectedRoute><Layout><ApiConfig /></Layout></ProtectedRoute>} />
-        <Route path="/settings/subscription" element={<ProtectedRoute><Layout><Subscription /></Layout></ProtectedRoute>} />
+        <Route path="/settings/company" element={<ProtectedRoute permission="MANAGE_COMPANY"><Layout><CompanyParams /></Layout></ProtectedRoute>} />
+        <Route path="/settings/roles" element={<ProtectedRoute permission="MANAGE_ROLES"><Layout><Roles /></Layout></ProtectedRoute>} />
+        <Route path="/settings/permissions" element={<ProtectedRoute permission="MANAGE_PERMISSIONS"><Layout><Permissions /></Layout></ProtectedRoute>} />
+        <Route path="/settings/assign-permissions" element={<ProtectedRoute permission="ASSIGN_PERMISSIONS"><Layout><AssignPermissions /></Layout></ProtectedRoute>} />
+        <Route path="/settings/master-types" element={<ProtectedRoute permission="MANAGE_MASTER_TYPES"><Layout><MasterTypes /></Layout></ProtectedRoute>} />
+        <Route path="/settings/api" element={<ProtectedRoute permission="MANAGE_API_SYNC"><Layout><ApiConfig /></Layout></ProtectedRoute>} />
+        <Route path="/settings/subscription" element={<ProtectedRoute permission="MANAGE_SUBSCRIPTION"><Layout><Subscription /></Layout></ProtectedRoute>} />
         
-        <Route path="/settings/users" element={<ProtectedRoute><Layout><ManageUsers /></Layout></ProtectedRoute>} />
-        <Route path="/settings/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
+        <Route path="/settings/users" element={<ProtectedRoute permission="MANAGE_USERS"><Layout><ManageUsers /></Layout></ProtectedRoute>} />
+        <Route path="/settings/profile" element={<ProtectedRoute permission="MANAGE_PROFILE"><Layout><Profile /></Layout></ProtectedRoute>} />
         
-        <Route path="/reservations/visa" element={<ProtectedRoute><Layout><Visa /></Layout></ProtectedRoute>} />
-        <Route path="/reservations/hotels" element={<ProtectedRoute><Layout><Hotels /></Layout></ProtectedRoute>} />
-        <Route path="/reservations/flights" element={<ProtectedRoute><Layout><Flights /></Layout></ProtectedRoute>} />
-        <Route path="/reservations/transport" element={<ProtectedRoute><Layout><Transport /></Layout></ProtectedRoute>} />
-        <Route path="/packages" element={<ProtectedRoute><Layout><Packages /></Layout></ProtectedRoute>} />
-        <Route path="/packages/add" element={<ProtectedRoute><Layout><AddPackage /></Layout></ProtectedRoute>} />
-        <Route path="/packages/:id" element={<ProtectedRoute><Layout><PackageDetail /></Layout></ProtectedRoute>} />
-        <Route path="/packages/:id/edit" element={<ProtectedRoute><Layout><UpdatePackage /></Layout></ProtectedRoute>} />
-        <Route path="/live-booking" element={<ProtectedRoute><Layout><LiveBooking /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/visa" element={<ProtectedRoute permission="VIEW_VISA"><Layout><Visa /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/hotels" element={<ProtectedRoute permission="VIEW_HOTELS"><Layout><Hotels /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/flights" element={<ProtectedRoute permission="VIEW_FLIGHTS"><Layout><Flights /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/transport" element={<ProtectedRoute permission="VIEW_TRANSPORT"><Layout><Transport /></Layout></ProtectedRoute>} />
+        <Route path="/packages" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><Packages /></Layout></ProtectedRoute>} />
+        <Route path="/packages/add" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><AddPackage /></Layout></ProtectedRoute>} />
+        <Route path="/packages/:id" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><PackageDetail /></Layout></ProtectedRoute>} />
+        <Route path="/packages/:id/edit" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><UpdatePackage /></Layout></ProtectedRoute>} />
+        <Route path="/live-booking" element={<ProtectedRoute permission="VIEW_LIVE_BOOKING"><Layout><LiveBooking /></Layout></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
     </>

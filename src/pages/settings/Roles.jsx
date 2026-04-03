@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Crosshair, Users, Calendar, MoreVertical, Edit3, Settings } from 'lucide-react';
+import { ShieldCheck, Crosshair, Users, Calendar, MoreVertical, Edit3, Settings, Trash2 } from 'lucide-react';
 import useSettingsStore from '../../store/useSettingsStore';
 import toast from 'react-hot-toast';
 
@@ -7,6 +7,8 @@ const Roles = () => {
    const { roles, fetchSettings, createRole, deleteRole, isLoading } = useSettingsStore();
    const [showNewRoleInput, setShowNewRoleInput] = useState(false);
    const [newRoleName, setNewRoleName] = useState('');
+
+   const [editingRole, setEditingRole] = useState(null);
 
    useEffect(() => {
       fetchSettings();
@@ -18,13 +20,25 @@ const Roles = () => {
          return;
       }
       try {
-         await createRole({ name: newRoleName });
+         if (editingRole) {
+            await updateRole(editingRole.id, { name: newRoleName });
+            toast.success('Access hierarchy updated.');
+         } else {
+            await createRole({ name: newRoleName });
+            toast.success('Access hierarchy created.');
+         }
          setNewRoleName('');
          setShowNewRoleInput(false);
-         toast.success('Access hierarchy updated.');
+         setEditingRole(null);
       } catch (err) {
-         toast.error('Forge failure: ' + err.message);
+         toast.error('Critical failure: ' + err.message);
       }
+   };
+
+   const handleEdit = (role) => {
+      setNewRoleName(role.name);
+      setEditingRole(role);
+      setShowNewRoleInput(true);
    };
 
    return (
@@ -116,17 +130,17 @@ const Roles = () => {
                            </td>
                            <td className="py-6 px-8 text-right">
                               <div className="flex items-center justify-end gap-3">
-                                 <button className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-[#D4AF37] hover:bg-white border text-transparent border-transparent hover:border-gray-200 transition-all shadow-sm">
+                                 <button 
+                                    onClick={() => handleEdit(role)}
+                                    className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-[#D4AF37] hover:bg-white border border-transparent hover:border-gray-200 transition-all shadow-sm cursor-pointer"
+                                 >
                                     <Edit3 size={16} />
-                                 </button>
-                                 <button className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-[#111827] hover:bg-white border text-transparent border-transparent hover:border-gray-200 transition-all shadow-sm">
-                                    <Settings size={16} />
                                  </button>
                                  <button 
                                     onClick={() => deleteRole(role.id)}
-                                    className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors"
+                                    className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white border border-transparent hover:border-gray-200 transition-all cursor-pointer"
                                  >
-                                    <MoreVertical size={16} />
+                                    <Trash2 size={16} />
                                  </button>
                               </div>
                            </td>

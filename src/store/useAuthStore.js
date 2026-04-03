@@ -10,11 +10,12 @@ const getSafeJSON = (key) => {
   }
 };
 
+
 const useAuthStore = create((set) => ({
   user: getSafeJSON('user'),
   token: localStorage.getItem('token') || null,
   isAuthenticated: !!localStorage.getItem('token'),
-  isLoading: !localStorage.getItem('token'), // Optimistic: Not loading if token exists
+  isLoading: true, // Always start in loading state to avoid premature redirection
   error: null,
 
   login: async (credentials) => {
@@ -31,7 +32,12 @@ const useAuthStore = create((set) => ({
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', tokenData);
 
-      set({ user: userData, token: tokenData, isAuthenticated: true, isLoading: false });
+      set({ user: userData, token: tokenData, isAuthenticated: true });
+      
+      // NEW: Fetch detailed permissions after successful login
+      await useAuthStore.getState().fetchUserPermissions();
+      
+      set({ isLoading: false });
       return true;
     } catch (err) {
       set({
@@ -85,6 +91,37 @@ const useAuthStore = create((set) => ({
     }
   },
 
+  fetchUserPermissions: async () => {
+    try {
+      const response = await api.get('/user/permissions');
+      // console.log('[AuthStore] User Permissions Response Data:', response.data);
+      const { permissions, is_admin, role_id } = response.data;
+      
+      set((state) => ({
+        user: { 
+          ...state.user, 
+          permissions: permissions || [], 
+          is_admin: is_admin,
+          role_id: role_id
+        }
+      }));
+      
+      // Also update localStorage to persist permissions for faster next-load
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const userObj = JSON.parse(storedUser);
+        localStorage.setItem('user', JSON.stringify({ 
+          ...userObj, 
+          permissions: permissions || [],
+          is_admin: is_admin,
+          role_id: role_id
+        }));
+      }
+    } catch (err) {
+      console.error('[AuthStore] Failed to fetch user permissions:', err);
+    }
+  },
+
   checkAuth: async () => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
@@ -95,7 +132,6 @@ const useAuthStore = create((set) => ({
     }
 
     try {
-      // console.log("[useAuthStore] checkAuth calling with token:", storedToken);
       const response = await api.post('/auth/refresh', {}, {
         headers: { Authorization: `Bearer ${storedToken}` }
       });
@@ -110,14 +146,16 @@ const useAuthStore = create((set) => ({
         set({
           user: userData || useAuthStore.getState().user,
           token: tokenData,
-          isAuthenticated: true,
-          isLoading: false
+          isAuthenticated: true
         });
+        
+        // NEW: Fetch detailed permissions after successful auth check
+        await useAuthStore.getState().fetchUserPermissions();
+        set({ isLoading: false });
       } else {
         set({ isLoading: false, isAuthenticated: true });
       }
     } catch (err) {
-      // ONLY clear if it's an explicit 401 (Session Expired)
       if (err.response?.status === 401) {
         localStorage.removeItem('user');
         localStorage.removeItem('token');

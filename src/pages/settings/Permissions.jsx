@@ -12,6 +12,7 @@ const Permissions = () => {
    const [isEditing, setIsEditing] = useState(false);
    const [editingPermission, setEditingPermission] = useState(null);
    const [newName, setNewName] = useState('');
+   const [newUrl, setNewUrl] = useState('');
    const [search, setSearch] = useState('');
 
    useEffect(() => {
@@ -25,7 +26,10 @@ const Permissions = () => {
          return;
       }
 
-      const payload = { name: newName.toUpperCase().replace(/\s+/g, '_') };
+      const payload = { 
+         name: newName.toUpperCase().replace(/\s+/g, '_'),
+         url: newUrl.trim()
+      };
 
       if (isEditing && editingPermission) {
          const result = await updatePermission(editingPermission.id, payload);
@@ -51,6 +55,7 @@ const Permissions = () => {
       setIsEditing(true);
       setIsAdding(true);
       setNewName(p.name);
+      setNewUrl(p.url || '');
    };
 
    const handleDelete = async (id) => {
@@ -65,6 +70,7 @@ const Permissions = () => {
       setIsEditing(false);
       setEditingPermission(null);
       setNewName('');
+      setNewUrl('');
    };
 
    const filtered = permissions.filter(p => p.name?.toLowerCase().includes(search.toLowerCase()));
@@ -114,23 +120,35 @@ const Permissions = () => {
                   initial={{ opacity: 0, scale: 0.98, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.98, y: 10 }}
-                  className="mb-14 overflow-hidden"
+                  className="mb-14"
                >
-                  <form onSubmit={handleSubmit} className="bg-white border border-gray-100 rounded-3xl p-10 shadow-sm flex items-center gap-6">
-                     <div className="bg-gray-50 rounded-2xl px-8 py-5 flex-1 flex items-center gap-5 border border-gray-100 focus-within:bg-white focus-within:border-gray-900 transition-all group">
-                        <Fingerprint size={20} className="text-gray-300 group-focus-within:text-gray-900 transition-colors" />
-                        <input
-                           autoFocus
-                           type="text"
-                           value={newName}
-                           onChange={e => setNewName(e.target.value)}
-                           placeholder="AUTHORIZATION_ID (e.g. DELETE_USER)..."
-                           className="bg-transparent outline-none flex-1 font-bold text-gray-900 placeholder:text-gray-200 uppercase tracking-wide"
-                        />
+                  <form onSubmit={handleSubmit} className="bg-white border border-gray-100 rounded-3xl p-10 shadow-sm flex flex-col md:flex-row items-stretch md:items-center gap-6">
+                     <div className="flex-1 space-y-4">
+                        <div className="bg-gray-50 rounded-2xl px-8 py-5 flex items-center gap-5 border border-gray-100 focus-within:bg-white focus-within:border-gray-900 transition-all group">
+                           <Fingerprint size={20} className="text-gray-300 group-focus-within:text-gray-900 transition-colors" />
+                           <input
+                              autoFocus
+                              type="text"
+                              value={newName}
+                              onChange={e => setNewName(e.target.value)}
+                              placeholder="AUTHORIZATION_ID (e.g. DELETE_USER)..."
+                              className="bg-transparent outline-none flex-1 font-bold text-gray-900 placeholder:text-gray-200 uppercase tracking-wide"
+                           />
+                        </div>
+                        <div className="bg-gray-50 rounded-2xl px-8 py-5 flex items-center gap-5 border border-gray-100 focus-within:bg-white focus-within:border-gray-900 transition-all group">
+                           <Zap size={20} className="text-gray-300 group-focus-within:text-gray-900 transition-colors" />
+                           <input
+                              type="text"
+                              value={newUrl}
+                              onChange={e => setNewUrl(e.target.value)}
+                              placeholder="Resource URL (e.g. /leads/add)..."
+                              className="bg-transparent outline-none flex-1 font-bold text-gray-900 placeholder:text-gray-200 tracking-wide"
+                           />
+                        </div>
                      </div>
                      <button
                         type="submit"
-                        className="bg-gray-900 text-white h-16 px-12 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-700 transition-all disabled:opacity-50 cursor-pointer"
+                        className="bg-gray-900 text-white min-h-[64px] px-12 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-700 transition-all disabled:opacity-50 cursor-pointer"
                         disabled={isLoading}
                      >
                         {isLoading ? 'Forging…' : (isEditing ? 'Sync Changes' : 'Finalize Forge')}
@@ -204,8 +222,15 @@ const Permissions = () => {
                               </div>
 
                               {/* Name */}
-                              <div className="text-[9px] font-black text-gray-800 uppercase tracking-[0.06em] text-center break-words line-clamp-2 leading-tight select-none w-full">
-                                 {p.name.replace(/_/g, ' ')}
+                              <div className="flex flex-col items-center gap-1 w-full overflow-hidden">
+                                 <div className="text-[9px] font-black text-gray-800 uppercase tracking-[0.06em] text-center break-words line-clamp-2 leading-tight select-none w-full">
+                                    {p.name.replace(/_/g, ' ')}
+                                 </div>
+                                 {p.url && (
+                                    <div className="text-[7px] font-bold text-gray-400 truncate w-full text-center px-1">
+                                       {p.url}
+                                    </div>
+                                 )}
                               </div>
 
                               {/* Action Overlay */}

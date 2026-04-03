@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useFilteredMenu } from '../hooks/useMenu';
 import {
   LayoutDashboard,
   Users,
@@ -17,100 +18,7 @@ import {
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
-
-  const menuItems = [
-    { title: 'Dashboard', icon: LayoutDashboard, path: '/' },
-
-    {
-      title: 'Sales',
-      icon: Users,
-      path: '/leads',
-      submenu: [
-        { title: 'Leads', path: '/leads' },
-        { title: 'Add New Lead', path: '/leads/add' },
-        { title: 'Customers', path: '/customers' }, //  added
-        { title: 'Packages', path: '/packages' },
-        { title: 'Calculator', path: '/calculator' },
-        { title: 'Live Booking (API)', path: '/live-booking' } //  future API
-      ]
-    },
-
-    {
-      title: 'Reservations',
-      icon: Plane,
-      path: '/reservations',
-      submenu: [
-        { title: 'All Reservations', path: '/reservations' },
-        { title: 'New Reservation', path: '/reservations/add' },
-
-        //  important sub modules
-        { title: 'Visa', path: '/reservations/visa' },
-        { title: 'Hotels', path: '/reservations/hotels' },
-        { title: 'Flights', path: '/reservations/flights' },
-        { title: 'Transport', path: '/reservations/transport' }
-      ]
-    },
-
-    {
-      title: 'Bookings',
-      icon: BookOpen,
-      path: '/bookings',
-      submenu: [
-        { title: 'Booking History', path: '/bookings' },
-        { title: 'New Booking', path: '/bookings/add' }
-      ]
-    },
-
-    {
-      title: 'Payments',
-      icon: CreditCard,
-      path: '/payments',
-      submenu: [
-        { title: 'All Payments', path: '/payments' },
-        { title: 'Add Payment', path: '/payments/add' } //  added
-      ]
-    },
-
-    {
-      title: 'Operations (Abroad)',
-      icon: Plane,
-      path: '/operations',
-      submenu: [
-        { title: 'Overview & Dispatch', path: '/operations' },
-        { title: 'Staff', path: '/operations/staff' },
-        { title: 'Logistics Feed', path: '/operations/logistics' }
-      ]
-    },
-
-    {
-      title: 'Reports',
-      icon: FileText,
-      path: '/reports',
-      submenu: [
-        { title: 'Operational Intelligence', path: '/reports' },
-        { title: 'Booking Analytics', path: '/reports/bookings' },
-        { title: 'Payment Reports', path: '/reports/payments' },
-        { title: 'Sales Performance', path: '/reports/sales' }
-      ]
-    },
-
-    {
-      title: 'Settings',
-      icon: Settings,
-      path: '/settings',
-      submenu: [
-        { title: 'Company Core', path: '/settings/company' },
-        { title: 'Roles', path: '/settings/roles' },
-        { title: 'Permissions', path: '/settings/permissions' },
-        { title: 'Assign Permissions', path: '/settings/assign-permissions' },
-        { title: 'Master Types', path: '/settings/master-types' },
-        { title: 'API Sync', path: '/settings/api' },
-        { title: 'Subscription', path: '/settings/subscription' },
-        { title: 'Personnel Registry', path: '/settings/users' },
-        { title: 'Identity Protocol', path: '/settings/profile' }
-      ]
-    }
-  ];
+  const menuItems = useFilteredMenu();
 
   const [openMenus, setOpenMenus] = useState({});
 
