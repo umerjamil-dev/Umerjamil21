@@ -12,6 +12,7 @@ import useHotelStore from '../store/useHotelStore';
 import useVisaStore from '../store/useVisaStore';
 import useFlightStore from '../store/useFlightStore';
 import useTransportStore from '../store/useTransportStore';
+import useMasterTypeStore from '../store/useMasterTypeStore';
 import toast from 'react-hot-toast';
 
 const AddReservation = () => {
@@ -21,6 +22,7 @@ const AddReservation = () => {
    const { addVisa } = useVisaStore();
    const { addFlight } = useFlightStore();
    const { addTransport } = useTransportStore();
+   const { masterData, fetchMasterData } = useMasterTypeStore();
 
    const [formData, setFormData] = useState({
       type: 'Hotel', 
@@ -29,7 +31,7 @@ const AddReservation = () => {
       checkIn: '',
       checkOut: '',
       referenceNumber: '',
-      status: 'Confirmed',
+      status: null,
       hotelName: '',
       city: 'Makkah',
       roomType: '',
@@ -37,7 +39,9 @@ const AddReservation = () => {
       airline: '',
       ticketNumber: '',
       departure: '',
+      departureTime: '',
       arrival: '',
+      arrivalTime: '',
       vehicle: '',
       driver: '',
       notes: '',
@@ -46,7 +50,8 @@ const AddReservation = () => {
 
    useEffect(() => {
       fetchBookings();
-   }, [fetchBookings]);
+      fetchMasterData();
+   }, [fetchBookings, fetchMasterData]);
 
    const handleSubmit = async () => {
       if (!formData.bookingId) {
@@ -55,6 +60,7 @@ const AddReservation = () => {
       }
 
       try {
+         console.log('Submission Payload (FormData):', formData);
          let result;
          if (formData.type === 'Hotel') {
             result = await addHotel({
@@ -78,17 +84,20 @@ const AddReservation = () => {
                booking_id: formData.bookingId,
                airline: formData.airline,
                ticket_number: formData.ticketNumber,
-               departure: formData.departure,
-               arrival: formData.arrival,
+               departure: formData.departureTime ? `${formData.departure} @ ${formData.departureTime}` : formData.departure,
+               arrival: formData.arrivalTime ? `${formData.arrival} @ ${formData.arrivalTime}` : formData.arrival,
                status: formData.status
             });
          } else if (formData.type === 'Transport') {
             result = await addTransport({
                booking_id: formData.bookingId,
-               type: formData.transportType, // specific subtype if needed
+               type: formData.transportType,
                vehicle: formData.vehicle,
                driver: formData.driver,
-               status: formData.status
+               plate_number: formData.plateNumber,
+               date_of_issue: formData.dateOfIssue,
+               date_of_expiry: formData.dateOfExpiry,
+               notes: formData.notes
             });
          }
 
@@ -107,7 +116,7 @@ const AddReservation = () => {
    ];
 
    return (
-      <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
+      <div className="font-inter  space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
             <Link to="/reservations" className="flex items-center gap-3 text-slate-400 hover:text-slate-900 transition-all group">
@@ -200,9 +209,14 @@ const AddReservation = () => {
                            onChange={(e) => setFormData({ ...formData, bookingId: e.target.value })}
                         >
                            <option value="" className="bg-white">Query Registry...</option>
-                           {bookings.map(b => (
-                              <option key={b.id} value={b.id} className="bg-white">{b.id} ({b.customer_name || 'N/A'})</option>
-                           ))}
+                           {(() => {
+                              const bookingsToShow = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
+                              return bookingsToShow.map(b => (
+                                 <option key={b.id} value={b.id} className="bg-white">
+                                    BK-{b.id} ({b.customer_name || b.customer?.firstName || 'N/A'})
+                                 </option>
+                              ));
+                           })()}
                         </select>
                      </div>
                   </div>
@@ -225,19 +239,7 @@ const AddReservation = () => {
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Status</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                 >
-                                    <option className="bg-white">Confirmed</option>
-                                    <option className="bg-white">Pending</option>
-                                    <option className="bg-white">Processing</option>
-                                    <option className="bg-white">Approved</option>
-                                    <option className="bg-white">Rejected</option>
-                                 </select>
-                              </div>
+                             
                            </div>
                            <div className="md:col-span-2 group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Internal Notes</label>
@@ -312,6 +314,7 @@ const AddReservation = () => {
                                  />
                               </div>
                            </div>
+                           
                         </>
                      )}
 
@@ -341,30 +344,51 @@ const AddReservation = () => {
                                  />
                               </div>
                            </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Departure Loc / Time</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="JFK @ 14:00..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.departure}
-                                    onChange={(e) => setFormData({ ...formData, departure: e.target.value })}
-                                 />
+                           <div className="grid grid-cols-1 gap-6">
+                              
+                              <div className="group">
+                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Departure Time</label>
+                                 <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                    <input 
+                                       type="time" 
+                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none" 
+                                       value={formData.departureTime}
+                                       onChange={(e) => setFormData({ ...formData, departureTime: e.target.value })}
+                                    />
+                                 </div>
                               </div>
                            </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Arrival Loc / Time</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="JED @ 09:30..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.arrival}
-                                    onChange={(e) => setFormData({ ...formData, arrival: e.target.value })}
-                                 />
+                           <div className="grid grid-cols-1 gap-6 ">
+                              
+                              <div className="group">
+                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Arrival Time</label>
+                                 <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                    <input 
+                                       type="time" 
+                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none" 
+                                       value={formData.arrivalTime}
+                                       onChange={(e) => setFormData({ ...formData, arrivalTime: e.target.value })}
+                                    />
+                                 </div>
                               </div>
                            </div>
+                           {/* <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Flight Status</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <select 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
+                                    value={formData.status}
+                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                 >
+                                    <option className="bg-white" value="">Select Status ...</option>
+                                    {(masterData?.status || []).map((s, idx) => (
+                                       <option key={idx} value={s.id || s} className="bg-white">
+                                          {s.name || s}
+                                       </option>
+                                    ))}
+                                 </select>
+                              </div>
+                           </div> */}
                         </>
                      )}
 
@@ -378,24 +402,49 @@ const AddReservation = () => {
                                     value={formData.transportType}
                                     onChange={(e) => setFormData({ ...formData, transportType: e.target.value })}
                                  >
-                                    <option className="bg-white" value="Pickup (Airport)">Pickup (Airport)</option>
-                                    <option className="bg-white" value="Drop (Airport)">Drop (Airport)</option>
-                                    <option className="bg-white" value="Ziyarat (Makkah)">Ziyarat (Makkah)</option>
-                                    <option className="bg-white" value="Ziyarat (Madinah)">Ziyarat (Madinah)</option>
-                                    <option className="bg-white" value="Inter-city Transit">Inter-city Transit</option>
+                                    <option className="bg-white" value="">Select Type ...</option>
+                                    {(masterData?.transport_type || []).map((t, idx) => (
+                                       <option key={idx} value={t.id || t} className="bg-white">
+                                          {t.name || t}
+                                       </option>
+                                    ))}
+                                    {(!masterData?.transport_type || masterData.transport_type.length === 0) && (
+                                       <>
+                                          <option className="bg-white" value="Pickup (Airport)">Pickup (Airport)</option>
+                                          <option className="bg-white" value="Drop (Airport)">Drop (Airport)</option>
+                                          <option className="bg-white" value="Ziyarat (Makkah)">Ziyarat (Makkah)</option>
+                                          <option className="bg-white" value="Ziyarat (Madinah)">Ziyarat (Madinah)</option>
+                                          <option className="bg-white" value="Inter-city Transit">Inter-city Transit</option>
+                                       </>
+                                    )}
                                  </select>
                               </div>
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Vehicle Assignment</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="GMC Yukon / Bus-50..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.vehicle}
-                                    onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-                                 />
+                                 {masterData?.vehicle?.length > 0 ? (
+                                    <select
+                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
+                                       value={formData.vehicle}
+                                       onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
+                                    >
+                                       <option className="bg-white" value="">Select Vehicle ...</option>
+                                       {masterData.vehicle.map((v, idx) => (
+                                          <option key={idx} value={v.id || v} className="bg-white">
+                                             {v.name || v}
+                                          </option>
+                                       ))}
+                                    </select>
+                                 ) : (
+                                    <input 
+                                       type="text" 
+                                       placeholder="GMC Yukon / Bus-50..." 
+                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
+                                       value={formData.vehicle}
+                                       onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
+                                    />
+                                 )}
                               </div>
                            </div>
                            <div className="md:col-span-2 group">
@@ -410,6 +459,57 @@ const AddReservation = () => {
                                  />
                               </div>
                            </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Plate Number</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input 
+                                    type="text" 
+                                    placeholder="Plate Number" 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
+                                    value={formData.plateNumber}
+                                    onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
+                                 />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Date of Issue</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input 
+                                    type="text" 
+                                    placeholder="Date of Issue" 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
+                                    value={formData.dateOfIssue}
+                                    onChange={(e) => setFormData({ ...formData, dateOfIssue: e.target.value })}
+                                 />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Date of Expiry</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input 
+                                    type="text" 
+                                    placeholder="Date of Expiry" 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
+                                    value={formData.dateOfExpiry}
+                                    onChange={(e) => setFormData({ ...formData, dateOfExpiry: e.target.value })}
+                                 />
+                              </div>
+                           </div>
+                            
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Notes</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input 
+                                    type="text" 
+                                    placeholder="Notes" 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
+                                    value={formData.notes}
+                                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                 />
+                              </div>
+                           </div>
+
+                          
                         </>
                      )}
                   </div>

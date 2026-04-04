@@ -135,6 +135,7 @@ const UpdateBooking = () => {
       return;
     }
     try {
+      console.log('Submission Payload (UpdateBooking):', formData);
       const payload = {
         customer_id: formData.customerId,
         package_id: formData.packageId,

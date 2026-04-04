@@ -38,6 +38,7 @@ const AddPayment = () => {
       }
 
       try {
+         console.log('Submission Payload (AddPayment):', formData);
          await addPayment(formData);
          toast.success('Treasury entry officialized.');
          navigate('/payments');
@@ -170,16 +171,19 @@ const AddPayment = () => {
                               onChange={(e) => setFormData({ ...formData, booking_id: e.target.value })}
                            >
                               <option value="" className="bg-white">Query Booking ...</option>
-                              {bookings?.map((booking) => {
-                                 const customerName = typeof booking.customer === 'object' 
-                                    ? (booking.customer?.firstName || booking.customer?.first_name || booking.customer?.name || 'Customer') 
-                                    : (booking.customer || 'Customer');
-                                 return (
-                                    <option key={booking.id} value={booking.id} className="bg-white">
-                                       BK-{booking.id} ({customerName})
-                                    </option>
-                                 );
-                              })}
+                               {(() => {
+                                 const bookingsToShow = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
+                                 return bookingsToShow.map((booking) => {
+                                    const customerName = typeof booking.customer === 'object' 
+                                       ? (booking.customer?.firstName || booking.customer?.first_name || booking.customer?.name || 'Customer') 
+                                       : (booking.customer || 'Customer');
+                                    return (
+                                       <option key={booking.id} value={booking.id} className="bg-white">
+                                          BK-{booking.id} ({customerName})
+                                       </option>
+                                    );
+                                 });
+                              })()}
                            </select>
                         </div>
                      </div>

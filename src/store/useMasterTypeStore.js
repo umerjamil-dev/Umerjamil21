@@ -13,7 +13,10 @@ const useMasterTypeStore = create((set) => ({
     urgency_level: [],
     lifecycle_status: [],
     lead: [],
-    leadsource: []
+    leadsource: [],
+    billingpaymentstatus: [],
+    transport_type: [],
+    vehicle: []
   },
   loading: false,
   error: null,
@@ -34,7 +37,10 @@ const useMasterTypeStore = create((set) => ({
         'lead',
         'leadsource',
         'strategiccategorization',
-        'billingpaymentstatus'
+        'billingpaymentstatus',
+        'transport_type',
+        'vehicle',
+        'statusvisa'
       ];
 
       // Fetch all types in parallel
