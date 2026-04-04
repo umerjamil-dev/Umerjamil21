@@ -40,7 +40,8 @@ const AddReservation = () => {
       arrival: '',
       vehicle: '',
       driver: '',
-      notes: ''
+      notes: '',
+      transportType: 'Pickup (Airport)'
    });
 
    useEffect(() => {
@@ -84,7 +85,7 @@ const AddReservation = () => {
          } else if (formData.type === 'Transport') {
             result = await addTransport({
                booking_id: formData.bookingId,
-               type: formData.type, // specific subtype if needed
+               type: formData.transportType, // specific subtype if needed
                vehicle: formData.vehicle,
                driver: formData.driver,
                status: formData.status
@@ -372,12 +373,16 @@ const AddReservation = () => {
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Transport Type</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer">
-                                    <option className="bg-white">Pickup (Airport)</option>
-                                    <option className="bg-white">Drop (Airport)</option>
-                                    <option className="bg-white">Ziyarat (Makkah)</option>
-                                    <option className="bg-white">Ziyarat (Madinah)</option>
-                                    <option className="bg-white">Inter-city Transit</option>
+                                 <select 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
+                                    value={formData.transportType}
+                                    onChange={(e) => setFormData({ ...formData, transportType: e.target.value })}
+                                 >
+                                    <option className="bg-white" value="Pickup (Airport)">Pickup (Airport)</option>
+                                    <option className="bg-white" value="Drop (Airport)">Drop (Airport)</option>
+                                    <option className="bg-white" value="Ziyarat (Makkah)">Ziyarat (Makkah)</option>
+                                    <option className="bg-white" value="Ziyarat (Madinah)">Ziyarat (Madinah)</option>
+                                    <option className="bg-white" value="Inter-city Transit">Inter-city Transit</option>
                                  </select>
                               </div>
                            </div>

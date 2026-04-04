@@ -8,28 +8,31 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import usePaymentStore from '../store/usePaymentStore';
 import useBookingStore from '../store/useBookingStore';
+import useMasterTypeStore from '../store/useMasterTypeStore';
 import toast from 'react-hot-toast';
 
 const AddPayment = () => {
    const navigate = useNavigate();
    const { addPayment, isLoading } = usePaymentStore();
    const { bookings, fetchBookings } = useBookingStore();
+   const { masterData, fetchMasterData } = useMasterTypeStore();
    
    const [formData, setFormData] = useState({
-      bookingId: '',
+      booking_id: '',
       amount: '',
-      paymentMethod: 'Bank Transfer',
-      paymentDate: new Date().toISOString().split('T')[0],
+      payment_method: '',
+      payment_date: new Date().toISOString().split('T')[0],
       reference: '',
       notes: ''
    });
 
    useEffect(() => {
       fetchBookings();
-   }, [fetchBookings]);
+      fetchMasterData();
+   }, [fetchBookings, fetchMasterData]);
 
    const handleSubmit = async () => {
-      if (!formData.bookingId || !formData.amount) {
+      if (!formData.booking_id || !formData.amount) {
          toast.error('Booking reference and aggregate value are mandatory.');
          return;
       }
@@ -81,26 +84,42 @@ const AddPayment = () => {
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] group-hover:scale-110 transition-transform"></div>
                   <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-12 relative z-10">Real-time Balance</p>
 
-                  <div className="space-y-10 relative z-10">
-                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-white/40 uppercase tracking-widest">Outstanding</span>
-                        <span className="text-2xl font-manrope font-black tracking-tight text-white">$12,400.00</span>
-                     </div>
-                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-white/40 uppercase tracking-widest">Inflow Total</span>
-                        <span className="text-2xl font-manrope font-black text-[var(--sacred-emerald)] tracking-tight">$8,200.00</span>
-                     </div>
-                     <div className="h-px bg-white/10 my-6"></div>
-                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 text-[var(--desert-gold)]">
-                           <User size={20} strokeWidth={2.5} />
+                  {(() => {
+                     const selectedBooking = bookings?.find((b) => b.id.toString() === formData.booking_id);
+                     const inflowTotal = selectedBooking ? parseFloat(selectedBooking.paid_amount || 0) : 0;
+                     const totalAmount = selectedBooking ? parseFloat(selectedBooking.total_amount || selectedBooking.amount || 0) : 0;
+                     const outstanding = Math.max(0, totalAmount - inflowTotal);
+
+                     let customerDisplay = 'No Selection';
+                     if (selectedBooking) {
+                        const c = selectedBooking.customer;
+                        const name = c && typeof c === 'object' ? (c.firstName || c.first_name || c.name || 'Customer') : (c || 'Customer');
+                        customerDisplay = `${name} (BK-${selectedBooking.id})`;
+                     }
+
+                     return (
+                        <div className="space-y-10 relative z-10">
+                           <div className="flex items-center justify-between">
+                              <span className="text-xs font-medium text-white/40 uppercase tracking-widest">Outstanding</span>
+                              <span className="text-2xl font-manrope font-black tracking-tight text-white">${outstanding.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                           </div>
+                           <div className="flex items-center justify-between">
+                              <span className="text-xs font-medium text-white/40 uppercase tracking-widest">Inflow Total</span>
+                              <span className="text-2xl font-manrope font-black text-[var(--sacred-emerald)] tracking-tight">${inflowTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                           </div>
+                           <div className="h-px bg-white/10 my-6"></div>
+                           <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 text-[var(--desert-gold)]">
+                                 <User size={20} strokeWidth={2.5} />
+                              </div>
+                              <div>
+                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-1">For Account</p>
+                                 <p className="text-xs font-black text-white tracking-tight uppercase">{customerDisplay}</p>
+                              </div>
+                           </div>
                         </div>
-                        <div>
-                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-1">or</p>
-                           <p className="text-xs font-black text-white tracking-tight uppercase">Ahmed Raza (BK-1001)</p>
-                        </div>
-                     </div>
-                  </div>
+                     );
+                  })()}
                </div>
 
                {/* Historical Feed */}
@@ -147,12 +166,20 @@ const AddPayment = () => {
                         <div className="relative border-b-2 border-slate-100 group-focus-within:border-black transition-all pb-4">
                            <select
                               className="w-full bg-transparent text-lg font-manrope font-black text-slate-900 outline-none appearance-none cursor-pointer"
-                              value={formData.bookingId}
-                              onChange={(e) => setFormData({ ...formData, bookingId: e.target.value })}
+                              value={formData.booking_id}
+                              onChange={(e) => setFormData({ ...formData, booking_id: e.target.value })}
                            >
                               <option value="" className="bg-white">Query Booking ...</option>
-                              <option value="1" className="bg-white">BK-1001 (Ahmed Raza)</option>
-                              <option value="2" className="bg-white">BK-1002 (Fatima Zahra)</option>
+                              {bookings?.map((booking) => {
+                                 const customerName = typeof booking.customer === 'object' 
+                                    ? (booking.customer?.firstName || booking.customer?.first_name || booking.customer?.name || 'Customer') 
+                                    : (booking.customer || 'Customer');
+                                 return (
+                                    <option key={booking.id} value={booking.id} className="bg-white">
+                                       BK-{booking.id} ({customerName})
+                                    </option>
+                                 );
+                              })}
                            </select>
                         </div>
                      </div>
@@ -161,13 +188,19 @@ const AddPayment = () => {
                         <div className="relative border-b-2 border-slate-100 group-focus-within:border-black transition-all pb-4">
                            <select
                               className="w-full bg-transparent text-lg font-manrope font-black text-slate-900 outline-none appearance-none cursor-pointer"
-                              value={formData.paymentMethod}
-                              onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                              value={formData.payment_method}
+                              onChange={(e) => setFormData({ ...formData, payment_method: e.target.value })}
                            >
-                              <option className="bg-white">Bank Transfer (Digital)</option>
-                              <option className="bg-white">Cash (In-person)</option>
-                              <option className="bg-white">Saudi ATM Transfer</option>
-                              <option className="bg-white">STC Pay / Digital Wallet</option>
+                              <option value="" className="bg-white">Select Conduit ...</option>
+                              {(masterData?.billingpaymentstatus || []).map((method) => {
+                                 const label = method.name || method;
+                                 const value = method.id || method;
+                                 return (
+                                    <option key={value} value={value} className="bg-white">
+                                       {label}
+                                    </option>
+                                 );
+                              })}
                            </select>
                         </div>
                      </div>
@@ -201,10 +234,9 @@ const AddPayment = () => {
                            <input
                               type="date"
                               className="w-full bg-transparent text-lg font-manrope font-black text-slate-900 outline-none"
-                              value={formData.paymentDate}
-                              onChange={(e) => setFormData({ ...formData, paymentDate: e.target.value })}
+                              value={formData.payment_date}
+                              onChange={(e) => setFormData({ ...formData, payment_date: e.target.value })}
                            />
-                           <Calendar size={18} className="text-slate-300" strokeWidth={3} />
                         </div>
                      </div>
                   </div>

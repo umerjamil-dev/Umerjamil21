@@ -6,7 +6,7 @@ const useFlightStore = create((set) => ({
   isLoading: false,
   error: null,
 
-  fetchFlights: async () => {
+fetchFlights: async () => {
     set({ isLoading: true });
     try {
       const response = await api.get('/reservations/flights');

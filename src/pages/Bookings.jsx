@@ -6,19 +6,52 @@ import {
    BookOpen, TrendingUp, Calendar,
    Wand2, Shapes, Tag, Trash2
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useBookingStore from '../store/useBookingStore';
+import toast from 'react-hot-toast';
 
 const Bookings = () => {
-   const { bookings, fetchBookings, isLoading } = useBookingStore();
+   const navigate = useNavigate();
+   const { bookings, fetchBookings, deleteBooking, isLoading } = useBookingStore();
 
    useEffect(() => {
       fetchBookings();
    }, [fetchBookings]);
 
-   const bookingsToShow = bookings;
+   const handleDelete = async (id) => {
+      if (window.confirm('Are you certain you wish to purge this protocol from the ledger?')) {
+         try {
+            await deleteBooking(id);
+            toast.success('Protocol eliminated successfully.');
+         } catch (error) {
+            toast.error('Failed to eliminate protocol.');
+         }
+      }
+   };
 
+   const bookingsToShow = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
 
+   const getCustomerName = (c) => {
+      if (!c) return 'Customer Info';
+      if (typeof c === 'string') return c;
+      return c.firstName || c.first_name || c.name || `Customer ID: ${c.id}`;
+   };
+
+   const getPackageName = (p) => {
+      if (!p) return 'Package Info';
+      if (typeof p === 'string') return p;
+      return p.title || p.name || `Package ID: ${p.id}`;
+   };
+
+   const getStatusLabel = (c) => {
+      if (!c || typeof c !== 'object') return 'Active';
+      return c.is_active == 0 ? 'Inactive' : 'Active';
+   };
+
+   const getStatusStyle = (c) => {
+      if (!c || typeof c !== 'object') return 'text-[var(--sacred-emerald)]';
+      return c.is_active == 0 ? 'text-red-400' : 'text-[var(--sacred-emerald)]';
+   };
    return (
       <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
          {/* Premium Header */}
@@ -145,7 +178,9 @@ const Bookings = () => {
                         <tr key={booking.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                            <td className="px-10 py-10">
                               <div>
-                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-3">{booking.customer}</p>
+                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-3">
+                                    {getCustomerName(booking.customer)}
+                                 </p>
                                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-slate-200"></span> ID: {booking.id}
                                  </p>
@@ -153,7 +188,7 @@ const Bookings = () => {
                            </td>
                            <td className="px-10 py-10">
                               <span className="text-[10px] font-black text-slate-900 bg-white px-5 py-2.5 rounded-xl border border-slate-100 shadow-sm group-hover:border-slate-300 uppercase tracking-widest transition-all">
-                                 {booking.package}
+                                 {getPackageName(booking.package)}
                               </span>
                            </td>
                            <td className="px-10 py-10">
@@ -163,24 +198,26 @@ const Bookings = () => {
                                     booking.status === 'Partial' ? 'bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)]' : 
                                     'bg-red-400'
                                  } transition-all`} />
-                                 <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.25em]">{booking.status} Protocol</span>
+                                 <span className={getStatusStyle(booking.customer)}>{getStatusLabel(booking.customer)} </span>
                               </div>
                            </td>
                            <td className="px-10 py-10">
                               <div className="space-y-3">
-                                 <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter leading-none">${booking.amount.toLocaleString()}</p>
+                                 <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter leading-none">
+                                    ${parseFloat(booking.total_amount || 0).toLocaleString()}
+                                 </p>
                                  <div className="w-36 bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
                                     <div
                                        className={`${booking.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]' : 'bg-[var(--desert-gold)]'} h-full rounded-full shadow-sm transition-all duration-1000`}
-                                       style={{ width: `${(booking.paid / booking.amount) * 100}%` }}
+                                       style={{ width: `${(parseFloat(booking.paid_amount || 0) / (parseFloat(booking.total_amount) || 1)) * 100}%` }}
                                     ></div>
                                  </div>
                               </div>
                            </td>
                            <td className="px-10 py-10 text-right">
-                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-3">{booking.date}</p>
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-3">{booking.created_at ? new Date(booking.created_at).toLocaleDateString() : 'N/A'}</p>
                               <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                 <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
+                                 <button onClick={(e) => { e.stopPropagation(); navigate(`/bookings/${booking.id}/edit`); }} className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
                                    <Wand2 size={14} strokeWidth={2.5} />
                                  </button>
                                  <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
@@ -189,7 +226,7 @@ const Bookings = () => {
                                  <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
                                    <Tag size={14} strokeWidth={2.5} />
                                  </button>
-                                 <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
+                                 <button onClick={(e) => { e.stopPropagation(); handleDelete(booking.id); }} className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
                                    <Trash2 size={14} strokeWidth={2.5} />
                                  </button>
                               </div>

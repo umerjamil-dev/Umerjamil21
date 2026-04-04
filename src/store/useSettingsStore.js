@@ -20,7 +20,6 @@ const useSettingsStore = create((set) => ({
         api.get('/settings/roles'),
         api.get('/settings/permissions')
       ]);
-
       const extract = (res) => {
         if (res.status !== 'fulfilled') return null;
         let data = res.value.data;
@@ -41,7 +40,10 @@ const useSettingsStore = create((set) => ({
         return data;
       };
 
-      const [profile, company, users, roles, permissions] = results.map(extract);
+      const [rawProfile, company, users, roles, permissions] = results.map(extract);
+
+      // /settings/profile returns { success: true, user: { id, name, email, ... } }
+      const profile = rawProfile?.user || rawProfile;
 
       // Backend Inconsistency Fix: Ensure permissions are always objects with IDs
       // Scavenge IDs from roles if the master list only has names (common if backend fix not applied)

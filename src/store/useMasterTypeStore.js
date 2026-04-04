@@ -33,7 +33,8 @@ const useMasterTypeStore = create((set) => ({
         'lifecycle_status',
         'lead',
         'leadsource',
-        'strategiccategorization'
+        'strategiccategorization',
+        'billingpaymentstatus'
       ];
 
       // Fetch all types in parallel

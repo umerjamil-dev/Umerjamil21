@@ -59,7 +59,7 @@ const Packages = () => {
             {isLoading ? (
                <div className="col-span-full py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50 italic">Auditing Package Manifest...</div>
             ) : packages.map((pkg) => (
-               <Link key={pkg.id} to={`/packages/${pkg.id}`} className="bg-[var(--surface-container-lowest)] rounded-xl border border-[var(--outline-variant)] overflow-hidden group hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 flex flex-col">
+               <Link key={pkg.id} to={`/packages/${pkg.id}`} className="bg-white rounded-xl border border-[var(--outline-variant)] overflow-hidden group hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 flex flex-col">
                   {/* Card Premium Header */}
                   <div className="p-6 pb-0 flex justify-between items-start">
                      <div className="w-10 h-10 rounded-xl bg-[var(--surface)] flex items-center justify-center border border-[var(--outline-variant)] group-hover:bg-white transition-all">

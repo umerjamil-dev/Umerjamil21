@@ -117,9 +117,6 @@ const useAuthStore = create((set) => ({
       }
       
       const { permissions, is_admin, role_id, calculation_id } = data;
-      console.log(data)
-      
-      
       const newPermissions = Array.isArray(permissions) ? permissions : [];
       
       set((state) => ({

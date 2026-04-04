@@ -21,6 +21,8 @@ const Calculator = () => {
     persons: 1,
     makkahNights: 7,
     madinahNights: 7,
+    makkahHotel: '',
+    madinahHotel: '',
     hotelCategory: '4-star',
     flightCost: 1200,
     visaCost: 150,
@@ -48,6 +50,8 @@ const Calculator = () => {
       ...prev,
       makkahNights: pkg.nights_makkah || prev.makkahNights,
       madinahNights: pkg.nights_madinah || prev.madinahNights,
+      makkahHotel: pkg.makkah_hotel || prev.makkahHotel,
+      madinahHotel: pkg.madinah_hotel || prev.madinahHotel,
       flightCost: pkg.base_price ? Number(pkg.base_price) : prev.flightCost,
     }));
   };
@@ -73,6 +77,8 @@ const Calculator = () => {
         persons: inputs.persons,
         makkah_nights: inputs.makkahNights,
         madinah_nights: inputs.madinahNights,
+        makkah_hotel: inputs.makkahHotel,
+        madinah_hotel: inputs.madinahHotel,
         hotel_category: inputs.hotelCategory,
         flight_cost: inputs.flightCost,
         visa_cost: inputs.visaCost,
@@ -290,6 +296,36 @@ const Calculator = () => {
                     className="w-full bg-transparent pl-9 pr-4 text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]"
                     value={inputs.madinahNights}
                     onChange={(e) => setInputs({ ...inputs, madinahNights: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+              </div>
+
+              {/* Makkah Hotel */}
+              <div className="group">
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Makkah Residency (Hotel)</label>
+                <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
+                  <Hotel className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
+                  <input
+                    type="text"
+                    placeholder="E.g., Fairmont Makkah"
+                    className="w-full bg-transparent pl-9 pr-4 text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]"
+                    value={inputs.makkahHotel}
+                    onChange={(e) => setInputs({ ...inputs, makkahHotel: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              {/* Madinah Hotel */}
+              <div className="group">
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Madinah Residency (Hotel)</label>
+                <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
+                  <Hotel className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
+                  <input
+                    type="text"
+                    placeholder="E.g., Pullman Zamzam"
+                    className="w-full bg-transparent pl-9 pr-4 text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]"
+                    value={inputs.madinahHotel}
+                    onChange={(e) => setInputs({ ...inputs, madinahHotel: e.target.value })}
                   />
                 </div>
               </div>

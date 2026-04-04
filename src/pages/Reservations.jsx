@@ -26,6 +26,21 @@ const Reservations = () => {
     }
   };
 
+  const getCustomerName = (c, name) => {
+    if (!c && !name) return 'Guest';
+    if (typeof c === 'string') return c;
+    if (c && typeof c === 'object') return c.firstName || c.first_name || c.name || `ID: ${c.id}`;
+    return name || 'Guest';
+  };
+
+  const getPackageName = (p) => {
+    if (!p) return 'Protocol';
+    if (typeof p === 'string') return p;
+    return p.title || p.name || `ID: ${p.id}`;
+  };
+
+  const reservationsToShow = Array.isArray(reservations) ? reservations : Object.values(reservations || {});
+
   return (
     <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
       {/* Premium Header */}
@@ -90,9 +105,9 @@ const Reservations = () => {
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr><td colSpan="5" className="px-10 py-20 text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing Reservations...</td></tr>
-              ) : reservations.length === 0 ? (
+              ) : reservationsToShow.length === 0 ? (
                 <tr><td colSpan="5" className="px-10 py-20 text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">No active protocols identified.</td></tr>
-              ) : reservations.map((res) => {
+              ) : reservationsToShow.map((res) => {
                 const typeInfo = getTypeIcon(res.type || 'Visa');
                 return (
                   <tr key={res.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
@@ -102,7 +117,7 @@ const Reservations = () => {
                           <typeInfo.icon size={28} strokeWidth={2} />
                         </div>
                         <div>
-                          <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">{res.customer || res.customer_name || 'Guest'}</p>
+                          <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">{getCustomerName(res.customer, res.customer_name)}</p>
                           <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-slate-200"></span> ID: {res.id}
                           </p>
@@ -112,7 +127,7 @@ const Reservations = () => {
                     <td className="px-10 py-10">
                       <div className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-xl border border-slate-100 shadow-sm group-hover:border-slate-300 transition-all">
                         <div className={`w-2 h-2 rounded-full ${res.visaStatus === 'Approved' ? 'bg-[var(--sacred-emerald)]' : 'bg-slate-200 animate-pulse'}`}></div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{res.package}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{getPackageName(res.package)}</span>
                       </div>
                     </td>
                     <td className="px-10 py-10">
@@ -126,13 +141,13 @@ const Reservations = () => {
                     </td>
                     <td className="px-10 py-10">
                       <div>
-                        <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter">${res.amount.toLocaleString()}</p>
+                        <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter">${(parseFloat(res.amount || res.total_amount) || 0).toLocaleString()}</p>
                         <div className="flex items-center gap-3 mt-3">
                           <span className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.3em] ${res.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] border border-[var(--sacred-emerald)]/20' :
                               res.status === 'Partial' ? 'bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] border border-[var(--desert-gold)]/20' :
                                 'bg-slate-100 text-slate-400 border border-slate-200'
                             }`}>
-                            {res.status} Protocol
+                            {res.status || 'Pending'} Protocol
                           </span>
                         </div>
                       </div>

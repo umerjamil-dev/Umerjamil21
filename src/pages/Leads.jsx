@@ -111,7 +111,7 @@ const Leads = () => {
               ) : leads.length === 0 ? (
                 <tr><td colSpan="5" className="px-10 py-10 text-center text-sm text-gray-500 font-medium">No inquiries found in the archive.</td></tr>
               ) : leads.map((lead) => (
-                <tr key={lead.id} className="group hover:bg-gray-50/50 transition-all cursor-pointer">
+                <tr key={lead.id} className="group bg-gray-50/50 transition-all cursor-pointer">
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-5">
                       <div className="w-12 h-12 rounded-xl bg-[#111827] text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:shadow-md transition-all">

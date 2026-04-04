@@ -18,9 +18,8 @@ const useCalculatorStore = create((set) => ({
   },
 
   saveCalculation: async (data) => {
-    set({ isLoading: true });
+    set({ isLoading: true }); 
     try {
-      console.log(data);
       const response = await api.post('/packagecalculater', data);
       set({ isLoading: false });
       return response.data;

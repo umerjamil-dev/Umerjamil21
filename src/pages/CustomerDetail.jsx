@@ -101,6 +101,7 @@ const CustomerDetail = () => {
                 
                 {/* Identity & Status Sidebar */}
                 <div className="lg:col-span-4 space-y-8">
+                
                     <div className="bg-[var(--surface-container-lowest)] rounded-3xl p-10 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--surface)] rounded-bl-[5rem] translate-x-8 -translate-y-8 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform opacity-30"></div>
                         

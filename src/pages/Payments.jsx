@@ -18,15 +18,24 @@ const Payments = () => {
       fetchPayments();
    }, [fetchPayments]);
 
-   const transactions = payments && payments.length > 0 ? payments : [
-      { id: 'TRX-9001', customer: 'Ahmed Raza', method: 'Bank Transfer', amount: 5400, type: 'Credit', date: 'Mar 25, 2024', status: 'Verified' },
-      { id: 'TRX-9002', customer: 'Fatima Zahra', method: 'Cash', amount: 4500, type: 'Credit', date: 'Mar 22, 2024', status: 'Processing' },
-      { id: 'TRX-9003', customer: 'Vendor: Saudi Aviation', method: 'Online Payment', amount: 12000, type: 'Debit', date: 'Mar 20, 2024', status: 'Completed' },
-      { id: 'TRX-9004', customer: 'Zubair Ahmed', method: 'Bank Transfer', amount: 2000, type: 'Credit', date: 'Mar 18, 2024', status: 'Verified' },
-   ];
+   // Safe-accessors for nested API objects
+   const getCustomerName = (p) => {
+      if (!p.customer) return '—';
+      if (typeof p.customer === 'string') return p.customer;
+      return `${p.customer.firstName || ''} ${p.customer.lastName || ''}`.trim() || '—';
+   };
 
-   const totalCredits = transactions.filter(t => t.type === 'Credit').reduce((acc, curr) => acc + curr.amount, 0);
-   const totalDebits = transactions.filter(t => t.type === 'Debit').reduce((acc, curr) => acc + curr.amount, 0);
+   const getMethodName = (p) => {
+      if (!p.method && !p.transaction_type) return '—';
+      const method = p.method || p.transaction_type;
+      if (typeof method === 'string') return method;
+      return method.name || '—';
+   };
+
+   const transactions = Array.isArray(payments) ? payments : [];
+
+   const totalCredits = transactions.filter(t => t.type === 'Credit').reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
+   const totalDebits = transactions.filter(t => t.type === 'Debit').reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
    const netPosition = totalCredits - totalDebits;
 
 
@@ -151,7 +160,9 @@ const Payments = () => {
                         <tr key={trx.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                            <td className="px-10 py-10">
                               <div>
-                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-3">{trx.customer}</p>
+                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-3">
+                                    {getCustomerName(trx)}
+                                 </p>
                                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-slate-200"></span> ID: {trx.id}
                                  </p>
@@ -160,7 +171,9 @@ const Payments = () => {
                            <td className="px-10 py-10">
                               <div className="flex items-center gap-4">
                                  <Landmark size={18} className="text-slate-300 group-hover:text-black transition-colors" strokeWidth={2.5} />
-                                 <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{trx.method}</span>
+                                 <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
+                                    {getMethodName(trx)}
+                                 </span>
                               </div>
                            </td>
                            <td className="px-10 py-10">
@@ -172,12 +185,14 @@ const Payments = () => {
                            </td>
                            <td className="px-10 py-10">
                               <p className={`text-2xl font-manrope font-black tracking-tighter leading-none ${trx.type === 'Credit' ? 'text-[var(--sacred-emerald)]' : 'text-red-500'}`}>
-                                 {trx.type === 'Credit' ? '+' : '-'}${trx.amount.toLocaleString()}
+                                 {trx.type === 'Credit' ? '+' : '-'}${parseFloat(trx.amount || 0).toLocaleString()}
                               </p>
                            </td>
                            <td className="px-10 py-10 text-right">
                               <div className="flex flex-col items-end gap-3">
-                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">{trx.date}</p>
+                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+                                    {trx.date || trx.created_at ? new Date(trx.date || trx.created_at).toLocaleDateString() : '—'}
+                                 </p>
                                  <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
                                     <div className={`w-2 h-2 rounded-full ${trx.status === 'Verified' ? 'bg-[var(--sacred-emerald)]' : trx.status === 'Processing' ? 'bg-amber-400' : 'bg-slate-900 shadow-[0_0_8px_black]'}`}></div>
                                     <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.1em]">{trx.status}</span>

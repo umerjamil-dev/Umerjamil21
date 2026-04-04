@@ -17,6 +17,7 @@ import CustomerDetail from '../pages/CustomerDetail'
 import UpdateCustomer from '../pages/UpdateCustomer'
 import CustomerProfile from '../pages/CustomerProfile'
 import AddBooking from '../pages/AddBooking'
+import UpdateBooking from '../pages/UpdateBooking'
 import AddPayment from '../pages/AddPayment'
 import AddReservation from '../pages/AddReservation'
 import Packages from '../pages/Packages'
@@ -73,6 +74,7 @@ const Router = () => {
         <Route path="/calculator" element={<ProtectedRoute permission="USE_CALCULATOR"><Layout><Calculator /></Layout></ProtectedRoute>} />
         <Route path="/bookings" element={<ProtectedRoute permission="VIEW_BOOKINGS"><Layout><Bookings /></Layout></ProtectedRoute>} />
         <Route path="/bookings/add" element={<ProtectedRoute permission="CREATE_BOOKINGS"><Layout><AddBooking /></Layout></ProtectedRoute>} />
+        <Route path="/bookings/:id/edit" element={<ProtectedRoute permission="CREATE_BOOKINGS"><Layout><UpdateBooking /></Layout></ProtectedRoute>} />
         <Route path="/reservations" element={<ProtectedRoute permission="VIEW_RESERVATIONS"><Layout><Reservations /></Layout></ProtectedRoute>} />
         <Route path="/reservations/add" element={<ProtectedRoute permission="CREATE_RESERVATIONS"><Layout><AddReservation /></Layout></ProtectedRoute>} />
         <Route path="/payments" element={<ProtectedRoute permission="VIEW_PAYMENTS"><Layout><Payments /></Layout></ProtectedRoute>} />
@@ -110,6 +112,7 @@ const Router = () => {
         <Route path="/packages/:id" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><PackageDetail /></Layout></ProtectedRoute>} />
         <Route path="/packages/:id/edit" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><UpdatePackage /></Layout></ProtectedRoute>} />
         <Route path="/live-booking" element={<ProtectedRoute permission="VIEW_LIVE_BOOKING"><Layout><LiveBooking /></Layout></ProtectedRoute>} />
+        
       </Routes>
     </BrowserRouter>
     </>

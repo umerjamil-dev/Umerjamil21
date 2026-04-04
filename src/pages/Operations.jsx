@@ -16,9 +16,22 @@ const Operations = () => {
       fetchOperationsData();
    }, [fetchOperationsData]);
 
-   const staffData = staff;
-   const taskData = liveTasks;
-   const saturationData = sectorSaturation;
+    const staffData = staff || [];
+    const taskData = liveTasks || [];
+    const saturationData = sectorSaturation || [];
+
+    // Safe-accessors for nested API objects
+    const getCustomerName = (t) => {
+       if (!t.customer) return '—';
+       if (typeof t.customer === 'string') return t.customer;
+       return `${t.customer.firstName || ''} ${t.customer.lastName || ''}`.trim() || '—';
+    };
+
+    const getStaffName = (t) => {
+       if (!t.staff) return 'Unassigned';
+       if (typeof t.staff === 'string') return t.staff;
+       return t.staff.name || '—';
+    };
 
 
    return (
@@ -94,9 +107,11 @@ const Operations = () => {
                                        <MapPin size={28} strokeWidth={2} />}
                               </div>
                               <div>
-                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">{task.customer}</p>
+                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">
+                                    {getCustomerName(task)}
+                                 </p>
                                  <div className="flex items-center gap-4 text-[10px] text-slate-400 font-black uppercase tracking-widest">
-                                    <span className="text-black">{task.service}</span>
+                                    <span className="text-black">{task.service || 'Operational task'}</span>
                                     <span>•</span>
                                     <span>{task.id}</span>
                                  </div>
@@ -105,7 +120,9 @@ const Operations = () => {
 
                            <div className="flex items-center gap-12">
                               <div className="text-right hidden md:block">
-                                 <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1">{task.staff}</p>
+                                 <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1">
+                                    {getStaffName(task)}
+                                 </p>
                                  <p className="text-[9px] text-slate-400 uppercase tracking-widest">Assigned Staff</p>
                               </div>
                               <div className="min-w-[140px]">

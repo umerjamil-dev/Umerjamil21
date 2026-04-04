@@ -11,27 +11,27 @@ import toast from 'react-hot-toast';
 const EASE = [0.22, 1, 0.36, 1];
 
 const Profile = () => {
-  const { settings, fetchSettings, updateSettings, isLoading } = useSettingsStore();
+  const { profile, fetchSettings, updateProfile, isLoading } = useSettingsStore();
   const [formData, setFormData]     = useState({ name: '', email: '', phone: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => { fetchSettings(); }, [fetchSettings]);
 
   useEffect(() => {
-    if (settings?.profile) {
+    if (profile) {
       setFormData({
-        name:     settings.profile.name  || '',
-        email:    settings.profile.email || '',
-        phone:    settings.profile.phone || '',
+        name:     profile.name  || '',
+        email:    profile.email || '',
+        phone:    profile.phone || '',
         password: '',
       });
     }
-  }, [settings]);
+  }, [profile]);
 
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      await updateSettings({ profile: formData });
+      await updateProfile(formData);
       toast.success('Identity profile synchronized.');
     } catch (err) {
       toast.error('Sync failure: ' + err.message);
@@ -126,8 +126,8 @@ const Profile = () => {
             style={{ border: '1.5px solid #e2e0d8' }}
           >
             {[
-              { Icon: Zap,          label: 'Last Sync',     value: 'Today, 18:42',       valueColor: '#1a1916' },
-              { Icon: ActivityIcon, label: 'Global Access',  value: 'Lvl 1 — Tier Alpha', valueColor: '#1a7a4a' },
+              { Icon: Zap,          label: 'Last Sync',     value: 'Today',                     valueColor: '#1a1916' },
+              { Icon: ActivityIcon, label: 'Access Role',    value: profile?.role || 'Admin',    valueColor: '#1a7a4a' },
             ].map(({ Icon, label, value, valueColor }, i) => (
               <div
                 key={label}

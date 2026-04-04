@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '../api/axios';
+import axios from 'axios';
 
 const useCustomerStore = create((set) => ({
   customers: [],

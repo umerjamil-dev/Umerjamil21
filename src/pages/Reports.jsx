@@ -36,6 +36,19 @@ const Reports = () => {
     const customerCount = customers.length;
     const leadCount = leads.length;
 
+    // Safe-accessors for nested API objects
+    const getCustomerName = (row) => {
+        if (!row.customer) return '—';
+        if (typeof row.customer === 'string') return row.customer;
+        return `${row.customer.firstName || ''} ${row.customer.lastName || ''}`.trim() || row.customer.name || '—';
+    };
+
+    const getPackageName = (row) => {
+        if (!row.package) return '—';
+        if (typeof row.package === 'string') return row.package;
+        return row.package.title || row.package.name || '—';
+    };
+
     const stats = [
         { label: 'Gross Revenue', value: `$${totalRevenue.toLocaleString()}`, growth: '+12.5%', icon: DollarSign, color: 'text-emerald-500', trend: 'up' },
         { label: 'Active Bookings', value: activeBookingCount.toString(), growth: '+5.2%', icon: Briefcase, color: 'text-blue-500', trend: 'up' },
@@ -153,16 +166,20 @@ const Reports = () => {
 
                                         <tr key={row.id} className="group hover:bg-slate-50 transition-all">
                                             <td className="px-8 py-6">
-                                                <p className="text-sm font-manrope font-black text-slate-900 tracking-tight">{row.customer}</p>
+                                                <p className="text-sm font-manrope font-black text-slate-900 tracking-tight">
+                                                    {getCustomerName(row)}
+                                                </p>
                                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em]">{row.id}</p>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-none">
-                                                    {row.package}
+                                                    {getPackageName(row)}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6 text-[11px] font-bold text-slate-600 uppercase tracking-widest">{row.date}</td>
-                                            <td className="px-8 py-6 text-base font-manrope font-black text-slate-900">{row.amount}</td>
+                                            <td className="px-8 py-6 text-base font-manrope font-black text-slate-900">
+                                                ${parseFloat(row.amount || 0).toLocaleString()}
+                                            </td>
                                             <td className="px-8 py-6">
                                                 <span className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] inline-flex items-center gap-1.5 ${row.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)]' :
                                                     row.status === 'Pending' ? 'bg-[var(--desert-gold)]/10 text-[var(--desert-gold)]' :
@@ -200,7 +217,9 @@ const Reports = () => {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6 text-[11px] font-bold text-slate-600 uppercase tracking-widest">{row.bookingId}</td>
-                                            <td className="px-8 py-6 text-base font-manrope font-black text-emerald-600">{row.amount}</td>
+                                            <td className="px-8 py-6 text-base font-manrope font-black text-emerald-600">
+                                                ${parseFloat(row.amount || 0).toLocaleString()}
+                                            </td>
                                             <td className="px-8 py-6 text-[11px] font-medium text-slate-500">{row.date}</td>
                                             <td className="px-8 py-6">
                                                 <span className="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] bg-blue-50 text-blue-600 border border-blue-100 inline-block">

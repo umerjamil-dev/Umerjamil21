@@ -71,7 +71,7 @@ export const useFilteredMenu = () => {
       },
 
       {
-        title: 'Reservations',
+        title: 'Reservation',
         icon: Plane,
         path: '/reservations',
         permission: 'VIEW_RESERVATIONS',

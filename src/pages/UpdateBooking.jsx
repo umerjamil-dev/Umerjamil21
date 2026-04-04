@@ -5,7 +5,7 @@ import {
   Save, ShieldCheck,
   DollarSign, ChevronDown, Check
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import useBookingStore from '../store/useBookingStore';
 import useCustomerStore from '../store/useCustomerStore';
 import usePackageStore from '../store/usePackageStore';
@@ -87,9 +87,10 @@ const UnderlineInput = ({
 /* ─────────────────────────────────────────────
    Main Component
    ───────────────────────────────────────────── */
-const AddBooking = () => {
+const UpdateBooking = () => {
   const navigate = useNavigate();
-  const { createBooking, isLoading: isBookingLoading } = useBookingStore();
+  const { id } = useParams();
+  const { updateBooking, fetchBookings, bookings, isLoading: isBookingLoading } = useBookingStore();
   const { customers, fetchCustomers } = useCustomerStore();
   const { packages, fetchPackages } = usePackageStore();
   const { masterData, fetchMasterData } = useMasterTypeStore();
@@ -107,14 +108,30 @@ const AddBooking = () => {
     fetchCustomers();
     fetchPackages();
     fetchMasterData();
-  }, [fetchCustomers, fetchPackages, fetchMasterData]);
+    if (bookings.length === 0) fetchBookings();
+  }, [fetchCustomers, fetchPackages, fetchMasterData, fetchBookings, bookings.length]);
+
+  const existing = bookings.find(b => String(b.id) === String(id));
+
+  useEffect(() => {
+    if (existing) {
+      setFormData({
+        customerId: existing.customer_id || existing.customer?.id || '',
+        packageId: existing.package_id || existing.package?.id || '',
+        travelDate: existing.travel_date || '',
+        totalAmount: existing.total_amount || '',
+        paidAmount: existing.paid_amount || '',
+        paymentMethod: existing.transaction_type?.id || existing.transaction_type || '', 
+      });
+    }
+  }, [id, bookings, existing]);
 
   const remaining = (parseFloat(formData.totalAmount) || 0) - (parseFloat(formData.paidAmount) || 0);
   const selectedPackage = packages.find(p => p.id == formData.packageId);
 
   const handleSubmit = async () => {
     if (!formData.customerId || !formData.packageId || !formData.totalAmount) {
-      toast.error('Customer, Package aur Total Amount zaroori hain.');
+      toast.error('Customer, Package and Total Amount are required.');
       return;
     }
     try {
@@ -127,8 +144,8 @@ const AddBooking = () => {
         travel_date: formData.travelDate,
         transaction_type: formData.paymentMethod,
       };
-      await createBooking(payload);
-      toast.success('Booking successfully registered.');
+      await updateBooking(id, payload);
+      toast.success('Booking successfully updated.');
       navigate('/bookings');
     } catch (err) {
       toast.error('Error: ' + err.message);
@@ -136,7 +153,7 @@ const AddBooking = () => {
   };
 
   return (
-    <div className="font-sans  space-y-10 pb-24 px-4 md:px-0 animate-in slide-in-from-bottom-6 duration-700">
+    <div className="font-sans space-y-10 pb-24 px-4 md:px-0 animate-in slide-in-from-bottom-6 duration-700">
 
       {/* ── Header ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 pb-7 pt-2">
@@ -147,15 +164,13 @@ const AddBooking = () => {
           <div className="w-10 h-10 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center group-hover:shadow-md group-hover:bg-white transition-all">
             <ArrowLeft size={16} strokeWidth={2.5} />
           </div>
-          <span className="text-[9px] font-black uppercase tracking-[0.25em]">Audit Registry</span>
+          <span className="text-[9px] font-black uppercase tracking-[0.25em]">Back to Audit</span>
         </Link>
 
         <div className="text-center">
           <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
-         Customer   Booking {' '}
-            
+            Update Booking 
           </h1>
-         
         </div>
 
         <button
@@ -168,7 +183,7 @@ const AddBooking = () => {
             }`}
         >
           <Save size={15} strokeWidth={2.5} />
-          {isBookingLoading ? 'Processing...' : 'Finalize'}
+          {isBookingLoading ? 'Processing...' : 'Update & Save'}
         </button>
       </div>
 
@@ -233,8 +248,7 @@ const AddBooking = () => {
               Mandate Protocol
             </h4>
             <p className="text-xs text-slate-400 leading-relaxed mb-6">
-              Bookings are operationalized upon initial deposit verification.
-              VIP rules apply to all segments.
+              Updates to operationalized bookings will be reflected across VIP segments.
             </p>
             <button className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-900 border-b-2 border-slate-100 hover:border-black transition-all pb-0.5">
               Review Mandate Terms
@@ -387,4 +401,4 @@ const AddBooking = () => {
   );
 };
 
-export default AddBooking;
+export default UpdateBooking;
