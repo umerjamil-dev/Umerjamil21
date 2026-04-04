@@ -94,9 +94,10 @@ const AddReservation = () => {
                type: formData.transportType,
                vehicle: formData.vehicle,
                driver: formData.driver,
+               driver_phone: formData.driverPhone,
                plate_number: formData.plateNumber,
                date_of_issue: formData.dateOfIssue,
-               date_of_expiry: formData.dateOfExpiry,
+               time: formData.time,
                notes: formData.notes
             });
          }
@@ -472,6 +473,18 @@ const AddReservation = () => {
                               </div>
                            </div>
                            <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Driver Phone</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input 
+                                    type="text" 
+                                    placeholder="Driver Phone" 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
+                                    value={formData.driverPhone}
+                                    onChange={(e) => setFormData({ ...formData, driverPhone: e.target.value })}
+                                 />
+                              </div>
+                           </div>
+                           <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Date of Issue</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
                                  <input 
@@ -488,10 +501,10 @@ const AddReservation = () => {
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
                                  <input 
                                     type="text" 
-                                    placeholder="Date of Expiry" 
+                                    placeholder="Time" 
                                     className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
-                                    value={formData.dateOfExpiry}
-                                    onChange={(e) => setFormData({ ...formData, dateOfExpiry: e.target.value })}
+                                    value={formData.time}
+                                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                                  />
                               </div>
                            </div>
