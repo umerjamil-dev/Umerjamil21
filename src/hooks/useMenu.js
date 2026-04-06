@@ -124,7 +124,6 @@ export const useFilteredMenu = () => {
         path: '/reports',
         permission: 'VIEW_REPORTS',
         submenu: [
-          { title: 'Operational Intelligence', path: '/reports', permission: 'VIEW_REPORTS' },
           { title: 'Booking Analytics', path: '/reports/bookings', permission: 'VIEW_BOOKING_ANALYTICS' },
           { title: 'Payment Reports', path: '/reports/payments', permission: 'VIEW_PAYMENT_REPORTS' },
           { title: 'Sales Performance', path: '/reports/sales', permission: 'VIEW_SALES_PERFORMANCE' }

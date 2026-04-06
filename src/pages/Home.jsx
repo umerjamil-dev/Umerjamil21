@@ -355,7 +355,7 @@ const Home = () => {
             </div>
 
             {/* Global Actions */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                     { label: 'Register Lead', desc: 'New operational inquiry', icon: Plus, color: '#D4AF37' },
                     { label: 'Generate Quote', desc: 'Pricing & package matrix', icon: Calculator, color: '#111827' },
@@ -377,7 +377,7 @@ const Home = () => {
                         </div>
                     </Link>
                 ))}
-            </motion.div>
+            </motion.div> */}
 
         </motion.div>
     );
@@ -385,5 +385,3 @@ const Home = () => {
 
 export default Home;
 
-
-// Removed redundant code and fixed exports.

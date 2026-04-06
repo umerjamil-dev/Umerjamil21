@@ -51,11 +51,9 @@ import ApiConfig from '../pages/settings/ApiConfig'
 import Subscription from '../pages/settings/Subscription'
 
 // Stub imports for operations and reports
-const Staff = () => <div className="p-10 font-bold text-slate-400">Staff Management</div>;
-const Logistics = () => <div className="p-10 font-bold text-slate-400">Logistics Feed</div>;
-const BookingAnalytics = () => <div className="p-10 font-bold text-slate-400">Booking Analytics</div>;
-const PaymentReports = () => <div className="p-10 font-bold text-slate-400">Payment Reports</div>;
-const SalesPerformance = () => <div className="p-10 font-bold text-slate-400">Sales Performance</div>;
+import BookingAnalytics from '../pages/reports/BookingAnalytics';
+import PaymentReports from '../pages/reports/PaymentReports';
+import SalesPerformance from '../pages/reports/SalesPerformance';
 
 const Router = () => {
   return (
@@ -88,8 +86,8 @@ const Router = () => {
         
         {/* Operations */}
         <Route path="/operations" element={<ProtectedRoute permission="VIEW_OPERATIONS"><Layout><Operations /></Layout></ProtectedRoute>} />
-        <Route path="/operations/staff" element={<ProtectedRoute permission="VIEW_OPERATIONS_STAFF"><Layout><Staff /></Layout></ProtectedRoute>} />
-        <Route path="/operations/logistics" element={<ProtectedRoute permission="VIEW_LOGISTICS"><Layout><Logistics /></Layout></ProtectedRoute>} />
+        <Route path="/operations/staff" element={<ProtectedRoute permission="VIEW_OPERATIONS_STAFF"><Layout><div className="p-10 font-bold text-slate-400">Staff Management</div></Layout></ProtectedRoute>} />
+        <Route path="/operations/logistics" element={<ProtectedRoute permission="VIEW_LOGISTICS"><Layout><div className="p-10 font-bold text-slate-400">Logistics Feed</div></Layout></ProtectedRoute>} />
         
         {/* Reports */}
         <Route path="/reports" element={<ProtectedRoute permission="VIEW_REPORTS"><Layout><Reports /></Layout></ProtectedRoute>} />
