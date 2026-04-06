@@ -13,8 +13,9 @@ const useReportStore = create((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.get(`/reports/${type}`);
+      const data = response.data?.data || response.data || [];
       const key = `${type}Reports`;
-      set({ [key]: response.data, isLoading: false });
+      set({ [key]: Array.isArray(data) ? data : [], isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
     }

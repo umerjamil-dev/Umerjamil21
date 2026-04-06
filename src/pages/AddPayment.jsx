@@ -54,7 +54,7 @@ const AddPayment = () => {
    ];
 
    return (
-      <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
+      <div className="font-inter  space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Premium Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
             <Link to="/payments" className="flex items-center gap-3 text-slate-400 hover:text-slate-900 transition-all group">

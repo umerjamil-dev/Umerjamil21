@@ -10,7 +10,8 @@ const usePaymentStore = create((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.get('/payments');
-      set({ payments: response.data, isLoading: false });
+      const data = response.data?.data || response.data || [];
+      set({ payments: Array.isArray(data) ? data : [], isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
     }

@@ -102,7 +102,6 @@ body {
   color: var(--sidebar-on-surface-variant) !important;
 }
  
- 
 .sidebar-theme .nav-link-inactive:hover {
   background-color: var(--surface-container-low)/50 !important;
   color: var(--primary) !important;

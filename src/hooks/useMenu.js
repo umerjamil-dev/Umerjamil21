@@ -15,7 +15,6 @@ import {
 export const useFilteredMenu = () => {
   const { permissions: masterPermissions } = useSettingsStore();
   const { user } = useAuthStore();
-  
   const userPermissions = useMemo(() => {
     return user?.permissions || user?.role?.permissions || [];
   }, [user]);
@@ -26,7 +25,7 @@ export const useFilteredMenu = () => {
   const hasPermission = (perm) => {
     if (!perm) return true;
     if (isAdmin) return true; // Admin has all permissions
-    
+
     return userPermissions.some(p => {
       const pName = (typeof p === 'object' ? p.name : p) || '';
       return pName.toLowerCase() === perm.toLowerCase();
@@ -35,11 +34,11 @@ export const useFilteredMenu = () => {
 
   return useMemo(() => {
     const menuItems = [
-      { 
-        title: 'Dashboard', 
-        icon: LayoutDashboard, 
-        path: '/', 
-        permission: 'VIEW_DASHBOARD' 
+      {
+        title: 'Dashboard',
+        icon: LayoutDashboard,
+        path: '/',
+        permission: 'VIEW_DASHBOARD'
       },
       {
         title: 'Personal Hub',
@@ -47,7 +46,7 @@ export const useFilteredMenu = () => {
         path: '/personal-dashboard',
         permission: 'VIEW_PERSONAL_DASHBOARD'
       },
-      
+
       user?.calculation_id && {
         title: 'My Profile',
         icon: UserCircle,
@@ -156,10 +155,10 @@ export const useFilteredMenu = () => {
       .filter(item => item && (!item.permission || hasPermission(item.permission)))
       .map(item => {
         if (item.submenu) {
-          const filteredSubmenu = item.submenu.filter(sub => 
+          const filteredSubmenu = item.submenu.filter(sub =>
             !sub.permission || hasPermission(sub.permission)
           );
-          
+
           return {
             ...item,
             submenu: filteredSubmenu.length > 0 ? filteredSubmenu : undefined

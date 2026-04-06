@@ -20,19 +20,24 @@ const Payments = () => {
 
    // Safe-accessors for nested API objects
    const getCustomerName = (p) => {
-      if (!p.customer) return '—';
-      if (typeof p.customer === 'string') return p.customer;
-      return `${p.customer.firstName || ''} ${p.customer.lastName || ''}`.trim() || '—';
+      const customer = p.customer || p.booking?.customer || p.booking;
+      if (!customer) return '—';
+      if (typeof customer === 'string') return customer;
+      return `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '—';
    };
 
    const getMethodName = (p) => {
-      if (!p.method && !p.transaction_type) return '—';
-      const method = p.method || p.transaction_type;
-      if (typeof method === 'string') return method;
+      const method = p.method || p.transaction_type || p.payment_method;
+      if (!method) return '—';
+      if (typeof method === 'string' || typeof method === 'number') return method;
       return method.name || '—';
    };
 
-   const transactions = Array.isArray(payments) ? payments : [];
+   const transactions = (Array.isArray(payments) ? payments : []).map(t => ({
+      ...t,
+      type: t.type || 'Credit', // Default to Credit for visualization
+      status: t.status || 'Verified' // Default status
+   }));
 
    const totalCredits = transactions.filter(t => t.type === 'Credit').reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
    const totalDebits = transactions.filter(t => t.type === 'Debit').reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
@@ -170,7 +175,7 @@ const Payments = () => {
                            </td>
                            <td className="px-10 py-10">
                               <div className="flex items-center gap-4">
-                                 <Landmark size={18} className="text-slate-300 group-hover:text-black transition-colors" strokeWidth={2.5} />
+                                 <Landmark size={18} className="text-black transition-colors" strokeWidth={2.5} />
                                  <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
                                     {getMethodName(trx)}
                                  </span>
@@ -196,20 +201,6 @@ const Payments = () => {
                                  <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
                                     <div className={`w-2 h-2 rounded-full ${trx.status === 'Verified' ? 'bg-[var(--sacred-emerald)]' : trx.status === 'Processing' ? 'bg-amber-400' : 'bg-slate-900 shadow-[0_0_8px_black]'}`}></div>
                                     <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.1em]">{trx.status}</span>
-                                 </div>
-                                 <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                   <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
-                                     <Wand2 size={14} strokeWidth={2.5} />
-                                   </button>
-                                   <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
-                                     <Shapes size={14} strokeWidth={2.5} />
-                                   </button>
-                                   <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
-                                     <Tag size={14} strokeWidth={2.5} />
-                                   </button>
-                                   <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
-                                     <Trash2 size={14} strokeWidth={2.5} />
-                                   </button>
                                  </div>
                               </div>
                            </td>

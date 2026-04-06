@@ -129,7 +129,7 @@ const useAuthStore = create((set) => ({
         }
       }));
       
-      // Update persistent storage
+        
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         try {

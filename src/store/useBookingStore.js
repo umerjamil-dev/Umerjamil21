@@ -74,9 +74,9 @@ const useBookingStore = create((set) => ({
   fetchBooking: async (id) => {
     set({ isLoading: true });
     try {
-      const response = await api.get(`/bookings/${id}`);
+      const response = await api.get(`/reservations/booking/details/${id}`);
       set({ isLoading: false });
-      return response.data?.data || response.data;
+      return response.data; // Return the whole response { success, data: [...] }
     } catch (err) {
       set({ error: err.message, isLoading: false });
       throw err;

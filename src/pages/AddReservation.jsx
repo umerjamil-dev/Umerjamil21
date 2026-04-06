@@ -4,7 +4,7 @@ import {
    MapPin, ShieldCheck, Clock,
    Save, Info, LayoutDashboard,
    Calendar, CheckCircle2,
-   ArrowRight
+   ArrowRight, Plus
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useBookingStore from '../store/useBookingStore';
@@ -15,17 +15,58 @@ import useTransportStore from '../store/useTransportStore';
 import useMasterTypeStore from '../store/useMasterTypeStore';
 import toast from 'react-hot-toast';
 
+/* ── tiny helpers ── */
+const inputCls =
+   'w-full bg-transparent text-sm font-medium text-slate-900 outline-none placeholder-slate-300 py-2.5';
+const selectCls =
+   'w-full bg-transparent text-sm font-medium text-slate-900 outline-none appearance-none cursor-pointer py-2.5';
+
+const Field = ({ label, children, span2 = false }) => (
+   <div className={span2 ? 'md:col-span-2' : ''}>
+      <label
+         style={{
+            display: 'block',
+            fontSize: '11px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            color: '#94a3b8',
+            marginBottom: '6px',
+         }}
+      >
+         {label}
+      </label>
+      <div
+         style={{
+            borderBottom: '1.5px solid #e2e8f0',
+            transition: 'border-color 0.15s',
+         }}
+         onFocusCapture={e => (e.currentTarget.style.borderBottomColor = '#0f172a')}
+         onBlurCapture={e => (e.currentTarget.style.borderBottomColor = '#e2e8f0')}
+      >
+         {children}
+      </div>
+   </div>
+);
+
+const types = [
+   { id: 'Hotel',     icon: Hotel,       label: 'Hotel',     accent: '#d97706', accentBg: '#fffbeb' },
+   { id: 'Visa',      icon: ShieldCheck, label: 'Visa',      accent: '#059669', accentBg: '#ecfdf5' },
+   { id: 'Flight',    icon: Plane,       label: 'Flight',    accent: '#2563eb', accentBg: '#eff6ff' },
+   { id: 'Transport', icon: MapPin,      label: 'Transport', accent: '#7c3aed', accentBg: '#f5f3ff' },
+];
+
 const AddReservation = () => {
    const navigate = useNavigate();
    const { bookings, fetchBookings } = useBookingStore();
-   const { addHotel } = useHotelStore();
-   const { addVisa } = useVisaStore();
-   const { addFlight } = useFlightStore();
+   const { addHotel }     = useHotelStore();
+   const { addVisa }      = useVisaStore();
+   const { addFlight }    = useFlightStore();
    const { addTransport } = useTransportStore();
    const { masterData, fetchMasterData } = useMasterTypeStore();
 
    const [formData, setFormData] = useState({
-      type: 'Hotel', 
+      type: 'Hotel',
       bookingId: '',
       provider: '',
       checkIn: '',
@@ -50,7 +91,7 @@ const AddReservation = () => {
       time: '',
       vehicleType: '',
       notes: '',
-      transportType: 'Pickup (Airport)'
+      transportType: 'Pickup (Airport)',
    });
 
    useEffect(() => {
@@ -58,43 +99,42 @@ const AddReservation = () => {
       fetchMasterData();
    }, [fetchBookings, fetchMasterData]);
 
+   const set = (key, val) => setFormData(p => ({ ...p, [key]: val }));
+
    const handleSubmit = async () => {
       if (!formData.bookingId) {
-         toast.error('Parent booking reference is mandatory.');
+         toast.error('Please select a parent booking.');
          return;
       }
-
       try {
-         console.log('Submission Payload (FormData):', formData);
-         let result;
          if (formData.type === 'Hotel') {
-            result = await addHotel({
+            await addHotel({
                booking_id: formData.bookingId,
                hotel_name: formData.hotelName,
                city: formData.city,
                check_in: formData.checkIn,
                check_out: formData.checkOut,
                rooms: formData.roomType,
-               status: formData.status
+               status: formData.status,
             });
          } else if (formData.type === 'Visa') {
-            result = await addVisa({
+            await addVisa({
                booking_id: formData.bookingId,
                visa_number: formData.visaNumber,
                status: formData.status,
-               notes: formData.notes
+               notes: formData.notes,
             });
          } else if (formData.type === 'Flight') {
-            result = await addFlight({
+            await addFlight({
                booking_id: formData.bookingId,
                airline: formData.airline,
                ticket_number: formData.ticketNumber,
                departure: formData.departureTime ? `${formData.departure} @ ${formData.departureTime}` : formData.departure,
                arrival: formData.arrivalTime ? `${formData.arrival} @ ${formData.arrivalTime}` : formData.arrival,
-               status: formData.status
+               status: formData.status,
             });
          } else if (formData.type === 'Transport') {
-            result = await addTransport({
+            await addTransport({
                booking_id: formData.bookingId,
                type: formData.transportType,
                vehicle: formData.vehicle,
@@ -104,460 +144,316 @@ const AddReservation = () => {
                date_of_issue: formData.dateOfIssue,
                time: formData.time,
                notes: formData.notes,
-               vehicle_type: formData.vehicleType
+               vehicle_type: formData.vehicleType,
             });
          }
-
-         toast.success(`${formData.type} segment finalized.`);
+         toast.success(`${formData.type} reservation saved.`);
          navigate('/reservations');
       } catch (err) {
-         toast.error('Registry failure: ' + err.message);
+         toast.error('Error: ' + err.message);
       }
    };
 
-   const types = [
-      { id: 'Hotel', icon: Hotel, color: 'text-[var(--desert-gold)]' },
-      { id: 'Visa', icon: ShieldCheck, color: 'text-[var(--sacred-emerald)]' },
-      { id: 'Flight', icon: Plane, color: 'text-[var(--on-surface)]' },
-      { id: 'Transport', icon: MapPin, color: 'text-[var(--on-surface-variant)]' }
-   ];
+   const bookingsArr = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
+   const activeType = types.find(t => t.id === formData.type);
 
    return (
-      <div className="font-inter  space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
-         {/* Header */}
-         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
-            <Link to="/reservations" className="flex items-center gap-3 text-slate-400 hover:text-slate-900 transition-all group">
-               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 group-hover:shadow-md transition-all">
-                  <ArrowLeft size={18} strokeWidth={2.5} />
-               </div>
-               <span className="text-[10px] font-black uppercase tracking-[0.25em]">Logistics Hub</span>
-            </Link>
-            <h1 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tighter uppercase">Add Reservation </h1>
+      <div style={{ fontFamily: "'Inter', sans-serif" }} className="pb-20">
+
+         {/* ── Header ── */}
+         <div
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6"
+            style={{ borderBottom: '1px solid #e2e8f0' }}
+         >
             <div className="flex items-center gap-4">
-               <button
-                  onClick={handleSubmit}
-                  className="px-10 py-5 bg-black text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
+               <Link
+                  to="/reservations"
+                  className="flex items-center justify-center w-9 h-9 rounded-xl transition-all hover:bg-slate-100"
+                  style={{ border: '1px solid #e2e8f0', color: '#64748b' }}
                >
-                  <Save size={18} strokeWidth={2.5} />
-                  Commit Changes
-               </button>
+                  <ArrowLeft size={16} strokeWidth={2.5} />
+               </Link>
+               <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color: '#94a3b8' }}>
+                     Reservations
+                  </p>
+                  <h1 className="text-2xl font-bold tracking-tight text-slate-900">Add Reservation</h1>
+               </div>
             </div>
+            <button
+               onClick={handleSubmit}
+               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+               style={{ background: '#0f172a', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}
+            >
+               <Save size={15} strokeWidth={2.5} />
+               Save Reservation
+            </button>
          </div>
 
-         {/* Select Type Grid */}
-         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {types.map((t) => (
-               <button
-                  key={t.id}
-                  onClick={() => setFormData({ ...formData, type: t.id })}
-                  className={`p-10 rounded-xl border-2 transition-all text-left group relative overflow-hidden ${formData.type === t.id
-                     ? 'bg-white border-black shadow-lg shadow-slate-200'
-                     : 'bg-slate-50 border-transparent hover:border-slate-200 hover:bg-white'
-                     }`}
-               >
-                  <div className={`p-4 rounded-xl inline-flex items-center justify-center mb-6 transition-all ${formData.type === t.id ? 'bg-black text-white' : 'bg-white text-slate-400 group-hover:bg-slate-100'
-                     }`}>
-                     <t.icon size={24} strokeWidth={2.5} />
-                  </div>
-                  <p className={`text-[10px] font-black uppercase tracking-widest mb-1 transition-all ${formData.type === t.id ? 'text-black' : 'text-slate-400'
-                     }`}>{t.id} Segment</p>
-                  <h4 className={`text-sm font-manrope font-black transition-all ${formData.type === t.id ? 'text-black' : 'text-slate-900'
-                     }`}>Manage {t.id}</h4>
-                  {formData.type === t.id && (
-                     <div className="absolute top-6 right-6 text-[var(--sacred-emerald)]">
-                        <CheckCircle2 size={24} fill="currentColor" className="text-white" />
+         {/* ── Type Selector ── */}
+         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            {types.map((t) => {
+               const active = formData.type === t.id;
+               return (
+                  <button
+                     key={t.id}
+                     onClick={() => set('type', t.id)}
+                     className="flex flex-col items-start p-4 rounded-xl text-left transition-all"
+                     style={{
+                        background: active ? '#ffffff' : '#f8fafc',
+                        border: active ? `1.5px solid ${t.accent}` : '1.5px solid #e2e8f0',
+                        boxShadow: active ? `0 0 0 3px ${t.accentBg}` : 'none',
+                     }}
+                  >
+                     <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
+                        style={{
+                           background: active ? t.accentBg : '#f1f5f9',
+                           color: active ? t.accent : '#94a3b8',
+                        }}
+                     >
+                        <t.icon size={17} strokeWidth={2} />
                      </div>
-                  )}
-               </button>
-            ))}
+                     <p
+                        className="text-sm font-semibold"
+                        style={{ color: active ? '#0f172a' : '#64748b' }}
+                     >
+                        {t.label}
+                     </p>
+                     {active && (
+                        <p className="text-xs mt-0.5" style={{ color: t.accent }}>Selected</p>
+                     )}
+                  </button>
+               );
+            })}
          </div>
 
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Instruction Card */}
+         {/* ── Main Body ── */}
+         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            {/* Sidebar */}
             <div className="lg:col-span-4">
-               <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-xl p-10 text-white shadow-2xl space-y-10 h-full relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] translate-x-12 -translate-y-12"></div>
-                  <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 relative z-10">
-                     <Info size={28} className="text-[var(--desert-gold)]" strokeWidth={2.5} />
+               <div
+                  className="rounded-xl p-6 h-full"
+                  style={{ background: '#0f172a', border: '1px solid #1e293b' }}
+               >
+                  <div
+                     className="w-10 h-10 rounded-xl flex items-center justify-center mb-5"
+                     style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
+                  >
+                     {activeType && (
+                        <activeType.icon size={18} strokeWidth={2} style={{ color: activeType.accent }} />
+                     )}
                   </div>
-                  <h3 className="text-2xl font-manrope font-black leading-tight tracking-tight relative z-10">Operational <br />Accuracy Protocol</h3>
-                  <p className="text-xs text-white/40 leading-relaxed font-medium relative z-10 uppercase tracking-widest">
-                     Reference verification mandatory for Amadeus, Maqam, and Global GDS synchronization hooks.
+                  <h3 className="text-base font-semibold text-white mb-2">
+                     {activeType?.label} Details
+                  </h3>
+                  <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                     Fill in the required fields for this reservation segment. All entries are synced in real-time.
                   </p>
 
-                  <div className="pt-10 space-y-6 relative z-10">
-                     <div className="flex items-center gap-4 text-white/30 group-hover:text-white/60 transition-all">
-                        <Clock size={16} strokeWidth={2.5} />
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Real-time Sync Active</span>
-                     </div>
-                     <div className="flex items-center gap-4 text-white/30 group-hover:text-white/60 transition-all">
-                        <ShieldCheck size={16} strokeWidth={2.5} />
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">GDS Uplink Verified</span>
-                     </div>
+                  <div className="mt-8 space-y-3">
+                     {[
+                        { icon: Clock,       label: 'Real-time sync active' },
+                        { icon: ShieldCheck, label: 'GDS uplink verified' },
+                     ].map(({ icon: Icon, label }) => (
+                        <div key={label} className="flex items-center gap-3">
+                           <Icon size={14} strokeWidth={2} style={{ color: 'rgba(255,255,255,0.25)' }} />
+                           <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{label}</span>
+                        </div>
+                     ))}
+                  </div>
+
+                  {/* Booking selector in sidebar */}
+                  <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                     <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                        Parent Booking
+                     </p>
+                     <select
+                        className="w-full text-sm font-medium rounded-lg px-3 py-2.5 outline-none cursor-pointer"
+                        style={{
+                           background: 'rgba(255,255,255,0.06)',
+                           border: '1px solid rgba(255,255,255,0.12)',
+                           color: formData.bookingId ? '#ffffff' : 'rgba(255,255,255,0.4)',
+                        }}
+                        value={formData.bookingId}
+                        onChange={(e) => set('bookingId', e.target.value)}
+                     >
+                        <option value="" style={{ background: '#1e293b' }}>Select booking...</option>
+                        {bookingsArr.map(b => (
+                           <option key={b.id} value={b.id} style={{ background: '#1e293b' }}>
+                              {b.customer_name || b.customer?.firstName || 'N/A'} — #{b.id}
+                           </option>
+                        ))}
+                     </select>
                   </div>
                </div>
             </div>
 
-            {/* Form Main Area */}
-            <div className="lg:col-span-8 bg-white rounded-xl p-12 shadow-sm border border-slate-200 space-y-12 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] translate-x-12 -translate-y-12"></div>
-               <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3 relative z-10">
-                  <LayoutDashboard size={18} strokeWidth={2.5} className="text-[var(--desert-gold)]" /> Data Entry
-               </h3>
+            {/* Form Card */}
+            <div
+               className="lg:col-span-8 rounded-xl p-8"
+               style={{ background: '#ffffff', border: '1px solid #e2e8f0' }}
+            >
+               <p className="text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>
+                  {activeType?.label} Information
+               </p>
 
-               <div className="space-y-12 relative z-10">
-                  {/* Global Booking Link */}
-                  <div className="group">
-                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">Parent Booking Reference</label>
-                     <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6">
-                        <select
-                           className="w-full bg-transparent text-lg font-manrope font-black text-slate-900 outline-none appearance-none cursor-pointer"
-                           value={formData.bookingId}
-                           onChange={(e) => setFormData({ ...formData, bookingId: e.target.value })}
-                        >
-                           <option value="" className="bg-white">Query Registry...</option>
-                           {(() => {
-                              const bookingsToShow = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
-                              return bookingsToShow.map(b => (
-                                 <option key={b.id} value={b.id} className="bg-white">
-                                    {b.customer_name || b.customer?.firstName || 'N/A'}
-                                 </option>
-                              ));
-                           })()}
-                        </select>
-                     </div>
-                  </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
 
-                  {/* Conditional Fields based on Type */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16 animate-in slide-in-from-right duration-700">
-                     {formData.type === 'Visa' && (
-                        <>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Number</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="E-VISA #82934..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-widest"
-                                    value={formData.visaNumber}
-                                    onChange={(e) => setFormData({ ...formData, visaNumber: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Status</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select
-                                    className="w-full bg-transparent text-lg font-manrope font-black text-slate-900 outline-none appearance-none cursor-pointer"
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                 >
-                                    {masterData?.statusvisa.map(status => (
-                                       <option key={status.id} value={status.id} className="bg-white">
-                                          {status.name}
-                                       </option>
-                                    ))}
-                                 </select>
-                              </div>
-                             
-                           </div>
-                          
-                           <div className="md:col-span-2 group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Internal Notes</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="MOFA verification pending..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.notes}
-                                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                        </>
-                     )}
+                  {/* ── VISA ── */}
+                  {formData.type === 'Visa' && (
+                     <>
+                        <Field label="Visa Number">
+                           <input type="text" placeholder="E-VISA #82934" className={inputCls}
+                              value={formData.visaNumber} onChange={e => set('visaNumber', e.target.value)} />
+                        </Field>
+                        <Field label="Visa Status">
+                           <select className={selectCls} value={formData.status || ''}
+                              onChange={e => set('status', e.target.value)}>
+                              <option value="">Select status...</option>
+                              {(masterData?.statusvisa || []).map(s => (
+                                 <option key={s.id} value={s.id}>{s.name}</option>
+                              ))}
+                           </select>
+                        </Field>
+                        <Field label="Internal Notes" span2>
+                           <input type="text" placeholder="MOFA verification pending..." className={inputCls}
+                              value={formData.notes} onChange={e => set('notes', e.target.value)} />
+                        </Field>
+                     </>
+                  )}
 
-                     {formData.type === 'Hotel' && (
-                        <>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Hotel Name</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Fairmont Makkah..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.hotelName}
-                                    onChange={(e) => setFormData({ ...formData, hotelName: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">City</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
-                                    value={formData.city}
-                                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                 >
-                                    <option className="bg-white">Makkah</option>
-                                    <option className="bg-white">Madinah</option>
-                                    <option className="bg-white">Jeddah</option>
-                                 </select>
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Check-in / Check-out</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4 flex items-center gap-4">
-                                 <input 
-                                    type="date" 
-                                    className="bg-transparent text-xs font-black text-slate-900 outline-none" 
-                                    value={formData.checkIn}
-                                    onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
-                                 />
-                                 <ArrowRight size={14} className="text-slate-300" />
-                                 <input 
-                                    type="date" 
-                                    className="bg-transparent text-xs font-black text-slate-900 outline-none" 
-                                    value={formData.checkOut}
-                                    onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Room </label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Double Quad, Triple... " 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.roomType}
-                                    onChange={(e) => setFormData({ ...formData, roomType: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           
-                        </>
-                     )}
-
-                     {formData.type === 'Flight' && (
-                        <>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Airline</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Saudi Airlines (SV-001)..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.airline}
-                                    onChange={(e) => setFormData({ ...formData, airline: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Ticket Number</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="TKT-#029384756..." 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200 uppercase tracking-tighter" 
-                                    value={formData.ticketNumber}
-                                    onChange={(e) => setFormData({ ...formData, ticketNumber: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="grid grid-cols-1 gap-6">
+                  {/* ── HOTEL ── */}
+                  {formData.type === 'Hotel' && (
+                     <>
+                        <Field label="Hotel Name">
+                           <input type="text" placeholder="Fairmont Makkah..." className={inputCls}
+                              value={formData.hotelName} onChange={e => set('hotelName', e.target.value)} />
+                        </Field>
+                        <Field label="City">
+                           <select className={selectCls} value={formData.city} onChange={e => set('city', e.target.value)}>
+                              <option>Makkah</option>
+                              <option>Madinah</option>
+                              <option>Jeddah</option>
+                           </select>
+                        </Field>
+                        <Field label="Check-in">
+                           <input type="date" className={inputCls}
+                              value={formData.checkIn} onChange={e => set('checkIn', e.target.value)} />
+                        </Field>
+                        <Field label="Check-out">
+                           <input type="date" className={inputCls}
+                              value={formData.checkOut} onChange={e => set('checkOut', e.target.value)} />
+                        </Field>
+                        <Field label="Room">
+                           <input type="text" placeholder="Double, Triple, Quad..." className={inputCls}
+                              value={formData.roomType} onChange={e => set('roomType', e.target.value)} />
                               
-                              <div className="group">
-                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Departure Time</label>
-                                 <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                    <input 
-                                       type="time" 
-                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none" 
-                                       value={formData.departureTime}
-                                       onChange={(e) => setFormData({ ...formData, departureTime: e.target.value })}
-                                    />
-                                 </div>
-                              </div>
-                           </div>
-                           <div className="grid grid-cols-1 gap-6 ">
-                              
-                              <div className="group">
-                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Arrival Time</label>
-                                 <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                    <input 
-                                       type="time" 
-                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none" 
-                                       value={formData.arrivalTime}
-                                       onChange={(e) => setFormData({ ...formData, arrivalTime: e.target.value })}
-                                    />
-                                 </div>
-                              </div>
-                           </div>
-                           {/* <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Flight Status</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                 >
-                                    <option className="bg-white" value="">Select Status ...</option>
-                                    {(masterData?.status || []).map((s, idx) => (
-                                       <option key={idx} value={s.id || s} className="bg-white">
-                                          {s.name || s}
-                                       </option>
-                                    ))}
-                                 </select>
-                              </div>
-                           </div> */}
-                        </>
-                     )}
+                        </Field>
+                     </>
+                  )}
 
-                     {formData.type === 'Transport' && (
-                        <>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Transport Type</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <select 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
-                                    value={formData.transportType}
-                                    onChange={(e) => setFormData({ ...formData, transportType: e.target.value })}
-                                 >
-                                    <option className="bg-white" value="">Select Type ...</option>
-                                    {(masterData?.transport_type || []).map((t, idx) => (
-                                       <option key={idx} value={t.id || t} className="bg-white">
-                                          {t.name || t}
-                                       </option>
-                                    ))}
-                                    {(!masterData?.transport_type || masterData.transport_type.length === 0) && (
-                                       <>
-                                          <option className="bg-white" value="Pickup (Airport)">Pickup (Airport)</option>
-                                          <option className="bg-white" value="Drop (Airport)">Drop (Airport)</option>
-                                          <option className="bg-white" value="Ziyarat (Makkah)">Ziyarat (Makkah)</option>
-                                          <option className="bg-white" value="Ziyarat (Madinah)">Ziyarat (Madinah)</option>
-                                          <option className="bg-white" value="Inter-city Transit">Inter-city Transit</option>
-                                       </>
-                                    )}
-                                 </select>
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Vehicle Assignment</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 {masterData?.vehicle?.length > 0 ? (
-                                    <select
-                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none cursor-pointer"
-                                       value={formData.vehicle}
-                                       onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-                                    >
-                                       <option className="bg-white" value="">Select Vehicle ...</option>
-                                       {masterData.vehicle.map((v, idx) => (
-                                          <option key={idx} value={v.id || v} className="bg-white">
-                                             {v.name || v}
-                                          </option>
-                                       ))}
-                                    </select>
-                                 ) : (
-                                    <input 
-                                       type="text" 
-                                       placeholder="GMC Yukon / Bus-50..." 
-                                       className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                       value={formData.vehicle}
-                                       onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-                                    />
-                                 )}
-                              </div>
-                           </div>
-                           <div className="md:col-span-2 group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Driver Name / Contact</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Muhammad Ali (+966...)" 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200" 
-                                    value={formData.driver}
-                                    onChange={(e) => setFormData({ ...formData, driver: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Plate Number</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Plate Number" 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
-                                    value={formData.plateNumber}
-                                    onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Driver Phone</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Driver Phone" 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
-                                    value={formData.driverPhone}
-                                    onChange={(e) => setFormData({ ...formData, driverPhone: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Date of Issue</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Date of Issue" 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
-                                    value={formData.dateOfIssue}
-                                    onChange={(e) => setFormData({ ...formData, dateOfIssue: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Time</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Time" 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
-                                    value={formData.time}
-                                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                            
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Notes</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Notes" 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
-                                    value={formData.notes}
-                                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                 />
-                              </div>
-                           </div>
-                           <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Vehicle Type</label>
-                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
-                                 <input 
-                                    type="text" 
-                                    placeholder="Vehicle Type" 
-                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
-                                    value={formData.vehicleType}
-                                    onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
-                                 />
-                              </div>
-                           </div>
+                  {/* ── FLIGHT ── */}
+                  {formData.type === 'Flight' && (
+                     <>
+                        <Field label="Airline">
+                           <input type="text" placeholder="Saudi Airlines (SV-001)..." className={inputCls}
+                              value={formData.airline} onChange={e => set('airline', e.target.value)} />
+                        </Field>
+                        <Field label="Ticket Number">
+                           <input type="text" placeholder="TKT-#029384756" className={inputCls}
+                              value={formData.ticketNumber} onChange={e => set('ticketNumber', e.target.value)} />
+                        </Field>
+                        <Field label="Departure Time">
+                           <input type="time" className={inputCls}
+                              value={formData.departureTime} onChange={e => set('departureTime', e.target.value)} />
+                        </Field>
+                        <Field label="Arrival Time">
+                           <input type="time" className={inputCls}
+                              value={formData.arrivalTime} onChange={e => set('arrivalTime', e.target.value)} />
+                        </Field>
+                     </>
+                  )}
 
-                          
-                        </>
-                     )}
-                  </div>
+                  {/* ── TRANSPORT ── */}
+                  {formData.type === 'Transport' && (
+                     <>
+                        <Field label="Transport Type">
+                           <select className={selectCls} value={formData.transportType} onChange={e => set('transportType', e.target.value)}>
+                              <option value="">Select type...</option>
+                              {(masterData?.transport_type?.length > 0
+                                 ? masterData.transport_type
+                                 : [
+                                      { id: 'Pickup (Airport)', name: 'Pickup (Airport)' },
+                                      { id: 'Drop (Airport)',   name: 'Drop (Airport)' },
+                                      { id: 'Ziyarat (Makkah)',  name: 'Ziyarat (Makkah)' },
+                                      { id: 'Ziyarat (Madinah)', name: 'Ziyarat (Madinah)' },
+                                      { id: 'Inter-city Transit', name: 'Inter-city Transit' },
+                                   ]
+                              ).map((t, i) => (
+                                 <option key={i} value={t.id || t}>{t.name || t}</option>
+                              ))}
+                           </select>
+                        </Field>
+                        <Field label="Vehicle">
+                           {masterData?.vehicle?.length > 0 ? (
+                              <select className={selectCls} value={formData.vehicle} onChange={e => set('vehicle', e.target.value)}>
+                                 <option value="">Select vehicle...</option>
+                                 {masterData.vehicle.map((v, i) => (
+                                    <option key={i} value={v.id || v}>{v.name || v}</option>
+                                 ))}
+                              </select>
+                           ) : (
+                              <input type="text" placeholder="GMC Yukon / Bus-50..." className={inputCls}
+                                 value={formData.vehicle} onChange={e => set('vehicle', e.target.value)} />
+                           )}
+                        </Field>
+                        <Field label="Driver Name" span2>
+                           <input type="text" placeholder="Muhammad Ali" className={inputCls}
+                              value={formData.driver} onChange={e => set('driver', e.target.value)} />
+                        </Field>
+                        <Field label="Driver Phone">
+                           <input type="text" placeholder="+966 5X XXX XXXX" className={inputCls}
+                              value={formData.driverPhone} onChange={e => set('driverPhone', e.target.value)} />
+                        </Field>
+                        <Field label="Plate Number">
+                           <input type="text" placeholder="ABC-1234" className={inputCls}
+                              value={formData.plateNumber} onChange={e => set('plateNumber', e.target.value)} />
+                        </Field>
+                        <Field label="Vehicle Type">
+                           <input type="text" placeholder="Bus / SUV / Van..." className={inputCls}
+                              value={formData.vehicleType} onChange={e => set('vehicleType', e.target.value)} />
+                        </Field>
+                        <Field label="Date of Issue">
+                           <input type="date" className={inputCls}
+                              value={formData.dateOfIssue} onChange={e => set('dateOfIssue', e.target.value)} />
+                        </Field>
+                        <Field label="Time">
+                           <input type="time" className={inputCls}
+                              value={formData.time} onChange={e => set('time', e.target.value)} />
+                        </Field>
+                        <Field label="Notes" span2>
+                           <input type="text" placeholder="Additional notes..." className={inputCls}
+                              value={formData.notes} onChange={e => set('notes', e.target.value)} />
+                        </Field>
+                     </>
+                  )}
+               </div>
+
+               {/* Submit Row */}
+               <div
+                  className="flex justify-end mt-8 pt-6"
+                  style={{ borderTop: '1px solid #f1f5f9' }}
+               >
+                  <button
+                     onClick={handleSubmit}
+                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+                     style={{ background: '#0f172a' }}
+                  >
+                     <Save size={15} strokeWidth={2.5} />
+                     Save {activeType?.label}
+                  </button>
                </div>
             </div>
          </div>

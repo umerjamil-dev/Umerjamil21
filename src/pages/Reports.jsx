@@ -31,10 +31,10 @@ const Reports = () => {
         fetchLeads();
     }, [activeReport, fetchReports, fetchBookings, fetchPayments, fetchCustomers, fetchLeads]);
 
-    const totalRevenue = payments.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-    const activeBookingCount = bookings.filter(b => b.status === 'Confirmed' || b.status === 'Active').length;
-    const customerCount = customers.length;
-    const leadCount = leads.length;
+    const totalRevenue = (Array.isArray(payments) ? payments : []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+    const activeBookingCount = (Array.isArray(bookings) ? bookings : []).filter(b => b.status === 'Confirmed' || b.status === 'Active').length;
+    const customerCount = (Array.isArray(customers) ? customers : []).length;
+    const leadCount = (Array.isArray(leads) ? leads : []).length;
 
     // Safe-accessors for nested API objects
     const getCustomerName = (row) => {
@@ -65,10 +65,10 @@ const Reports = () => {
     ];
 
     // Normalized Data from Store
-    const bookingData = bookingReports;
-    const paymentData = paymentReports;
-    const salesData = salesReports;
-    const customerData = customerReports;
+    const bookingData = Array.isArray(bookingReports) ? bookingReports : [];
+    const paymentData = Array.isArray(paymentReports) ? paymentReports : [];
+    const salesData = Array.isArray(salesReports) ? salesReports : [];
+    const customerData = Array.isArray(customerReports) ? customerReports : [];
 
 
     return (

@@ -1,28 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ShieldCheck, Hotel, Plane, MapPin,
   ChevronRight, Search, Filter,
   CalendarDays, MoreHorizontal,
   Clock, CheckCircle2, AlertCircle,
-  Wand2, Shapes, Tag, Trash2
+  Wand2, Shapes, Tag, Trash2, Eye,
+  SlidersHorizontal, TrendingUp, Plus
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useBookingStore from '../store/useBookingStore';
 
 const Reservations = () => {
   const { bookings: reservations, fetchBookings, isLoading } = useBookingStore();
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchBookings();
   }, [fetchBookings]);
+  console.log(reservations);
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'Visa': return { icon: ShieldCheck, bg: 'bg-emerald-50 text-emerald-600' };
-      case 'Hotel': return { icon: Hotel, bg: 'bg-amber-50 text-amber-600' };
-      case 'Flight': return { icon: Plane, bg: 'bg-blue-50 text-blue-600' };
-      case 'Transport': return { icon: MapPin, bg: 'bg-indigo-50 text-indigo-600' };
-      default: return { icon: ShieldCheck, bg: 'bg-slate-50 text-slate-600' };
+      case 'Visa':      return { icon: ShieldCheck, color: '#059669', bg: '#ecfdf5', border: '#a7f3d0' };
+      case 'Hotel':     return { icon: Hotel,       color: '#d97706', bg: '#fffbeb', border: '#fde68a' };
+      case 'Flight':    return { icon: Plane,        color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' };
+      case 'Transport': return { icon: MapPin,       color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' };
+      default:          return { icon: ShieldCheck,  color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' };
+    }
+  };
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'Confirmed': return { bg: '#f0fdf4', text: '#15803d', border: '#bbf7d0', dot: '#22c55e' };
+      case 'Partial':   return { bg: '#fefce8', text: '#a16207', border: '#fef08a', dot: '#eab308' };
+      case 'Pending':   return { bg: '#f8fafc', text: '#64748b', border: '#e2e8f0', dot: '#94a3b8' };
+      default:          return { bg: '#f8fafc', text: '#64748b', border: '#e2e8f0', dot: '#94a3b8' };
     }
   };
 
@@ -34,139 +46,238 @@ const Reservations = () => {
   };
 
   const getPackageName = (p) => {
-    if (!p) return 'Protocol';
+    if (!p) return 'Standard Package';
     if (typeof p === 'string') return p;
     return p.title || p.name || `ID: ${p.id}`;
   };
 
-  const reservationsToShow = Array.isArray(reservations) ? reservations : Object.values(reservations || {});
+  const reservationsToShow = Array.isArray(reservations)
+    ? reservations
+    : Object.values(reservations || {});
+
+  const filtered = reservationsToShow.filter((r) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      String(r.id).toLowerCase().includes(q) ||
+      getCustomerName(r.customer, r.customer_name).toLowerCase().includes(q) ||
+      getPackageName(r.package).toLowerCase().includes(q)
+    );
+  });
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
-      {/* Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200">
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-black opacity-80">
-            <Clock size={14} strokeWidth={3} />
-            Live Sync: 14:55
-          </div>
-          <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="pb-20">
+
+      {/* ── Header ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#94a3b8' }}>
+            Management
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Reservations
           </h1>
-          <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
-            Orchestrating visa cycles, hospitality nodes, and global transit authorizations in real-time synchronization.
+          <p className="text-sm text-slate-500 mt-1">
+            All active bookings, visas, and travel protocols.
           </p>
         </div>
         <Link
           to="/reservations/add"
-          className="px-10 py-5 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+          style={{ background: '#0f172a', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}
         >
-          <Plane size={18} strokeWidth={3} />
-          Initiate New Protocol
+          <Plus size={16} strokeWidth={2.5} />
+          New Reservation
         </Link>
       </div>
 
-      {/* Search & Filter Matrix */}
-      <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-[8rem] translate-x-32 -translate-y-32 transition-all duration-700"></div>
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
-          <div className="relative w-full lg:w-[500px] group">
-            <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors" size={20} />
-            <input
-              type="text"
-              placeholder="Search  by ID, pilgrim or package..."
-              className="w-full pl-10 pr-4 py-4 bg-transparent border-b-2 border-slate-100 rounded-none text-sm outline-none focus:border-black text-black transition-all font-black placeholder-slate-300 uppercase tracking-widest"
-            />
+      {/* ── Stats Row ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: 'Total', value: reservationsToShow.length, color: '#0f172a' },
+          { label: 'Confirmed', value: reservationsToShow.filter(r => r.status === 'Confirmed').length, color: '#15803d' },
+          { label: 'Partial', value: reservationsToShow.filter(r => r.status === 'Partial').length, color: '#a16207' },
+          { label: 'Pending', value: reservationsToShow.filter(r => !r.status || r.status === 'Pending').length, color: '#64748b' },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="rounded-xl p-4"
+            style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
+          >
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+            <p className="text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</p>
           </div>
-          <div className="flex items-center gap-4 w-full lg:w-auto">
-            <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200">
-              <Filter size={14} strokeWidth={3} /> Status Protocol
-            </button>
-            <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-slate-50 rounded-xl text-[10px] font-black text-slate-900 uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200">
-              Temporal Range
-            </button>
-          </div>
+        ))}
+      </div>
+
+      {/* ── Search & Filter Bar ── */}
+      <div
+        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6 p-4 rounded-xl"
+        style={{ background: '#ffffff', border: '1px solid #e2e8f0' }}
+      >
+        <div className="relative flex-1">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: '#94a3b8' }}
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by ID, pilgrim name, or package..."
+            className="w-full pl-9 pr-4 py-2.5 text-sm rounded-lg outline-none transition-all"
+            style={{
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              color: '#0f172a',
+            }}
+            onFocus={e => { e.target.style.borderColor = '#94a3b8'; }}
+            onBlur={e => { e.target.style.borderColor = '#e2e8f0'; }}
+          />
+        </div>
+        <div className="flex gap-3">
+          <button
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all hover:bg-slate-100"
+            style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#475569' }}
+          >
+            <SlidersHorizontal size={15} strokeWidth={2} />
+            Filter
+          </button>
+          <button
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all hover:bg-slate-100"
+            style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#475569' }}
+          >
+            <CalendarDays size={15} strokeWidth={2} />
+            Date Range
+          </button>
         </div>
       </div>
 
-      {/*  Ledger */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative">
+      {/* ── Table ── */}
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{ background: '#ffffff', border: '1px solid #e2e8f0' }}
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Reservation Narrative</th>
-                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]"> Node</th>
-                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Temporal Window</th>
-                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Floor Valuation</th>
-                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] text-right">Protocol</th>
+              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                {['Guest', 'Package', 'Dates', 'Amount', ''].map((h) => (
+                  <th
+                    key={h}
+                    className="px-6 py-4 text-xs font-semibold uppercase tracking-wider"
+                    style={{ color: '#94a3b8' }}
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody>
               {isLoading ? (
-                <tr><td colSpan="5" className="px-10 py-20 text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing Reservations...</td></tr>
-              ) : reservationsToShow.length === 0 ? (
-                <tr><td colSpan="5" className="px-10 py-20 text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">No active protocols identified.</td></tr>
-              ) : reservationsToShow.map((res) => {
+                <tr>
+                  <td colSpan="5" className="px-6 py-16 text-center text-sm text-slate-400">
+                    Loading reservations...
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-6 py-16 text-center text-sm text-slate-400">
+                    {searchQuery ? 'No results found.' : 'No reservations yet.'}
+                  </td>
+                </tr>
+              ) : filtered.map((res, idx) => {
                 const typeInfo = getTypeIcon(res.type || 'Visa');
+                const statusStyle = getStatusStyle(res.status);
+                const TypeIcon = typeInfo.icon;
+                const isLast = idx === filtered.length - 1;
+
                 return (
-                  <tr key={res.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
-                    <td className="px-10 py-10">
-                      <div className="flex items-center gap-8">
-                        <div className={`w-16 h-16 rounded-xl flex items-center justify-center transition-all ${typeInfo.bg} shadow-sm group-hover:shadow-md border border-white`}>
-                          <typeInfo.icon size={28} strokeWidth={2} />
+                  <tr
+                    key={res.id}
+                    className="group transition-colors hover:bg-slate-50"
+                    style={{ borderBottom: isLast ? 'none' : '1px solid #f1f5f9' }}
+                  >
+                    {/* Guest */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{ background: typeInfo.bg, border: `1px solid ${typeInfo.border}` }}
+                        >
+                          <TypeIcon size={18} strokeWidth={1.8} style={{ color: typeInfo.color }} />
                         </div>
                         <div>
-                          <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">{getCustomerName(res.customer, res.customer_name)}</p>
-                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-slate-200"></span> ID: {res.id}
+                          <p className="text-sm font-semibold text-slate-900">
+                            {getCustomerName(res.customer, res.customer_name)}
                           </p>
+                          <p className="text-xs text-slate-400 mt-0.5">#{res.id}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-10 py-10">
-                      <div className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-xl border border-slate-100 shadow-sm group-hover:border-slate-300 transition-all">
-                        <div className={`w-2 h-2 rounded-full ${res.visaStatus === 'Approved' ? 'bg-[var(--sacred-emerald)]' : 'bg-slate-200 animate-pulse'}`}></div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{getPackageName(res.package)}</span>
+
+                    {/* Package */}
+                    <td className="px-6 py-4">
+                      <span
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium"
+                        style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#475569' }}
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{
+                            background: res.visaStatus === 'Approved' ? '#22c55e' : '#cbd5e1',
+                          }}
+                        />
+                        {getPackageName(res.package)}
+                      </span>
+                    </td>
+
+                    {/* Dates */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-sm text-slate-600">
+                        <CalendarDays size={14} strokeWidth={1.8} style={{ color: '#94a3b8' }} />
+                        {res.
+travel_date || '—'}
                       </div>
                     </td>
-                    <td className="px-10 py-10">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-3 text-slate-400">
-                          <CalendarDays size={16} strokeWidth={3} />
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em]">{res.dates}</span>
-                        </div>
-                        <p className="text-[9px] text-slate-300 font-bold uppercase tracking-widest ml-7">System Estimated</p>
-                      </div>
+
+                    {/* Amount */}
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-semibold text-slate-900">
+                        ${(parseFloat(res.amount || res.total_amount) || 0).toLocaleString()}
+                      </p>
+                      <span
+                        className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: statusStyle.bg,
+                          color: statusStyle.text,
+                          border: `1px solid ${statusStyle.border}`,
+                        }}
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ background: statusStyle.dot }}
+                        />
+                        {res.status || 'Pending'}
+                      </span>
                     </td>
-                    <td className="px-10 py-10">
-                      <div>
-                        <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter">${(parseFloat(res.amount || res.total_amount) || 0).toLocaleString()}</p>
-                        <div className="flex items-center gap-3 mt-3">
-                          <span className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.3em] ${res.status === 'Confirmed' ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] border border-[var(--sacred-emerald)]/20' :
-                              res.status === 'Partial' ? 'bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] border border-[var(--desert-gold)]/20' :
-                                'bg-slate-100 text-slate-400 border border-slate-200'
-                            }`}>
-                            {res.status || 'Pending'} Protocol
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-10 py-10 text-right">
-                      <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <button className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
-                          <Wand2 size={14} strokeWidth={2.5} />
-                        </button>
-                        <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
-                          <Shapes size={14} strokeWidth={2.5} />
-                        </button>
-                        <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
-                          <Tag size={14} strokeWidth={2.5} />
-                        </button>
-                        <button className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
-                          <Trash2 size={14} strokeWidth={2.5} />
-                        </button>
-                      </div>
+
+                    {/* Actions */}
+                    <td className="px-6 py-4 text-right">
+                      <Link
+                        to={`/bookings/${res.booking_id || res.id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all  hover:bg-slate-100"
+                        style={{
+                          background: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          color: '#475569',
+                        }}
+                        title="View Details"
+                      >
+                        <Eye size={13} strokeWidth={2} />
+                        View
+                      </Link>
                     </td>
                   </tr>
                 );
@@ -174,7 +285,22 @@ const Reservations = () => {
             </tbody>
           </table>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--desert-gold)] via-[var(--sacred-emerald)] to-blue-500 opacity-20"></div>
+
+        {/* Footer */}
+        {filtered.length > 0 && (
+          <div
+            className="px-6 py-3 flex items-center justify-between"
+            style={{ borderTop: '1px solid #f1f5f9', background: '#fafafa' }}
+          >
+            <p className="text-xs text-slate-400">
+              Showing {filtered.length} of {reservationsToShow.length} reservations
+            </p>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs text-slate-400">Live sync</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
