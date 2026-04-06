@@ -17,6 +17,7 @@ import CustomerDetail from '../pages/CustomerDetail'
 import UpdateCustomer from '../pages/UpdateCustomer'
 import CustomerProfile from '../pages/CustomerProfile'
 import AddBooking from '../pages/AddBooking'
+import BookingDetail from '../pages/BookingDetail'
 import UpdateBooking from '../pages/UpdateBooking'
 import AddPayment from '../pages/AddPayment'
 import AddReservation from '../pages/AddReservation'
@@ -35,6 +36,10 @@ import Visa from '../pages/Visa'
 import Hotels from '../pages/Hotels'
 import Flights from '../pages/Flights'
 import Transport from '../pages/Transport'
+import VisaDetail from '../pages/VisaDetail'
+import HotelDetail from '../pages/HotelDetail'
+import FlightDetail from '../pages/FlightDetail'
+import TransportDetail from '../pages/TransportDetail'
 
 import PersonalDashboard from '../pages/PersonalDashboard'
 import CompanyParams from '../pages/settings/CompanyParams'
@@ -74,6 +79,7 @@ const Router = () => {
         <Route path="/calculator" element={<ProtectedRoute permission="USE_CALCULATOR"><Layout><Calculator /></Layout></ProtectedRoute>} />
         <Route path="/bookings" element={<ProtectedRoute permission="VIEW_BOOKINGS"><Layout><Bookings /></Layout></ProtectedRoute>} />
         <Route path="/bookings/add" element={<ProtectedRoute permission="CREATE_BOOKINGS"><Layout><AddBooking /></Layout></ProtectedRoute>} />
+        <Route path="/bookings/:id" element={<ProtectedRoute permission="VIEW_BOOKINGS"><Layout><BookingDetail /></Layout></ProtectedRoute>} />
         <Route path="/bookings/:id/edit" element={<ProtectedRoute permission="CREATE_BOOKINGS"><Layout><UpdateBooking /></Layout></ProtectedRoute>} />
         <Route path="/reservations" element={<ProtectedRoute permission="VIEW_RESERVATIONS"><Layout><Reservations /></Layout></ProtectedRoute>} />
         <Route path="/reservations/add" element={<ProtectedRoute permission="CREATE_RESERVATIONS"><Layout><AddReservation /></Layout></ProtectedRoute>} />
@@ -104,14 +110,19 @@ const Router = () => {
         <Route path="/settings/profile" element={<ProtectedRoute permission="MANAGE_PROFILE"><Layout><Profile /></Layout></ProtectedRoute>} />
         
         <Route path="/reservations/visa" element={<ProtectedRoute permission="VIEW_VISA"><Layout><Visa /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/visa/:id" element={<ProtectedRoute permission="VIEW_VISA"><Layout><VisaDetail /></Layout></ProtectedRoute>} />
         <Route path="/reservations/hotels" element={<ProtectedRoute permission="VIEW_HOTELS"><Layout><Hotels /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/hotels/:id" element={<ProtectedRoute permission="VIEW_HOTELS"><Layout><HotelDetail /></Layout></ProtectedRoute>} />
         <Route path="/reservations/flights" element={<ProtectedRoute permission="VIEW_FLIGHTS"><Layout><Flights /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/flights/:id" element={<ProtectedRoute permission="VIEW_FLIGHTS"><Layout><FlightDetail /></Layout></ProtectedRoute>} />
         <Route path="/reservations/transport" element={<ProtectedRoute permission="VIEW_TRANSPORT"><Layout><Transport /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/transport/:id" element={<ProtectedRoute permission="VIEW_TRANSPORT"><Layout><TransportDetail /></Layout></ProtectedRoute>} />
         <Route path="/packages" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><Packages /></Layout></ProtectedRoute>} />
         <Route path="/packages/add" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><AddPackage /></Layout></ProtectedRoute>} />
         <Route path="/packages/:id" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><PackageDetail /></Layout></ProtectedRoute>} />
         <Route path="/packages/:id/edit" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><UpdatePackage /></Layout></ProtectedRoute>} />
         <Route path="/live-booking" element={<ProtectedRoute permission="VIEW_LIVE_BOOKING"><Layout><LiveBooking /></Layout></ProtectedRoute>} />
+        
         
       </Routes>
     </BrowserRouter>

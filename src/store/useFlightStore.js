@@ -6,11 +6,13 @@ const useFlightStore = create((set) => ({
   isLoading: false,
   error: null,
 
-fetchFlights: async () => {
+   fetchFlights: async () => {
     set({ isLoading: true });
     try {
       const response = await api.get('/reservations/flights');
-      set({ flights: response.data, isLoading: false });
+      // Normalize response data: The actual array is in response.data.data.data for paginated responses
+      const flightArray = response.data?.data?.data || response.data?.data || (Array.isArray(response.data) ? response.data : []);
+      set({ flights: Array.isArray(flightArray) ? flightArray : [], isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
     }
@@ -20,10 +22,27 @@ fetchFlights: async () => {
     set({ isLoading: true });
     try {
       const response = await api.post('/reservations/flights', data);
-      set((state) => ({ flights: [response.data, ...state.flights], isLoading: false }));
-      return response.data;
+      // Prepend the new flight, ensuring we extract it correctly
+      const newFlight = response.data?.data || response.data || data;
+      
+      set((state) => ({ 
+        flights: [newFlight, ...(Array.isArray(state.flights) ? state.flights : [])], 
+        isLoading: false 
+      }));
+      return newFlight;
     } catch (err) {
       set({ error: err.message, isLoading: false });
+      throw err;
+    }
+  },
+
+  getFlight: async (id) => {
+    try {
+      const response = await api.get(`/reservations/flights/${id}`);
+      const data = response.data?.data || response.data;
+      return Array.isArray(data) ? data[0] : data;
+    } catch (err) {
+      console.error('Error fetching flight:', err);
       throw err;
     }
   }

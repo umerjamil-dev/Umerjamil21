@@ -10,7 +10,10 @@ const useHotelStore = create((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.get('/reservations/hotels');
-      set({ hotels: response.data, isLoading: false });
+      // Normalize response data: Hotel response is an object with numeric keys inside data.data
+      const hotelData = response.data?.data;
+      const hotelArray = hotelData ? Object.values(hotelData) : [];
+      set({ hotels: Array.isArray(hotelArray) ? hotelArray : [], isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
     }
@@ -20,14 +23,30 @@ const useHotelStore = create((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.post('/reservations/hotels', data);
-      set((state) => ({ hotels: [response.data, ...state.hotels], isLoading: false }));
-      return response.data;
+      // Prepend the new hotel, ensuring we extract it correctly
+      const newHotel = response.data?.data || response.data || data;
+      
+      set((state) => ({ 
+        hotels: [newHotel, ...(Array.isArray(state.hotels) ? state.hotels : [])], 
+        isLoading: false 
+      }));
+      return newHotel;
     } catch (err) {
       set({ error: err.message, isLoading: false });
       throw err;
     }
+  },
+
+  getHotel: async (id) => {
+    try {
+      const response = await api.get(`/reservations/hotels/${id}`);
+      const data = response.data?.data || response.data;
+      return Array.isArray(data) ? data[0] : data;
+    } catch (err) {
+      console.error('Error fetching hotel:', err);
+      throw err;
+    }
   }
 }));
-// console.log(data.log())
 
 export default useHotelStore;

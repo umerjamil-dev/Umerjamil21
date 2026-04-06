@@ -51,6 +51,7 @@ const useCalculatorStore = create((set) => ({
       return response.data;
     } catch (err) {
       set({ error: err.message, isLoading: false });
+      console.log()
       throw err;
     }
   },

@@ -44,6 +44,11 @@ const AddReservation = () => {
       arrivalTime: '',
       vehicle: '',
       driver: '',
+      driverPhone: '',
+      plateNumber: '',
+      dateOfIssue: '',
+      time: '',
+      vehicleType: '',
       notes: '',
       transportType: 'Pickup (Airport)'
    });
@@ -98,7 +103,8 @@ const AddReservation = () => {
                plate_number: formData.plateNumber,
                date_of_issue: formData.dateOfIssue,
                time: formData.time,
-               notes: formData.notes
+               notes: formData.notes,
+               vehicle_type: formData.vehicleType
             });
          }
 
@@ -214,7 +220,7 @@ const AddReservation = () => {
                               const bookingsToShow = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
                               return bookingsToShow.map(b => (
                                  <option key={b.id} value={b.id} className="bg-white">
-                                    BK-{b.id} ({b.customer_name || b.customer?.firstName || 'N/A'})
+                                    {b.customer_name || b.customer?.firstName || 'N/A'}
                                  </option>
                               ));
                            })()}
@@ -240,8 +246,22 @@ const AddReservation = () => {
                            </div>
                            <div className="group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Visa Status</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <select
+                                    className="w-full bg-transparent text-lg font-manrope font-black text-slate-900 outline-none appearance-none cursor-pointer"
+                                    value={formData.status}
+                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                 >
+                                    {masterData?.statusvisa.map(status => (
+                                       <option key={status.id} value={status.id} className="bg-white">
+                                          {status.name}
+                                       </option>
+                                    ))}
+                                 </select>
+                              </div>
                              
                            </div>
+                          
                            <div className="md:col-span-2 group">
                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Internal Notes</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
@@ -497,7 +517,7 @@ const AddReservation = () => {
                               </div>
                            </div>
                            <div className="group">
-                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Date of Expiry</label>
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Time</label>
                               <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
                                  <input 
                                     type="text" 
@@ -518,6 +538,18 @@ const AddReservation = () => {
                                     className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
                                     value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                 />
+                              </div>
+                           </div>
+                           <div className="group">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Vehicle Type</label>
+                              <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-4">
+                                 <input 
+                                    type="text" 
+                                    placeholder="Vehicle Type" 
+                                    className="w-full bg-transparent text-md font-manrope font-black text-slate-900 outline-none placeholder-slate-200"
+                                    value={formData.vehicleType}
+                                    onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
                                  />
                               </div>
                            </div>

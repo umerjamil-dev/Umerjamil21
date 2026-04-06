@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   ShieldCheck, Search, Filter,
   CheckCircle2, AlertCircle, Clock,
   MoreHorizontal, Download, Globe,
-  FileText
+  FileText, Eye
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import useVisaStore from '../store/useVisaStore';
 
 const Visa = () => {
@@ -15,13 +15,12 @@ const Visa = () => {
     fetchVisas();
   }, [fetchVisas]);
 
-  const visaData = visas;
-
+  const visaData = Array.isArray(visas) ? visas : [];
   const stats = {
     total: visaData.length,
-    approved: visaData.filter(v => v.status === 'Approved').length,
-    processing: visaData.filter(v => v.status === 'Processing').length,
-    exceptions: visaData.filter(v => v.status === 'Rejected' || v.status === 'Not Started').length
+    approved: visaData.filter(v => v?.status === 'Approved').length,
+    processing: visaData.filter(v => v?.status === 'Processing').length,
+    exceptions: visaData.filter(v => v?.status === 'Rejected' || v?.status === 'Not Started').length
   };
 
 
@@ -97,14 +96,16 @@ const Visa = () => {
                 <tr key={item.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                   <td className="px-8 py-6 text-black">
                     <div>
-                      <p className="text-base font-manrope font-black text-slate-900 tracking-tight leading-none mb-1.5">{item.customer}</p>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{item.package}</p>
+                      <p className="text-base font-manrope font-black text-slate-900 tracking-tight leading-none mb-1.5">
+                        {item.customer_full_name || 'Applicant Registry'}
+                      </p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{item.package_title || 'Custom Segment'}</p>
                     </div>
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3 text-slate-900 font-mono tracking-widest text-sm bg-slate-100 px-3 py-1.5 rounded-xl inline-flex">
                       <FileText size={14} className="text-slate-400" />
-                      {item.visaNumber}
+                      {item.visa_number}
                     </div>
                   </td>
                   <td className="px-8 py-6">
@@ -122,9 +123,12 @@ const Visa = () => {
                     <p className="text-[11px] font-medium text-slate-600 max-w-[200px] truncate">{item.notes}</p>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-xl transition-all shadow-sm border border-transparent hover:border-slate-200">
-                      <MoreHorizontal size={20} />
-                    </button>
+                    <Link 
+                      to={`/reservations/visa/${item.id}`}
+                      className="p-2.5 bg-slate-50 text-slate-400 hover:bg-black hover:text-white rounded-xl transition-all border border-slate-100 inline-flex items-center justify-center group/btn shadow-sm hover:shadow-md"
+                    >
+                      <Eye size={18} className="group-hover/btn:scale-110 transition-transform" />
+                    </Link>
                   </td>
                 </tr>
               ))}

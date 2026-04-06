@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  Plane, Search, Filter,
-  Clock, CheckCircle2, MoreHorizontal,
-  Cloud, Navigation, ShieldCheck
+  Cloud, Navigation, ShieldCheck, Eye,
+  Plane,
+  Search,
+  Filter,
+  Clock
 } from 'lucide-react';
 import useFlightStore from '../store/useFlightStore';
 
@@ -13,7 +16,7 @@ const Flights = () => {
     fetchFlights();
   }, [fetchFlights]);
 
-  const flightData = flights;
+  const flightData = Array.isArray(flights) ? flights : [];
 
 
   return (
@@ -64,7 +67,7 @@ const Flights = () => {
             <thead>
               <tr className="bg-white border-b border-slate-100">
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] w-1/5">Carrier Node</th>
-                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] w-1/5">Passenger</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] w-1/5">Passenger Quota</th>
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] w-1/4">Departure/Arrival Vector</th>
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] w-1/5">E-Ticket Ledger</th>
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] text-right">Action</th>
@@ -86,7 +89,9 @@ const Flights = () => {
                     </div>
                   </td>
                   <td className="px-8 py-6 text-black">
-                    <p className="text-sm font-black text-slate-900 leading-none">{item.customer}</p>
+                    <p className="text-sm font-black text-slate-900 leading-none">
+                      {item.pilgrim_quota || 'System Registry Placeholder'}
+                    </p>
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex flex-col gap-2">
@@ -94,7 +99,7 @@ const Flights = () => {
                         <Navigation size={10} className="transform rotate-45 text-[var(--desert-gold)]" />
                         A: {item.departure}
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] font-black text-slate-600 uppercase tracking-widest px-2 py-1 rounded inline-flex w-fit bg-slate-50 border border-slate-200">
+                      <div className="flex items-center gap-2 text-[10px] font-black text-black uppercase tracking-widest px-2 py-1 rounded inline-flex w-fit bg-slate-50 border border-slate-200">
                         <Navigation size={10} className="transform rotate-135 text-[var(--sacred-emerald)]" />
                         D: {item.arrival}
                       </div>
@@ -103,20 +108,23 @@ const Flights = () => {
                   <td className="px-8 py-6">
                     <div className="flex flex-col gap-1.5 text-black">
                       <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 inline-block w-fit">
-                        {item.ticketNumber}
+                        {item.ticket_number}
                       </span>
                       <span className={`text-[9px] font-black uppercase tracking-[0.2em] inline-flex items-center gap-1.5 ${item.status === 'Ticketed' ? 'text-[var(--sacred-emerald)]' :
                           'text-[var(--desert-gold)]'
                         }`}>
-                        {item.status === 'Ticketed' ? <ShieldCheck size={12} strokeWidth={3} /> : <Clock size={12} strokeWidth={3} />}
+                        {/* {item.status === 'Ticketed' ? <ShieldCheck size={12} strokeWidth={3} /> : <Clock size={12} strokeWidth={3} />} */}
                         {item.status}
                       </span>
                     </div>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-xl transition-all shadow-sm border border-transparent hover:border-slate-200">
-                      <MoreHorizontal size={20} />
-                    </button>
+                    <Link 
+                      to={`/reservations/flights/${item.id}`}
+                      className="p-2.5 bg-slate-50 text-slate-400 hover:bg-black hover:text-white rounded-xl transition-all border border-slate-100 inline-flex items-center justify-center group/btn shadow-sm hover:shadow-md"
+                    >
+                      <Eye size={18} className="group-hover/btn:scale-110 transition-transform" />
+                    </Link>
                   </td>
                 </tr>
               ))}

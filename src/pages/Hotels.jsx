@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Hotel, Search, Filter,
   MapPin, CheckCircle2, Navigation,
-  MoreHorizontal, BedDouble, CalendarDays
+  MoreHorizontal, BedDouble, CalendarDays, Eye
 } from 'lucide-react';
 import useHotelStore from '../store/useHotelStore';
 
@@ -13,7 +14,7 @@ const Hotels = () => {
     fetchHotels();
   }, [fetchHotels]);
 
-  const hotelData = hotels;
+  const hotelData = Array.isArray(hotels) ? hotels : [];
 
 
   return (
@@ -82,7 +83,7 @@ const Hotels = () => {
                         <Hotel size={20} strokeWidth={2} />
                       </div>
                       <div>
-                        <p className="text-base font-manrope font-black text-slate-900 tracking-tight leading-none mb-1">{item.hotelName}</p>
+                        <p className="text-base font-manrope font-black text-slate-900 tracking-tight leading-none mb-1">{item.hotel_name}</p>
                         <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-1.5 mt-1.5">
                           <MapPin size={10} /> {item.city}
                         </p>
@@ -90,17 +91,19 @@ const Hotels = () => {
                     </div>
                   </td>
                   <td className="px-8 py-6 text-black">
-                    <p className="text-sm font-black text-slate-900 leading-none">{item.customer}</p>
+                    <p className="text-sm font-black text-slate-900 leading-none">
+                      {item.customer_full_name || 'Guest Registry Placeholder'}
+                    </p>
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-2 text-[10px] font-black text-slate-600 uppercase tracking-widest bg-emerald-50 text-emerald-700 px-2 py-1 rounded inline-flex w-fit">
                         <Navigation size={10} className="transform rotate-90" />
-                        IN: {item.checkIn}
+                        IN: {item.check_in}
                       </div>
                       <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-100 text-slate-600 px-2 py-1 rounded inline-flex w-fit">
                         <Navigation size={10} className="transform -rotate-90" />
-                        OUT: {item.checkOut}
+                        OUT: {item.check_out}
                       </div>
                     </div>
                   </td>
@@ -116,9 +119,12 @@ const Hotels = () => {
                         }`}>
                         {item.status}
                       </span>
-                      <button className="p-2 text-slate-300 hover:text-black hover:bg-white rounded-xl transition-all shadow-sm border border-transparent hover:border-slate-200">
-                        <MoreHorizontal size={20} />
-                      </button>
+                      <Link 
+                        to={`/reservations/hotels/${item.id}`}
+                        className="p-2.5 bg-slate-50 text-slate-400 hover:bg-black hover:text-white rounded-xl transition-all border border-slate-100 inline-flex items-center justify-center group/btn shadow-sm hover:shadow-md"
+                      >
+                        <Eye size={18} className="group-hover/btn:scale-110 transition-transform" />
+                      </Link>
                     </div>
                   </td>
                 </tr>
