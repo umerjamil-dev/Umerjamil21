@@ -12,9 +12,8 @@ const Layout = ({ children }) => {
   }, [fetchSettings]);
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] flex font-inter overflow-hidden relative">
+    <div className="min-h-screen bg-[#F5F4F0] flex font-inter overflow-hidden relative">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-      
       {/* Main Content Area */}
       <div className="flex-1 w-full md:ml-[280px] relative flex flex-col min-h-screen transition-all duration-300 overflow-x-hidden">
         <Topbar onMenuClick={() => setSidebarOpen(true)} />

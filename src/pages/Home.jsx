@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, PieChart } from '@mui/x-charts';
 import { motion } from 'framer-motion';
 import {
@@ -7,51 +7,42 @@ import {
     ShieldCheck, MapPin, Clock, CheckCircle2, AlertCircle, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useDashboardStore from '../store/useDashboardStore';
+
 
 const Home = () => {
     const [timeFilter, setTimeFilter] = useState('Yearly');
 // here's the char data will appear 
-    const chartData = {
-        Weekly: {
-            categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            umrah: [15, 22, 18, 30, 45, 50, 40],
-            hajj: [2, 5, 3, 8, 12, 10, 5],
-            engagement: [40, 45, 42, 55, 68, 72, 65]
-        },
-        Monthly: {
-            categories: ['1-5', '6-10', '11-15', '16-20', '21-25', '26-30'],
-            umrah: [120, 150, 140, 180, 200, 250],
-            hajj: [10, 15, 25, 40, 50, 80],
-            engagement: [300, 350, 320, 400, 450, 520]
-        },
-        Yearly: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            umrah: [1200, 1500, 1800, 2200, 2600, 3100, 3400, 3800, 4100, 4000, 4200, 4500],
-            hajj: [40, 60, 45, 90, 120, 160, 300, 500, 800, 1200, 1500, 1800],
-            engagement: [2000, 2500, 2800, 3500, 4200, 5000, 5500, 6200, 7000, 7500, 8200, 9000]
-        }
-    };
-// here the pie chart will be appear 
-    const pieData = [
-        { id: 0, value: 35, label: 'Direct', color: '#D4AF37' },
-        { id: 1, value: 25, label: 'Agents', color: '#111827' },
-        { id: 2, value: 20, label: 'Social', color: '#10B981' },
-        { id: 3, value: 15, label: 'Referral', color: '#3B82F6' },
-        { id: 4, value: 5, label: 'Other', color: '#6366F1' },
-    ];
-// here the activities will appear  
-    const activities = [
-        { id: 1, type: 'lead', title: 'New Lead: Ahmed Khan', desc: 'Premium Umrah Inquiry', time: '2 mins ago', status: 'new' },
-        { id: 2, type: 'booking', title: 'Booking Confirmed', desc: 'Family Hajj Package #442', time: '15 mins ago', status: 'success' },
-        { id: 3, type: 'payment', title: 'Payment Received', desc: '$4,500 - Jameel Zubair', time: '1 hour ago', status: 'success' },
-        { id: 4, type: 'visa', title: 'Visa Processing', desc: 'Waitlist for October Batch', time: '3 hours ago', status: 'warning' },
-    ];
-// here the regions will appear 
-    const regions = [
-        { name: 'Makkah Al-Mukarramah', value: 85, color: '#D4AF37', leads: '420' },
-        { name: 'Madinah Al-Munawwarah', value: 72, color: '#10B981', leads: '315' },
-        { name: 'Jeddah Operations', value: 45, color: '#3B82F6', leads: '180' },
-    ];
+    const { 
+        metrics, 
+        performanceData: storePerformanceData, 
+        acquisitionData: storeAcquisitionData, 
+        regionsData: storeRegionsData,
+        activities: storeActivities, 
+        fetchDashboardData, 
+        isLoading 
+    } = useDashboardStore();
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, [fetchDashboardData]);
+
+    // Data fallbacks/merging for charts
+    const chartData = storePerformanceData && storePerformanceData[timeFilter] 
+        ? storePerformanceData 
+        : {
+            Weekly: { categories: [], umrah: [], hajj: [] },
+            Monthly: { categories: [], umrah: [], hajj: [] },
+            Yearly: { categories: [], umrah: [], hajj: [] }
+          };
+
+    const pieData = storeAcquisitionData && storeAcquisitionData.length > 0 
+        ? storeAcquisitionData 
+        : [];
+
+    const activities = storeActivities && storeActivities.length > 0 ? storeActivities : [];
+
+    const regions = storeRegionsData && storeRegionsData.length > 0 ? storeRegionsData : [];
 // here the container variants will appear 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -113,7 +104,7 @@ const Home = () => {
 
                     <div className="relative z-10">
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-[0.3em] mb-2">Active Inquiries</p>
-                        <h2 className="text-6xl font-manrope font-black tracking-tighter text-[#D4AF37]">1,245</h2>
+                        <h2 className="text-6xl font-manrope font-black tracking-tighter text-[#D4AF37]">{metrics?.activeInquiries || '0'}</h2>
                     </div>
                 </motion.div>
 
@@ -136,7 +127,7 @@ const Home = () => {
 
                     <div className="relative z-10">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mb-2 text-emerald-900/40">Total Secured</p>
-                        <h2 className="text-6xl font-manrope font-black tracking-tighter text-[#111827] group-hover:text-[#10B981] transition-colors">$84.5k</h2>
+                        <h2 className="text-6xl font-manrope font-black tracking-tighter text-[#111827] group-hover:text-[#10B981] transition-colors">{metrics?.revenue || '$0'}</h2>
                     </div>
                 </motion.div>
 
@@ -159,7 +150,7 @@ const Home = () => {
 
                     <div className="relative z-10">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mb-2 text-blue-900/40">Live Flights</p>
-                        <h2 className="text-6xl font-manrope font-black tracking-tighter text-[#111827] group-hover:text-[#3B82F6] transition-colors">142</h2>
+                        <h2 className="text-6xl font-manrope font-black tracking-tighter text-[#111827] group-hover:text-[#3B82F6] transition-colors">{metrics?.liveFlights || '0'}</h2>
                     </div>
                 </motion.div>
             </div>
@@ -331,25 +322,36 @@ const Home = () => {
                     </div>
 
                     <div className="flex-1 space-y-6 max-h-[350px] overflow-y-auto pr-4 custom-scrollbar">
-                        {activities.map((act) => (
-                            <div key={act.id} className="flex items-start gap-6 p-5  rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group cursor-default">
-                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
-                                    act.status === 'success' ? 'bg-[#10B981]/5 text-[#10B981]' : 
-                                    act.status === 'warning' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'
-                                }`}>
-                                    {act.status === 'success' ? <CheckCircle2 size={24} /> : 
-                                     act.status === 'warning' ? <AlertCircle size={24} /> : <Activity size={24} />}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="text-base font-black text-[#111827] tracking-tight mb-1">{act.title}</h4>
-                                    <p className="text-sm text-gray-500 font-medium">{act.desc}</p>
-                                </div>
-                                <div className="text-right shrink-0">
-                                    <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-1">{act.time}</p>
-                                    <Clock size={14} className="ml-auto text-gray-300" />
-                                </div>
+                        {isLoading ? (
+                            <div className="flex flex-col items-center justify-center h-full py-10 opacity-50">
+                                <Activity className="animate-spin text-[#D4AF37] mb-4" size={40} />
+                                <p className="text-xs font-black uppercase tracking-widest text-gray-400">Fetching operations...</p>
                             </div>
-                        ))}
+                        ) : activities.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full py-10 opacity-50">
+                                <Activity className="text-gray-300 mb-4" size={40} />
+                                <p className="text-xs font-black uppercase tracking-widest text-gray-400">No recent activities</p>
+                            </div>
+                        ) : (
+                            activities.map((act) => (
+                                <div key={act.id} className="flex items-start gap-6 p-5  rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group cursor-default">
+                                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${act.status === 'success' ? 'bg-[#10B981]/5 text-[#10B981]' :
+                                        act.status === 'warning' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'
+                                        }`}>
+                                        {act.status === 'success' ? <CheckCircle2 size={24} /> :
+                                            act.status === 'warning' ? <AlertCircle size={24} /> : <Activity size={24} />}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-base font-black text-[#111827] tracking-tight mb-1">{act.title}</h4>
+                                        <p className="text-sm text-gray-500 font-medium">{act.desc}</p>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                        <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-1">{act.time}</p>
+                                        <Clock size={14} className="ml-auto text-gray-300" />
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </motion.div>
             </div>

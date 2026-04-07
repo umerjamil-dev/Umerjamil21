@@ -41,6 +41,7 @@ const usePackageStore = create((set) => ({
         nights_madinah: data.nightsMadinah,
         base_price: data.basePrice,
         category: data.category,
+        package_type: data.package_type,
         status_id: data.status_id,
       };
       const response = await api.post('/packages', payload);

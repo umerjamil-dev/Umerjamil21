@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useCalculatorStore from '../store/useCalculatorStore';
+import useMasterTypeStore from '../store/useMasterTypeStore';
 import useCustomerStore from '../store/useCustomerStore';
 import toast from 'react-hot-toast';
 
@@ -13,6 +14,7 @@ const Calculator = () => {
   const navigate = useNavigate();
   const { packages, fetchPackages, saveCalculation, isLoading: savingLoading } = useCalculatorStore();
   const { customers, fetchCustomers, isLoading: custsLoading } = useCustomerStore();
+  const { masterData, fetchMasterData } = useMasterTypeStore();
   const [selectedPkgId, setSelectedPkgId] = useState('');
   const [selectedCustomerId, setSelectedCustomerId] = useState('');
   const selectedCustomer = customers.find((c) => String(c.id) === String(selectedCustomerId)) || null;
@@ -27,7 +29,8 @@ const Calculator = () => {
     flightCost: 1200,
     visaCost: 150,
     transportCost: 100,
-    markup: 15
+    markup: 15,
+    packageType: ''
   });
 
   const [results, setResults] = useState({
@@ -40,7 +43,8 @@ const Calculator = () => {
   useEffect(() => {
     fetchPackages();
     fetchCustomers();
-  }, [fetchPackages, fetchCustomers]);
+    fetchMasterData();
+  }, [fetchPackages, fetchCustomers, fetchMasterData]);
   const handlePackageSelect = (pkgId) => {
     setSelectedPkgId(pkgId);
     if (!pkgId) return;
@@ -53,6 +57,7 @@ const Calculator = () => {
       makkahHotel: pkg.makkah_hotel || prev.makkahHotel,
       madinahHotel: pkg.madinah_hotel || prev.madinahHotel,
       flightCost: pkg.base_price ? Number(pkg.base_price) : prev.flightCost,
+      packageType: pkg.package_type || prev.packageType
     }));
   };
 
@@ -84,6 +89,7 @@ const Calculator = () => {
         visa_cost: inputs.visaCost,
         transport_cost: inputs.transportCost,
         markup: inputs.markup,
+        package_type: inputs.packageType,
         hotel_total: results.hotelTotal,
         total_cost: results.totalCost,
         profit: results.profit,
@@ -355,6 +361,26 @@ const Calculator = () => {
                     value={inputs.visaCost}
                     onChange={(e) => setInputs({ ...inputs, visaCost: parseInt(e.target.value) || 0 })}
                   />
+                </div>
+              </div>
+
+              {/* Package Type */}
+              <div className="group">
+                <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase mb-3 block">Package Class</label>
+                <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
+                  <Package className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
+                  <select
+                    className="w-full bg-transparent pl-9 pr-4 text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none appearance-none cursor-pointer"
+                    value={inputs.packageType}
+                    onChange={(e) => setInputs({ ...inputs, packageType: e.target.value })}
+                  >
+                    <option value="">— Select Package Type —</option>
+                    {(masterData.package_type || []).map((type) => (
+                      <option key={type.id || type} value={type.id || type}>
+                        {type.name || type}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>

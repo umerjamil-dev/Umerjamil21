@@ -26,6 +26,7 @@ const AddPackage = () => {
       nightsMadinah: 7,
       basePrice: '',
       category: '',
+      package_type: '',
       status_id: 1
    });
 
@@ -220,6 +221,27 @@ const AddPackage = () => {
                         </div>
                      </div>
                      <div className="group">
+                        <label className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-6 block ml-1 opacity-70">Package Class</label>
+                        <div className="grid grid-cols-2 gap-3">
+                           {(masterData.package_type || []).map((type) => {
+                              const label = type.name || type;
+                              const value = type.id || type;
+                              return (
+                                 <button
+                                    key={value}
+                                    onClick={() => setFormData({ ...formData, package_type: value })}
+                                    className={`py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border ${formData.package_type === value
+                                          ? 'bg-[var(--on-surface)] text-white border-transparent shadow-xl -translate-y-1'
+                                          : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-white hover:border-[var(--on-surface)]'
+                                       }`}
+                                 >
+                                    {label}
+                                 </button>
+                               );
+                           })}
+                        </div>
+                     </div>
+                     <div className="group">
                         <label className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-6 block ml-1 opacity-70">Strategic Categorization</label>
                         <div className="grid grid-cols-3 gap-3">
                            {(masterData.strategiccategorization || []).map((cat) => {
@@ -293,7 +315,7 @@ const AddPackage = () => {
                      "Ensure all hospitality allotments are synchronized with the KSA global hospitality  before commitment."
                   </div>
                </div>
-               
+
             </div>
          </div>
       </div>
