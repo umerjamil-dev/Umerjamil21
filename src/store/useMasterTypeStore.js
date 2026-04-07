@@ -41,7 +41,10 @@ const useMasterTypeStore = create((set) => ({
         'transport_type',
         'vehicle',
         'statusvisa',
-        'package_type'
+        'package_type',
+        'task_type',
+        'assignment_status',
+        'status_assignment'
       ];
 
       // Fetch all types in parallel

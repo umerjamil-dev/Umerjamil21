@@ -27,6 +27,7 @@ import PackageDetail from '../pages/PackageDetail'
 import UpdatePackage from '../pages/UpdatePackage'
 import LiveBooking from '../pages/LiveBooking'
 import Operations from '../pages/Operations'
+import Assignment from '../pages/Assignment'
 import ProtectedRoute from '../componenets/ProtectedRoute'
 
 import Reports from '../pages/Reports'
@@ -86,6 +87,7 @@ const Router = () => {
         
         {/* Operations */}
         <Route path="/operations" element={<ProtectedRoute permission="VIEW_OPERATIONS"><Layout><Operations /></Layout></ProtectedRoute>} />
+        <Route path="/operations/assignment" element={<ProtectedRoute permission="VIEW_ASSIGNMENT"><Layout><Assignment /></Layout></ProtectedRoute>} />
         <Route path="/operations/staff" element={<ProtectedRoute permission="VIEW_OPERATIONS_STAFF"><Layout><div className="p-10 font-bold text-slate-400">Staff Management</div></Layout></ProtectedRoute>} />
         <Route path="/operations/logistics" element={<ProtectedRoute permission="VIEW_LOGISTICS"><Layout><div className="p-10 font-bold text-slate-400">Logistics Feed</div></Layout></ProtectedRoute>} />
         

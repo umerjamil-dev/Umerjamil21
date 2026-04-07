@@ -4,7 +4,8 @@ import {
   User, Mail, Smartphone, ShieldCheck,
   Plus, Search, Filter,
   Edit2, Trash2, X,
-  Activity, ShieldAlert, Zap, Users, Lock
+  Activity, ShieldAlert, Zap, Users, Lock,
+  PhoneCall, FileText, Camera
 } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 import useSettingsStore from '../store/useSettingsStore';
@@ -12,7 +13,11 @@ import toast from 'react-hot-toast';
 
 /* ─── Constants ─────────────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1];
-const DEFAULT_FORM = { name: '', email: '', phone: '', password: '', is_admin: '0', role_id: '', status_id: '1' };
+const DEFAULT_FORM = { 
+  name: '', email: '', phone: '', password: '', 
+  is_admin: '0', role_id: '', status_id: '1',
+  emergency_contact: '', passport_visa: '', profile_photo: null 
+};
 
 const STATUS_MAP = {
   '1':       { label: 'Active',    dot: '#1a7a4a', bg: '#edf7f1', border: '#9fe1cb', text: '#1a7a4a' },
@@ -25,6 +30,7 @@ const FORM_FIELDS = [
   { label: 'Full Name', key: 'name',     type: 'text',     placeholder: 'Umar Jamil',       Icon: User },
   { label: 'Email',     key: 'email',    type: 'email',    placeholder: 'umar@albayan.com',  Icon: Mail },
   { label: 'Phone',     key: 'phone',    type: 'text',     placeholder: '+971 50 000 0000',  Icon: Smartphone },
+  { label: 'Emergency Contact', key: 'emergency_contact', type: 'text', placeholder: 'Name (+971...)', Icon: PhoneCall },
   { label: 'Password',  key: 'password', type: 'password', placeholder: '••••••••',          Icon: Lock },
 ];
 
@@ -41,6 +47,25 @@ const ManageUsers = () => {
   const { users, fetchUsers, addUser, updateUser, deleteUser, isLoading: usersLoading }    = useUserStore();
   const { roles, fetchSettings, isLoading: settingsLoading } = useSettingsStore();
   const isLoading = usersLoading || settingsLoading;
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      patchForm('profile_photo', file);
+    }
+  };
+
+  const getPhotoPreview = (photo) => {
+    if (!photo) return null;
+    if (photo instanceof File || photo instanceof Blob) return URL.createObjectURL(photo);
+    return resolveImageUrl(photo);
+  };
+
+  const resolveImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('data:') || path.startsWith('blob:') || path.startsWith('http')) return path;
+    return `http://192.168.5.178:8000/storage/${path}`;
+  };
 
   useEffect(() => { fetchUsers(); fetchSettings(); }, [fetchUsers, fetchSettings]);
 
@@ -67,7 +92,18 @@ const ManageUsers = () => {
 
   const handleEdit = (user) => {
     setEditingUser(user); setIsEditing(true); setIsAdding(false);
-    setForm({ name: user.name || '', email: user.email || '', phone: user.phone || '', role_id: user.role_id || '', status_id: user.status_id || '1', is_admin: user.is_admin ?? '0', password: '' });
+    setForm({ 
+      name: user.name || '', 
+      email: user.email || '', 
+      phone: user.phone || '', 
+      role_id: user.role_id || '', 
+      status_id: user.status_id || '1', 
+      is_admin: user.is_admin ?? '0', 
+      password: '',
+      emergency_contact: user.emergency_contact || '',
+      passport_visa: user.passport_visa || '',
+      profile_photo: user.profile_photo || null
+    });
   };
 
   const handleDelete = async (id) => {
@@ -157,16 +193,36 @@ const ManageUsers = () => {
             className="bg-white rounded-2xl overflow-hidden mb-3"
             style={{ border: '1.5px solid #e2e0d8' }}
           >
-            <div className="px-8 pt-8 pb-6" style={{ borderBottom: '1.5px solid #e2e0d8' }}>
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#78776f] mb-1">
-                {isEditing ? 'Edit Personnel' : 'New Personnel'}
-              </p>
-              <h2
-                className="text-xl font-extrabold text-[#1a1916]"
-                style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.02em' }}
-              >
-                {isEditing ? 'Modify Personnel Details' : 'Enroll New Identity'}
-              </h2>
+            <div className="px-8 pt-8 pb-6 flex items-center justify-between" style={{ borderBottom: '1.5px solid #e2e0d8' }}>
+              <div>
+                <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#78776f] mb-1">
+                  {isEditing ? 'Edit Personnel' : 'New Personnel'}
+                </p>
+                <h2
+                  className="text-xl font-extrabold text-[#1a1916]"
+                  style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.02em' }}
+                >
+                  {isEditing ? 'Modify Personnel Details' : 'Enroll New Identity'}
+                </h2>
+              </div>
+
+              {/* Profile Photo Upload */}
+              <div className="relative group/photo">
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-dashed border-[#e2e0d8] group-hover/photo:border-[#1a1916] transition-all"
+                  style={{ background: '#f5f4f0' }}
+                >
+                  {form.profile_photo ? (
+                    <img src={getPhotoPreview(form.profile_photo)} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <Camera size={20} style={{ color: '#b0aea5' }} />
+                  )}
+                </div>
+                <label className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#1a1916] text-white rounded-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-all shadow-lg">
+                  <Plus size={12} strokeWidth={3} />
+                  <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
+                </label>
+              </div>
             </div>
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7 px-8 py-8">
@@ -207,6 +263,25 @@ const ManageUsers = () => {
                 <option value={1}>Yes</option>
                 <option value={0}>No</option>
               </SelectField>
+
+              {/* Passport / Visa Info */}
+              <div className="md:col-span-2 lg:col-span-3 flex flex-col gap-1.5 group">
+                <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">Passport / Visa Info</label>
+                <div
+                  className="flex items-start gap-3 rounded-lg px-4 py-3 transition-all"
+                  style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8' }}
+                  onFocusCapture={e => { e.currentTarget.style.borderColor = '#1a1916'; e.currentTarget.style.background = '#ffffff'; }}
+                  onBlurCapture={e => { e.currentTarget.style.borderColor = '#e2e0d8'; e.currentTarget.style.background = '#f5f4f0'; }}
+                >
+                  <FileText size={14} style={{ color: '#b0aea5', flexShrink: 0, marginTop: '2px' }} />
+                  <textarea
+                    placeholder="Passport details, Visa status, Expiry dates..."
+                    value={form.passport_visa}
+                    onChange={e => patchForm('passport_visa', e.target.value)}
+                    className="flex-1 bg-transparent border-none outline-none text-[12px] font-medium text-[#1a1916] placeholder:text-[#c5c2b8] min-h-[80px] resize-none"
+                  />
+                </div>
+              </div>
 
               {/* Status */}
               <SelectField label="Status" icon={<Activity size={14} style={{ color: '#b0aea5' }} />}
@@ -319,38 +394,45 @@ const ManageUsers = () => {
                         onMouseEnter={e => { e.currentTarget.style.background = '#f5f4f0'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                       >
-                        {/* User */}
                         <td className="px-7 py-4">
                           <div className="flex items-center gap-3.5">
                             <div className="relative flex-shrink-0">
-                              <div
-                                className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
-                                style={{ background: '#1a1916' }}
-                              >
-                                {u.name?.charAt(0).toUpperCase()}
-                              </div>
+                                {u.profile_photo || u.photo ? (
+                                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#e2e0d8]">
+                                        <img src={resolveImageUrl(u.profile_photo || u.photo)} alt="" className="w-full h-full object-cover" />
+                                    </div>
+                                ) : (
+                                    <div
+                                        className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                                        style={{ background: '#1a1916' }}
+                                    >
+                                        {u.name?.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
                               <span
                                 className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white"
                                 style={{ background: status.dot }}
                               />
                             </div>
                             <div>
-                              <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
+                                <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
                                 {u.name || 'Incognito User'}
-                              </div>
-                              <div className="text-[10px] text-[#b0aea5] mt-0.5">{u.email || '—'}</div>
+                                </div>
+                                <div className="text-[10px] text-[#b0aea5] mt-0.5">{u.email || '—'}</div>
                             </div>
                           </div>
                         </td>
 
                         {/* Contact */}
-                        <td className="px-7 py-4">
-                          <span className="text-[11px] font-medium text-[#78776f]">{u.phone || '—'}</span>
-                          {u.whatsapp && (
-                            <div className="text-[8px] font-bold uppercase tracking-widest mt-0.5" style={{ color: '#1a7a4a' }}>
-                              WhatsApp ✓
-                            </div>
-                          )}
+                        <td className="px-7 py-4 min-w-[200px]">
+                          <div className="flex flex-col gap-1">
+                                <span className="text-[11px] font-medium text-[#78776f]">{u.phone || '—'}</span>
+                                {u.emergency_contact && (
+                                    <span className="text-[9px] font-bold text-[#b0aea5] flex items-center gap-1">
+                                        <PhoneCall size={10} /> {u.emergency_contact}
+                                    </span>
+                                )}
+                          </div>
                         </td>
 
                         {/* Role */}

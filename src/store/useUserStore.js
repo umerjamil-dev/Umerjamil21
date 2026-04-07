@@ -21,14 +21,23 @@ const useUserStore = create((set) => ({
 
   addUser: async (userData) => {
     set({ isLoading: true, error: null });
-    
     try {
-      const response = await api.post('/users', userData);
+      const formData = new FormData();
+      Object.keys(userData).forEach(key => {
+        if (userData[key] !== null && userData[key] !== undefined) {
+          formData.append(key, userData[key]);
+        }
+      });
+
+      const response = await api.post('/users', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      const newUser = response.data?.data || response.data;
       set((state) => ({ 
-        users: [response.data, ...state.users], 
+        users: [newUser, ...state.users], 
         isLoading: false 
       }));
-      return { success: true, data: response.data };
+      return { success: true, data: newUser };
     } catch (err) {
       set({ error: err.response?.data?.message || err.message, isLoading: false });
       return { success: false, error: err.response?.data?.message || err.message };
@@ -38,12 +47,23 @@ const useUserStore = create((set) => ({
   updateUser: async (id, userData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.put(`/users/${id}`, userData);
+      const formData = new FormData();
+      Object.keys(userData).forEach(key => {
+        if (userData[key] !== null && userData[key] !== undefined) {
+          formData.append(key, userData[key]);
+        }
+      });
+      formData.append('_method', 'PUT');
+
+      const response = await api.post(`/users/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      const updatedUser = response.data?.data || response.data;
       set((state) => ({
-        users: state.users.map((u) => (u.id === id ? response.data : u)),
+        users: state.users.map((u) => (u.id === id ? updatedUser : u)),
         isLoading: false,
       }));
-      return { success: true };
+      return { success: true, data: updatedUser };
     } catch (err) {
       set({ error: err.message, isLoading: false });
       return { success: false, error: err.message };

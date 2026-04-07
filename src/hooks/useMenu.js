@@ -113,6 +113,7 @@ export const useFilteredMenu = () => {
         permission: 'VIEW_OPERATIONS',
         submenu: [
           { title: 'Overview & Dispatch', path: '/operations', permission: 'VIEW_OPERATIONS' },
+          { title: 'Assignment', path: '/operations/assignment', permission: 'VIEW_ASSIGNMENT' },
           { title: 'Staff', path: '/operations/staff', permission: 'VIEW_OPERATIONS_STAFF' },
           { title: 'Logistics Feed', path: '/operations/logistics', permission: 'VIEW_LOGISTICS' }
         ]
