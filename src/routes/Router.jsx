@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+// nomal pages 
 import Layout from '../componenets/Layout'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
@@ -28,8 +29,10 @@ import UpdatePackage from '../pages/UpdatePackage'
 import LiveBooking from '../pages/LiveBooking'
 import Operations from '../pages/Operations'
 import Assignment from '../pages/Assignment'
+import LogisticsFeed from '../pages/LogisticsFeed'
 import ProtectedRoute from '../componenets/ProtectedRoute'
 
+// Reports
 import Reports from '../pages/Reports'
 import ManageUsers from '../pages/ManageUsers'
 import Profile from '../pages/settings/Profile'
@@ -41,8 +44,9 @@ import VisaDetail from '../pages/VisaDetail'
 import HotelDetail from '../pages/HotelDetail'
 import FlightDetail from '../pages/FlightDetail'
 import TransportDetail from '../pages/TransportDetail'
-
+// persnal Dashboard
 import PersonalDashboard from '../pages/PersonalDashboard'
+// settings
 import CompanyParams from '../pages/settings/CompanyParams'
 import Roles from '../pages/settings/Roles'
 import Permissions from '../pages/settings/Permissions'
@@ -59,6 +63,7 @@ import SalesPerformance from '../pages/reports/SalesPerformance';
 const Router = () => {
   return (
     <>
+    {/* Browser Router */}
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -89,7 +94,7 @@ const Router = () => {
         <Route path="/operations" element={<ProtectedRoute permission="VIEW_OPERATIONS"><Layout><Operations /></Layout></ProtectedRoute>} />
         <Route path="/operations/assignment" element={<ProtectedRoute permission="VIEW_ASSIGNMENT"><Layout><Assignment /></Layout></ProtectedRoute>} />
         <Route path="/operations/staff" element={<ProtectedRoute permission="VIEW_OPERATIONS_STAFF"><Layout><div className="p-10 font-bold text-slate-400">Staff Management</div></Layout></ProtectedRoute>} />
-        <Route path="/operations/logistics" element={<ProtectedRoute permission="VIEW_LOGISTICS"><Layout><div className="p-10 font-bold text-slate-400">Logistics Feed</div></Layout></ProtectedRoute>} />
+        <Route path="/operations/logistics/:id?" element={<ProtectedRoute permission="VIEW_LOGISTICS"><Layout><LogisticsFeed /></Layout></ProtectedRoute>} />
         
         {/* Reports */}
         <Route path="/reports" element={<ProtectedRoute permission="VIEW_REPORTS"><Layout><Reports /></Layout></ProtectedRoute>} />
@@ -106,9 +111,11 @@ const Router = () => {
         <Route path="/settings/api" element={<ProtectedRoute permission="MANAGE_API_SYNC"><Layout><ApiConfig /></Layout></ProtectedRoute>} />
         <Route path="/settings/subscription" element={<ProtectedRoute permission="MANAGE_SUBSCRIPTION"><Layout><Subscription /></Layout></ProtectedRoute>} />
         
+        {/* users */}
         <Route path="/settings/users" element={<ProtectedRoute permission="MANAGE_USERS"><Layout><ManageUsers /></Layout></ProtectedRoute>} />
         <Route path="/settings/profile" element={<ProtectedRoute permission="MANAGE_PROFILE"><Layout><Profile /></Layout></ProtectedRoute>} />
         
+        {/* reservations */}
         <Route path="/reservations/visa" element={<ProtectedRoute permission="VIEW_VISA"><Layout><Visa /></Layout></ProtectedRoute>} />
         <Route path="/reservations/visa/:id" element={<ProtectedRoute permission="VIEW_VISA"><Layout><VisaDetail /></Layout></ProtectedRoute>} />
         <Route path="/reservations/hotels" element={<ProtectedRoute permission="VIEW_HOTELS"><Layout><Hotels /></Layout></ProtectedRoute>} />

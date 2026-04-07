@@ -65,6 +65,7 @@ const ManageUsers = () => {
     if (!path) return null;
     if (path.startsWith('data:') || path.startsWith('blob:') || path.startsWith('http')) return path;
     return `http://192.168.5.178:8000/storage/${path}`;
+    
   };
 
   useEffect(() => { fetchUsers(); fetchSettings(); }, [fetchUsers, fetchSettings]);
