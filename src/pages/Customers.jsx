@@ -10,15 +10,37 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useCustomerStore from '../store/useCustomerStore';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const Customers = () => {
   const { customers, fetchCustomers, isLoading } = useCustomerStore();
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   useEffect(() => {
     fetchCustomers();
   }, [fetchCustomers]);
 
   const customersToShow = customers;
+  
+  const filtered = React.useMemo(() => {
+    return (customersToShow || []).filter(c => {
+      const name = `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.name || '';
+      return name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+             c.passportNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             c.id?.toString().includes(searchTerm);
+    });
+  }, [customersToShow, searchTerm]);
+
+  const {
+    paginatedData,
+    currentPage,
+    totalPages,
+    goToPage,
+    startIndex,
+    endIndex,
+    totalItems
+  } = usePagination(filtered, 10);
   return (
     <div  className="space-y-12 animate-in fade-in duration-1000 font-inter">
       {/* Editorial Header */}
@@ -75,6 +97,8 @@ const Customers = () => {
             <input
               type="text"
               placeholder="Passport, identification or nomenclature..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-4 bg-transparent border-b border-[var(--outline-variant)] rounded-none text-sm outline-none focus:border-[var(--on-surface)] text-[var(--on-surface)] transition-all font-medium placeholder-[var(--on-surface-variant)]"
             />
           </div>
@@ -109,13 +133,13 @@ const Customers = () => {
                       Querying Customer Registry...
                     </td>
                   </tr>
-                ) : customersToShow.length === 0 ? (
+                ) : paginatedData.length === 0 ? (
                   <tr>
                     <td colSpan="5" className="px-10 py-20 text-center text-sm font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50 italic">
                       No pilgrims found in the current cycle.
                     </td>
                   </tr>
-                ) : customersToShow.map((customer) => {
+                ) : paginatedData.map((customer) => {
                   const fullName = `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || customer.name || 'Unnamed Pilgrim';
                   const initials = fullName.split(' ').map(n => n[0]).join('').slice(0, 2);
 
@@ -175,11 +199,14 @@ const Customers = () => {
           </div>
         </div>
 
-        <div className="pt-10 flex justify-center">
-          <button className="px-12 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] hover:text-[var(--on-surface)] hover:shadow-xl transition-all shadow-sm active:scale-95">
-            Load Historical Database
-          </button>
-        </div>
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+        />
       </div>
     </div>
   );

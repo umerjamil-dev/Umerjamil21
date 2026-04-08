@@ -9,10 +9,13 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import useBookingStore from '../store/useBookingStore';
 import toast from 'react-hot-toast';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const Bookings = () => {
    const navigate = useNavigate();
    const { bookings, fetchBookings, deleteBooking, isLoading } = useBookingStore();
+   const [searchTerm, setSearchTerm] = React.useState('');
 
    useEffect(() => {
       fetchBookings();
@@ -30,6 +33,27 @@ const Bookings = () => {
    };
 
    const bookingsToShow = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
+
+   const filtered = React.useMemo(() => {
+     return bookingsToShow.filter(b => {
+       const customer = getCustomerName(b.customer).toLowerCase();
+       const pkg = getPackageName(b.package).toLowerCase();
+       const id = b.id?.toString();
+       return customer.includes(searchTerm.toLowerCase()) || 
+              pkg.includes(searchTerm.toLowerCase()) || 
+              id?.includes(searchTerm);
+     });
+   }, [bookingsToShow, searchTerm]);
+
+   const {
+     paginatedData,
+     currentPage,
+     totalPages,
+     goToPage,
+     startIndex,
+     endIndex,
+     totalItems
+   } = usePagination(filtered, 10);
 
    const getCustomerName = (c) => {
       if (!c) return 'Customer Info';
@@ -145,6 +169,8 @@ const Bookings = () => {
                   <input
                      type="text"
                      placeholder="Search transaction ID, customer or package..."
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
                      className="w-full pl-9 pr-4 py-4 bg-transparent border-b-2 border-slate-100 rounded-none text-sm outline-none focus:border-black text-black transition-all font-black placeholder-slate-300 uppercase tracking-widest"
                   />
                </div>
@@ -172,9 +198,9 @@ const Bookings = () => {
                   <tbody className="divide-y divide-slate-100">
                      {isLoading ? (
                         <tr><td colSpan="5" className="px-10 py-10 text-center text-xs font-black uppercase tracking-widest text-slate-400">Synchronizing Ledger...</td></tr>
-                     ) : bookingsToShow.length === 0 ? (
+                     ) : paginatedData.length === 0 ? (
                         <tr><td colSpan="5" className="px-10 py-10 text-center text-xs font-black uppercase tracking-widest text-slate-400">No active protocols found.</td></tr>
-                     ) : bookingsToShow.map((booking) => (
+                     ) : paginatedData.map((booking) => (
                         <tr key={booking.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                            <td className="px-10 py-10">
                               <div>
@@ -237,13 +263,14 @@ const Bookings = () => {
                </table>
             </div>
 
-            {/* Narrative Footer */}
-            <div className="px-10 py-12 bg-slate-50/50 border-t border-slate-100 text-center relative overflow-hidden">
-               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30 pointer-events-none"></div>
-               <button className="px-14 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] hover:text-[var(--desert-gold)] hover:border-[var(--desert-gold)] hover:shadow-2xl transition-all shadow-sm active:scale-95 relative z-10">
-                  Access Full Ledger History
-               </button>
-            </div>
+            <Pagination 
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                startIndex={startIndex}
+                endIndex={endIndex}
+                totalItems={totalItems}
+             />
          </div>
       </div>
    );

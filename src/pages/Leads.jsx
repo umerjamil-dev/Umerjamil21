@@ -7,6 +7,8 @@ import {
 import { Link } from 'react-router-dom';
 import useLeadStore from '../store/useLeadStore';
 import useMasterTypeStore from '../store/useMasterTypeStore';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const Leads = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,6 +34,22 @@ const Leads = () => {
     { id: 25, name: 'Fatima Zahra', phone: '+92 321 7654321', source_id: 'WhatsApp', status_id: 11, created_at: '2024-03-26', assigned_to_id: 'Sana Malik' },
     { id: 26, name: 'Zubair Ahmed', phone: '+92 333 4567890', source_id: 'Referral', status_id: 12, created_at: '2024-03-25', assigned_to_id: 'Zaid Khan' },
   ];
+
+  const filtered = leadsToShow.filter(lead => 
+    lead.lead_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lead.id?.toString().includes(searchTerm) ||
+    lead.phone?.includes(searchTerm)
+  );
+
+  const {
+    paginatedData,
+    currentPage,
+    totalPages,
+    goToPage,
+    startIndex,
+    endIndex,
+    totalItems
+  } = usePagination(filtered, 10);
 
   const getStatusStyle = (status) => {
     switch (status) {
@@ -108,9 +126,9 @@ const Leads = () => {
             <tbody className="divide-y divide-gray-100">
               {isLoading ? (
                 <tr><td colSpan="5" className="px-10 py-10 text-center text-sm text-gray-500 font-medium">Fetching inquiries from server...</td></tr>
-              ) : leads.length === 0 ? (
+              ) : paginatedData.length === 0 ? (
                 <tr><td colSpan="5" className="px-10 py-10 text-center text-sm text-gray-500 font-medium">No inquiries found in the archive.</td></tr>
-              ) : leads.map((lead) => (
+              ) : paginatedData.map((lead) => (
                 <tr key={lead.id} className="group bg-gray-50/50 transition-all cursor-pointer">
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-5">
@@ -186,16 +204,14 @@ const Leads = () => {
         </div>
 
         {/* Cinematic Pagination */}
-        <div className="px-10 py-8 bg-[var(--surface)] flex items-center justify-between border-t border-[var(--outline-variant)]">
-          <div>
-            <p className="text-[10px] text-[var(--on-surface-variant)] font-bold uppercase  ">Inventory Visualization</p>
-            <p className="text-xs font-bold text-[var(--on-surface-variant)] mt-1">Showing {leads.length} operational leads</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="px-6 py-3 bg-[var(--surface-container-low)] rounded-xl text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:text-[var(--primary)] transition-all shadow-sm">Decrement</button>
-            <button className="px-8 py-3 btn-primary rounded-xl text-[10px] font-extrabold text-white uppercase   shadow-lg shadow-black/10 hover:shadow-xl transition-all">Increment</button>
-          </div>
-        </div>
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+        />
       </div>
     </div>
    </>

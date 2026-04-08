@@ -7,15 +7,36 @@ import {
   FileText, Eye
 } from 'lucide-react';
 import useVisaStore from '../store/useVisaStore';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const Visa = () => {
   const { visas, fetchVisas, isLoading } = useVisaStore();
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   useEffect(() => {
     fetchVisas();
   }, [fetchVisas]);
 
   const visaData = Array.isArray(visas) ? visas : [];
+
+  const filtered = React.useMemo(() => {
+    return visaData.filter(v => 
+      v.customer_full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      v.visa_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      v.package_title?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [visaData, searchTerm]);
+
+  const {
+    paginatedData,
+    currentPage,
+    totalPages,
+    goToPage,
+    startIndex,
+    endIndex,
+    totalItems
+  } = usePagination(filtered, 10);
   const stats = {
     total: visaData.length,
     approved: visaData.filter(v => v?.status === 'Approved').length,
@@ -69,7 +90,13 @@ const Visa = () => {
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="relative w-[400px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input type="text" placeholder="Search applicant by name, visa number..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium" />
+            <input 
+              type="text" 
+              placeholder="Search applicant by name, visa number..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium" 
+            />
           </div>
           <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
             <Filter size={14} /> Filter Queue
@@ -90,9 +117,9 @@ const Visa = () => {
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr><td colSpan="5" className="py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">Synchronizing with MOFA Gateway...</td></tr>
-              ) : visaData.length === 0 ? (
+              ) : paginatedData.length === 0 ? (
                 <tr><td colSpan="5" className="py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">No applications found in active cycle.</td></tr>
-              ) : visaData.map((item) => (
+              ) : paginatedData.map((item) => (
                 <tr key={item.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                   <td className="px-8 py-6 text-black">
                     <div>
@@ -135,6 +162,14 @@ const Visa = () => {
             </tbody>
           </table>
         </div>
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+        />
       </div>
     </div>
   );

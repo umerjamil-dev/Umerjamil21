@@ -13,6 +13,8 @@ import useHotelStore from '../store/useHotelStore';
 import useTransportStore from '../store/useTransportStore';
 import useMasterTypeStore from '../store/useMasterTypeStore';
 import toast from 'react-hot-toast';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 /* ─── Constants ─────────────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1];
@@ -23,7 +25,8 @@ const DEFAULT_FORM = {
   hotel_id: '',
   transport_id: '',
   task_type_id: '',
-  status_id: '1'
+  status_id: '1' ,
+  task_detail:''
 };
 
 const STATUS_CONFIG = {
@@ -50,8 +53,6 @@ const Assignment = () => {
   const { hotels, fetchHotels } = useHotelStore();
   const { transports, fetchTransports } = useTransportStore();
   const { masterData, fetchMasterData, loading: masterLoading } = useMasterTypeStore();
-  console.log('hotels',hotels);
-  console.log('flights',flights);
   
 
   const isLoading = assignmentsLoading || masterLoading;
@@ -65,6 +66,8 @@ const Assignment = () => {
     fetchTransports();
     fetchMasterData();
   }, []);
+  // console.log(transports);
+  
 
   const patchForm = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
@@ -101,6 +104,16 @@ const Assignment = () => {
       const staff = users.find(u => u.id === a.staff_id)?.name || '';
       return staff.toLowerCase().includes(search.toLowerCase());
     }), [assignments, users, search]);
+
+  const {
+    paginatedData,
+    currentPage,
+    totalPages,
+    goToPage,
+    startIndex,
+    endIndex,
+    totalItems
+  } = usePagination(filtered, 10);
 
   return (
     <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
@@ -166,7 +179,8 @@ const Assignment = () => {
               {/* Status */}
               <FormField label="Initial Status" icon={<Activity size={14} />}>
                 <select value={form.status_id} onChange={e => patchForm('status_id', e.target.value)} required className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
-                  {(masterData.status_assignment || []).map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  {(masterData.status_assignment
+                     || []).map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
               </FormField>
 
@@ -192,11 +206,14 @@ const Assignment = () => {
                       {hotels.map(h => <option key={h.id} value={h.id}>{h.hotel_name}</option>)}
                     </select>
                   </FormField>
-                  <FormField label="Transport" icon={<Car size={14} />}>
+                  <FormField label="Driver Name" icon={<Car size={14} />}>       
                     <select value={form.transport_id} onChange={e => patchForm('transport_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
                       <option value="">None</option>
-                      {masterData.transport_type.map(t => <option key={t.id} value={t.id}>{t.name} </option>)}
+                      {transports.map(t => <option key={t.id} value={t.id}>{t.driver} </option>)}
                     </select>
+                  </FormField>
+                  <FormField label="Task Detail" icon={<Info size={14} />}>
+                    <textarea value={form.task_detail} onChange={e => patchForm('task_detail', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer"></textarea>
                   </FormField>
                 </div>
               </div>
@@ -240,7 +257,7 @@ const Assignment = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f0efe9]">
-                  {filtered.length > 0 ? filtered.map((a) => {
+                  {paginatedData.length > 0 ? paginatedData.map((a) => {
                     const staff = users.find(u => u.id === a.staff_id) || { name: 'Unknown' };
                     const task = (masterData.task_type || []).find(t => t.id === a.task_type_id) || { name: 'Field Duty' };
                     const status = STATUS_CONFIG[a.status_id] || STATUS_CONFIG.default;
@@ -302,6 +319,14 @@ const Assignment = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination 
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
+              startIndex={startIndex}
+              endIndex={endIndex}
+              totalItems={totalItems}
+            />
           </motion.div>
         )}
       </AnimatePresence>

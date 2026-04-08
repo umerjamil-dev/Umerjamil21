@@ -6,15 +6,36 @@ import {
   MoreHorizontal, BedDouble, CalendarDays, Eye
 } from 'lucide-react';
 import useHotelStore from '../store/useHotelStore';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const Hotels = () => {
   const { hotels, fetchHotels, isLoading } = useHotelStore();
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   useEffect(() => {
     fetchHotels();
   }, [fetchHotels]);
 
   const hotelData = Array.isArray(hotels) ? hotels : [];
+
+  const filtered = React.useMemo(() => {
+    return hotelData.filter(h => 
+      h.hotel_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      h.customer_full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      h.city?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [hotelData, searchTerm]);
+
+  const {
+    paginatedData,
+    currentPage,
+    totalPages,
+    goToPage,
+    startIndex,
+    endIndex,
+    totalItems
+  } = usePagination(filtered, 10);
 
 
   return (
@@ -47,7 +68,13 @@ const Hotels = () => {
         <div className="p-8 border-b border-slate-100 flex flex-wrap gap-4 items-center justify-between bg-slate-50/50">
           <div className="relative w-full md:w-[400px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input type="text" placeholder="Search by pilgrim name, hotel brand..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium bg-white" />
+            <input 
+              type="text" 
+              placeholder="Search by pilgrim name, hotel brand..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-black transition-all placeholder-slate-400 font-medium bg-white" 
+            />
           </div>
           <div className="flex items-center gap-3">
             <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-black transition-all">
@@ -73,9 +100,9 @@ const Hotels = () => {
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr><td colSpan="5" className="py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">Querying Hospitality Ledger...</td></tr>
-              ) : hotelData.length === 0 ? (
+              ) : paginatedData.length === 0 ? (
                 <tr><td colSpan="5" className="py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50">No hospitality records found.</td></tr>
-              ) : hotelData.map((item) => (
+              ) : paginatedData.map((item) => (
                 <tr key={item.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                   <td className="px-8 py-6 text-black">
                     <div className="flex items-center gap-4">
@@ -132,6 +159,14 @@ const Hotels = () => {
             </tbody>
           </table>
         </div>
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+        />
       </div>
     </div>
   </>

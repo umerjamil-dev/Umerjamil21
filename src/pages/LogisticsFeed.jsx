@@ -7,6 +7,8 @@ import {
 } from 'lucide-react'; 
 import useLogisticsStore from '../store/useLogisticsStore';
 import useAuthStore from '../store/useAuthStore';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 /* ─── Constants ─────────────────────────────────────────────────────── */
 const STATUS_STYLES = {
@@ -14,11 +16,7 @@ const STATUS_STYLES = {
   pending:   { bg: '#faeeda', text: '#854f0b', border: '#fac775', dot: '#ba7517' },
   completed: { bg: '#edf1f7', text: '#1a4a7a', border: '#9fcbe1', dot: '#1a4a7a' },
   default:   { bg: '#f5f4f0', text: '#78776f', border: '#e2e0d8', dot: '#78776f' }
-};
-
-/* ════════════════════════════════════════════════════════════════════════
-   LogisticsFeed Component
-   ════════════════════════════════════════════════════════════════════════ */
+};   
 const LogisticsFeed = () => {
   const { id } = useParams();
   const { user } = useAuthStore();
@@ -35,6 +33,16 @@ const LogisticsFeed = () => {
     item.booking?.customer_name?.toLowerCase().includes(search.toLowerCase()) ||
     item.assignment_id?.toString().includes(search)
   );
+
+  const {
+    paginatedData,
+    currentPage,
+    totalPages,
+    goToPage,
+    startIndex,
+    endIndex,
+    totalItems
+  } = usePagination(filtered, 10);
 
   return (
     <div className="min-h-screen bg-[#f5f4f0] px-6 py-12 lg:px-12" style={{ fontFamily: "'DM Mono', monospace" }}>
@@ -87,7 +95,7 @@ const LogisticsFeed = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#f0efe9]">
-            {filtered.length > 0 ? filtered.map((item) => (
+            {paginatedData.length > 0 ? paginatedData.map((item) => (
               <tr key={item.assignment_id} className="hover:bg-[#fcfbf9] transition-colors group">
                 {/* ID & TYPE */}
                 <td className="px-6 py-5">
@@ -186,6 +194,14 @@ const LogisticsFeed = () => {
             )}
           </tbody>
         </table>
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+        />
       </motion.div>
     </div>
   );

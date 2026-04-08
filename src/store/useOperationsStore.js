@@ -5,21 +5,24 @@ const useOperationsStore = create((set) => ({
   staff: [],
   liveTasks: [],
   sectorSaturation: [],
+  overview: null,
   isLoading: false,
   error: null,
 
   fetchOperationsData: async () => {
     set({ isLoading: true });
     try {
-      const [staff, tasks, saturation] = await Promise.all([
+      const [staff, tasks, saturation, overview] = await Promise.all([
         api.get('/operations/staff'),
         api.get('/operations/tasks'),
-        api.get('/operations/saturation')
+        api.get('/operations/saturation'),
+        api.get('/dashboard/overview')
       ]);
       set({ 
         staff: staff.data,
         liveTasks: tasks.data,
         sectorSaturation: saturation.data,
+        overview: overview.data,
         isLoading: false 
       });
     } catch (err) {

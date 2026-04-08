@@ -4,13 +4,13 @@ import {
    Clock, CheckCircle2, AlertCircle,
    Phone, Search, Filter,
    MoreHorizontal, Plus, Navigation,
-   UserCheck, Calendar, Radio
+   UserCheck, Calendar, Radio, Briefcase, Plane, Hotel
 } from 'lucide-react';
 import useOperationsStore from '../store/useOperationsStore';
 
 const Operations = () => {
    const [activeTab, setActiveTab] = useState('Overview');
-   const { staff, liveTasks, sectorSaturation, fetchOperationsData, isLoading } = useOperationsStore();
+   const { staff, liveTasks, sectorSaturation, overview, fetchOperationsData, isLoading: opsLoading } = useOperationsStore();
 
    useEffect(() => {
       fetchOperationsData();
@@ -19,6 +19,15 @@ const Operations = () => {
     const staffData = staff || [];
     const taskData = liveTasks || [];
     const saturationData = sectorSaturation || [];
+    const isLoading = opsLoading;
+
+    const flightsToday = overview?.flights_today || 0;
+    const hotelsToday = overview?.hotels_today || 0;
+    const transportsToday = overview?.transports_today || 0;
+    const staffActive = overview?.staff_active || 0;
+    const pendingTasks = overview?.pending_tasks || 0;
+    const completedTasks = overview?.completed_tasks || 0;
+    const totalAssignments = overview?.total_assignments || 0;
 
     // Safe-accessors for nested API objects
     const getCustomerName = (t) => {
@@ -69,6 +78,17 @@ const Operations = () => {
                   <Plus size={16} strokeWidth={3} /> Dispatch
                </button>
             </div>
+         </div>
+
+         {/* 1. Overview Section */}
+         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            <MetricCard title="Total Assignments" value={totalAssignments} icon={<Briefcase size={16}/>} />
+            <MetricCard title="Pending Tasks" value={pendingTasks} icon={<Clock size={16}/>} color="text-amber-500" bg="bg-amber-50" border="border-amber-100" />
+            <MetricCard title="Completed Tasks" value={completedTasks} icon={<CheckCircle2 size={16}/>} color="text-emerald-500" bg="bg-emerald-50" border="border-emerald-100" />
+            <MetricCard title="Flights Today" value={flightsToday} icon={<Plane size={16}/>} color="text-blue-500" bg="bg-blue-50" border="border-blue-100" />
+            <MetricCard title="Hotels Today" value={hotelsToday} icon={<Hotel size={16}/>} color="text-indigo-500" bg="bg-indigo-50" border="border-indigo-100" />
+            <MetricCard title="Transports Today" value={transportsToday} icon={<Truck size={16}/>} color="text-purple-500" bg="bg-purple-50" border="border-purple-100" />
+            <MetricCard title="Staff Active" value={staffActive} icon={<UserCheck size={16}/>} color="text-[var(--desert-gold)]" bg="bg-[var(--desert-gold)]/10" border="border-[var(--desert-gold)]/20" />
          </div>
 
          {/* Operational Bento Grid */}
@@ -216,5 +236,17 @@ const Operations = () => {
    </>
    );
 };
+
+const MetricCard = ({ title, value, icon, color = "text-slate-600", bg = "bg-slate-100", border = "border-slate-200" }) => (
+   <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
+      <div className="space-y-1">
+         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight">{title}</p>
+         <p className="text-2xl font-manrope font-black tracking-tighter text-slate-900">{value}</p>
+      </div>
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${bg} ${border} ${color} group-hover:scale-110 transition-transform`}>
+         {icon}
+      </div>
+   </div>
+);
 
 export default Operations;

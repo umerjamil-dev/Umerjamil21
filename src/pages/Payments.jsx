@@ -10,9 +10,12 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import usePaymentStore from '../store/usePaymentStore';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const Payments = () => {
    const { payments, fetchPayments, isLoading } = usePaymentStore();
+   const [searchTerm, setSearchTerm] = React.useState('');
 
    useEffect(() => {
       fetchPayments();
@@ -38,6 +41,27 @@ const Payments = () => {
       type: t.type || 'Credit', // Default to Credit for visualization
       status: t.status || 'Verified' // Default status
    }));
+
+   const filtered = React.useMemo(() => {
+     return transactions.filter(t => {
+       const customer = getCustomerName(t).toLowerCase();
+       const id = t.id?.toString();
+       const amount = t.amount?.toString();
+       return customer.includes(searchTerm.toLowerCase()) || 
+              id?.includes(searchTerm) || 
+              amount?.includes(searchTerm);
+     });
+   }, [transactions, searchTerm]);
+
+   const {
+     paginatedData,
+     currentPage,
+     totalPages,
+     goToPage,
+     startIndex,
+     endIndex,
+     totalItems
+   } = usePagination(filtered, 10);
 
    const totalCredits = transactions.filter(t => t.type === 'Credit').reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
    const totalDebits = transactions.filter(t => t.type === 'Debit').reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
@@ -136,6 +160,8 @@ const Payments = () => {
                   <input
                      type="text"
                      placeholder="Search transaction, entity or amount..."
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
                      className="w-full pl-9 pr-4 py-4 bg-transparent border-b-2 border-slate-100 rounded-none text-sm outline-none focus:border-black text-black transition-all font-black placeholder-slate-300 uppercase tracking-widest"
                   />
                </div>
@@ -161,7 +187,7 @@ const Payments = () => {
                      </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                     {transactions.map((trx) => (
+                     {paginatedData.map((trx) => (
                         <tr key={trx.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                            <td className="px-10 py-10">
                               <div>
@@ -211,12 +237,14 @@ const Payments = () => {
             </div>
 
             {/* Pagination/Load Footer */}
-            <div className="px-10 py-12 bg-slate-50/50 border-t border-slate-100 text-center relative overflow-hidden">
-               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30 pointer-events-none"></div>
-               <button className="px-14 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] hover:text-[var(--desert-gold)] hover:border-[var(--desert-gold)] hover:shadow-2xl transition-all shadow-sm active:scale-95 relative z-10">
-                  Reveal Historical Journal Entries
-               </button>
-            </div>
+            <Pagination 
+               currentPage={currentPage}
+               totalPages={totalPages}
+               onPageChange={goToPage}
+               startIndex={startIndex}
+               endIndex={endIndex}
+               totalItems={totalItems}
+            />
          </div>
       </div>
    );

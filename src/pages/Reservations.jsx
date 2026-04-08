@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useBookingStore from '../store/useBookingStore';
+import usePagination from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const Reservations = () => {
   const { bookings: reservations, fetchBookings, isLoading } = useBookingStore();
@@ -64,6 +66,16 @@ const Reservations = () => {
       getPackageName(r.package).toLowerCase().includes(q)
     );
   });
+
+  const {
+    paginatedData,
+    currentPage,
+    totalPages,
+    goToPage,
+    startIndex,
+    endIndex,
+    totalItems
+  } = usePagination(filtered, 10);
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="pb-20">
@@ -181,13 +193,13 @@ const Reservations = () => {
                     Loading reservations...
                   </td>
                 </tr>
-              ) : filtered.length === 0 ? (
+              ) : paginatedData.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="px-6 py-16 text-center text-sm text-slate-400">
                     {searchQuery ? 'No results found.' : 'No reservations yet.'}
                   </td>
                 </tr>
-              ) : filtered.map((res, idx) => {
+              ) : paginatedData.map((res, idx) => {
                 const typeInfo = getTypeIcon(res.type || 'Visa');
                 const statusStyle = getStatusStyle(res.status);
                 const TypeIcon = typeInfo.icon;
@@ -287,20 +299,14 @@ travel_date || '—'}
         </div>
 
         {/* Footer */}
-        {filtered.length > 0 && (
-          <div
-            className="px-6 py-3 flex items-center justify-between"
-            style={{ borderTop: '1px solid #f1f5f9', background: '#fafafa' }}
-          >
-            <p className="text-xs text-slate-400">
-              Showing {filtered.length} of {reservationsToShow.length} reservations
-            </p>
-            <div className="flex items-center gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-slate-400">Live sync</span>
-            </div>
-          </div>
-        )}
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+        />
       </div>
     </div>
   );
