@@ -2,242 +2,377 @@ import React, { useState, useEffect } from 'react';
 import {
    Truck, Users, MapPin,
    Clock, CheckCircle2, AlertCircle,
-   Phone, Search, Filter,
-   MoreHorizontal, Plus, Navigation,
-   UserCheck, Calendar, Radio, Briefcase, Plane, Hotel
+   Phone, Filter,
+   Plus, Navigation,
+   UserCheck, Radio, Briefcase, Plane, Hotel,
+   ChevronDown, ChevronUp, Car, ShieldCheck,
+   Package, User2, CalendarDays, Hash, Edit3, Loader2
 } from 'lucide-react';
 import useOperationsStore from '../store/useOperationsStore';
+import useAuthStore from '../store/useAuthStore';
 
+// ─── Status config ─────────────────────────────────────────────────────────────
+const statusConfig = {
+   'Pending':     { dot: 'bg-amber-400',   badge: 'bg-amber-50 text-amber-700 border-amber-200',   icon: <Clock size={11} strokeWidth={3}/> },
+   'In Progress': { dot: 'bg-blue-400',    badge: 'bg-blue-50 text-blue-700 border-blue-200',       icon: <Radio size={11} className="animate-pulse"/> },
+   'Completed':   { dot: 'bg-emerald-400', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: <CheckCircle2 size={11} strokeWidth={3}/> },
+};
+
+const taskTypeIcon = {
+   'Guide':         <Users size={18} strokeWidth={2}/>,
+   'Pickup':        <Truck size={18} strokeWidth={2}/>,
+   'Hotel Check-in':<Hotel size={18} strokeWidth={2}/>,
+};
+
+// ─── Info Chip helper ──────────────────────────────────────────────────────────
+const InfoPill = ({ label, value, colorClass = 'text-slate-700' }) => (
+   <div className="flex flex-col gap-0.5">
+      <span className="text-[8px] font-black uppercase tracking-[0.25em] text-slate-400">{label}</span>
+      <span className={`text-[11px] font-bold ${colorClass}`}>{value || '—'}</span>
+   </div>
+);
+
+// ─── Assignment Row ────────────────────────────────────────────────────────────
+const AssignmentRow = ({ a }) => {
+   const [open, setOpen] = useState(false);
+   const sc = statusConfig[a.status] || statusConfig['Pending'];
+
+   return (
+      <div className="border border-slate-100 rounded-2xl overflow-hidden transition-all hover:border-slate-300 hover:shadow-md">
+         {/* ── Summary row ─────────────────────────────────── */}
+         <button
+            onClick={() => setOpen(o => !o)}
+            className="w-full text-left p-6 flex flex-col sm:flex-row sm:items-center gap-5 group bg-white hover:bg-slate-50/60 transition-colors"
+         >
+            {/* Task type icon */}
+            <div className="shrink-0 w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">
+               {taskTypeIcon[a.task_type] || <Briefcase size={18}/>}
+            </div>
+
+            {/* Core info */}
+            <div className="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-5 gap-4">
+               <InfoPill label="ID"             value={`#${a.assignment_id || a.id}`} colorClass="text-slate-900 font-black"/>
+               <InfoPill label="Task Type"     value={a.task_type || a.service}/>
+               <InfoPill label="Customer"      value={a.booking?.customer_name || a.customer?.name || a.customer || '—'}/>
+               <InfoPill label="Staff"         value={a.staff?.name || a.staff || '—'}/>
+               <InfoPill label="Travel Date"   value={a.booking?.travel_date || a.travel_date || '—'}/>
+            </div>
+
+            {/* Status badge */}
+            <div className="shrink-0 flex items-center gap-3">
+               <span className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[9px] font-black uppercase tracking-widest ${sc.badge}`}>
+                  {sc.icon} {a.status}
+               </span>
+               <span className="text-slate-300 group-hover:text-slate-500 transition-colors">
+                  {open ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
+               </span>
+            </div>
+         </button>
+
+         {/* ── Expanded detail panel ────────────────────────── */}
+         {open && (
+            <div className="border-t border-slate-100 bg-slate-50/40 p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 animate-in fade-in slide-in-from-top-2 duration-200">
+
+               {/* Flight */}
+               <div className="bg-white rounded-xl border border-slate-100 p-5 space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                     <Plane size={14} className="text-blue-500" strokeWidth={2.5}/>
+                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-500">Flight Info</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                     <InfoPill label="Airline"       value={a.flight?.airline}/>
+                     <InfoPill label="Ticket No."    value={a.flight?.ticket_number}/>
+                     <InfoPill label="Departure"     value={a.flight?.departure}/>
+                     <InfoPill label="Arrival"       value={a.flight?.arrival}/>
+                  </div>
+               </div>
+
+               {/* Hotel */}
+               <div className="bg-white rounded-xl border border-slate-100 p-5 space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                     <Hotel size={14} className="text-indigo-500" strokeWidth={2.5}/>
+                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-500">Hotel Info</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                     <InfoPill label="Hotel"    value={a.hotel?.name}/>
+                     <InfoPill label="City"     value={a.hotel?.city}/>
+                     <InfoPill label="Check-in" value={a.hotel?.check_in}/>
+                     <InfoPill label="Check-out"value={a.hotel?.check_out}/>
+                     <InfoPill label="Rooms"    value={a.hotel?.rooms}/>
+                  </div>
+               </div>
+
+               {/* Transport */}
+               <div className="bg-white rounded-xl border border-slate-100 p-5 space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                     <Car size={14} className="text-purple-500" strokeWidth={2.5}/>
+                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-purple-500">Transport</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                     <InfoPill label="Type"    value={a.transport?.type}/>
+                     <InfoPill label="Vehicle" value={a.transport?.vehicle}/>
+                     <InfoPill label="Driver"  value={a.transport?.driver}/>
+                     <InfoPill label="Plate"   value={a.transport?.plate_number}/>
+                     <div className="col-span-2">
+                        <InfoPill label="Notes" value={a.transport?.notes}/>
+                     </div>
+                  </div>
+               </div>
+
+               {/* Visas */}
+               <div className="bg-white rounded-xl border border-slate-100 p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                     <ShieldCheck size={14} className="text-emerald-500" strokeWidth={2.5}/>
+                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-500">Visas</span>
+                  </div>
+                  <div className="space-y-3">
+                     {(a.visas || []).length > 0 ? a.visas.map(v => (
+                        <div key={v.id} className="flex items-center justify-between">
+                           <InfoPill label="Visa No." value={v.visa_number}/>
+                           <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border uppercase tracking-widest ${
+                              v.status === 'Approved'
+                                 ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                 : 'bg-amber-50 text-amber-600 border-amber-200'
+                           }`}>{v.status}</span>
+                        </div>
+                     )) : <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">No Visas Linked</p>}
+                  </div>
+               </div>
+
+               {/* Packages */}
+               {(a.packages || []).length > 0 ? a.packages.map(pkg => (
+                  <div key={pkg.id} className="bg-white rounded-xl border border-slate-100 p-5">
+                     <div className="flex items-center gap-2 mb-4">
+                        <Package size={14} className="text-[var(--desert-gold)]" strokeWidth={2.5}/>
+                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--desert-gold)]">Package</span>
+                     </div>
+                     <p className="text-sm font-black text-slate-900 mb-4 leading-tight">{pkg.title}</p>
+                     <div className="grid grid-cols-2 gap-3">
+                        <InfoPill label="Makkah Hotel"  value={pkg.makkah_hotel}/>
+                        <InfoPill label="Madinah Hotel" value={pkg.madinah_hotel}/>
+                        <InfoPill label="Makkah Nights" value={pkg.nights_makkah}/>
+                        <InfoPill label="Madinah Nights"value={pkg.nights_madinah}/>
+                        <InfoPill label="Total Days"    value={`${pkg.total_days} days`}/>
+                        <InfoPill label="Price"         value={`$${pkg.final_price?.toLocaleString()}`} colorClass="text-emerald-600 font-black"/>
+                     </div>
+                  </div>
+               )) : (
+                  <div className="bg-white rounded-xl border border-slate-100 p-5 flex flex-col items-center justify-center opacity-40">
+                     <Package size={24} className="text-slate-300 mb-2"/>
+                     <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">No Package Details</p>
+                  </div>
+               )}
+
+               {/* Meta — created / updated by */}
+               <div className="bg-white rounded-xl border border-slate-100 p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                     <Edit3 size={14} className="text-slate-400" strokeWidth={2.5}/>
+                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Audit Trail</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                     <InfoPill label="Booking ID"  value={a.booking?.id ? `#${a.booking.id}` : '—'}/>
+                     <InfoPill label="Created By"  value={a.created_by}/>
+                     <InfoPill label="Updated By"  value={a.updated_by}/>
+                  </div>
+               </div>
+
+            </div>
+         )}
+      </div>
+   );
+};
+
+// ─── Main Operations Component ─────────────────────────────────────────────────
 const Operations = () => {
-   const [activeTab, setActiveTab] = useState('Overview');
-   const { staff, liveTasks, sectorSaturation, overview, fetchOperationsData, isLoading: opsLoading } = useOperationsStore();
+   const [dispatchSearch, setDispatchSearch] = useState('');
+   const [dispatchFilter, setDispatchFilter] = useState('All');
 
+   const { user } = useAuthStore();
+   const {
+      staff,
+      liveTasks,
+      sectorSaturation,
+      overview,
+      assignments,
+      assignmentsLoading,
+      fetchOperationsData,
+      fetchAssignments,
+      isLoading: opsLoading
+   } = useOperationsStore();
+
+   // Initial data fetch
    useEffect(() => {
       fetchOperationsData();
    }, [fetchOperationsData]);
 
-    const staffData = staff || [];
-    const taskData = liveTasks || [];
-    const saturationData = sectorSaturation || [];
-    const isLoading = opsLoading;
+   // Fetch assignments based on user ID
+   useEffect(() => {
+      if (user?.id) {
+         fetchAssignments(user.id);
+      }
+   }, [user?.id, fetchAssignments]);
 
-    const flightsToday = overview?.flights_today || 0;
-    const hotelsToday = overview?.hotels_today || 0;
-    const transportsToday = overview?.transports_today || 0;
-    const staffActive = overview?.staff_active || 0;
-    const pendingTasks = overview?.pending_tasks || 0;
-    const completedTasks = overview?.completed_tasks || 0;
-    const totalAssignments = overview?.total_assignments || 0;
+   const staffData       = staff || [];
+   const taskData        = liveTasks || [];
+   const saturationData  = sectorSaturation || [];
+   const isLoading       = opsLoading;
 
-    // Safe-accessors for nested API objects
-    const getCustomerName = (t) => {
-       if (!t.customer) return '—';
-       if (typeof t.customer === 'string') return t.customer;
-       return `${t.customer.firstName || ''} ${t.customer.lastName || ''}`.trim() || '—';
-    };
+   const totalAssignments = overview?.total_assignments || 0;
+   const pendingTasks     = overview?.pending_tasks     || 0;
+   const completedTasks   = overview?.completed_tasks   || 0;
+   const flightsToday     = overview?.flights_today     || 0;
+   const hotelsToday      = overview?.hotels_today      || 0;
+   const transportsToday  = overview?.transports_today  || 0;
+   const staffActive      = overview?.staff_active      || 0;
 
-    const getStaffName = (t) => {
-       if (!t.staff) return 'Unassigned';
-       if (typeof t.staff === 'string') return t.staff;
-       return t.staff.name || '—';
-    };
+   const getCustomerName = (t) => {
+      if (!t.customer) return '—';
+      if (typeof t.customer === 'string') return t.customer;
+      return `${t.customer.firstName || ''} ${t.customer.lastName || ''}`.trim() || '—';
+   };
 
+   const getStaffName = (t) => {
+      if (!t.staff) return 'Unassigned';
+      if (typeof t.staff === 'string') return t.staff;
+      return t.staff.name || '—';
+   };
+
+   // ── Dispatch filter logic ──────────────────────────────────────────────────
+   const STATUS_FILTERS = ['All', 'Pending', 'In Progress', 'Completed'];
+   
+   const filteredAssignments = (assignments || []).filter(a => {
+      const status = a.status || 'Pending';
+      const type = a.task_type || a.service || '';
+      const customer = a.booking?.customer_name || a.customer?.name || a.customer || '';
+      const staffName = a.staff?.name || a.staff || '';
+
+      const matchesStatus = dispatchFilter === 'All' || status === dispatchFilter;
+      const q = dispatchSearch.toLowerCase();
+      
+      const matchesSearch = !q
+         || customer.toLowerCase().includes(q)
+         || staffName.toLowerCase().includes(q)
+         || type.toLowerCase().includes(q)
+         || String(a.assignment_id || a.id).includes(q);
+         
+      return matchesStatus && matchesSearch;
+   });
 
    return (
-   <>
-   
-      <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
-         {/* Premium Header */}
-         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200">
-            <div className="space-y-4">
-               <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-black opacity-80">
-                  <Navigation size={14} strokeWidth={3} />
-                  KSA Ground Orchestration
+      <>
+         <div className="space-y-14 animate-in fade-in duration-1000 font-inter pb-24">
+
+            {/* ── Premium Header ─────────────────────────────────────────────── */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200">
+               <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-black opacity-80">
+                     <Navigation size={14} strokeWidth={3} />
+                     KSA Ground Orchestration
+                  </div>
+                  <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
+                     Abroad
+                  </h1>
+                  <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
+                     Real-time synchronization of ground staff, logistics, and pilgrim movements across the Saudi Arabian sectors.
+                  </p>
                </div>
-               <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Abroad
-               </h1>
-               <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
-                  Real-time synchronization of ground staff, logistics, and pilgrim movements across the Saudi Arabian sectors.
-               </p>
             </div>
-            <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-xl border border-slate-100">
-               {['Overview', 'Staff', 'Logistics'].map((tab) => (
-                  <button
-                     key={tab}
-                     onClick={() => setActiveTab(tab)}
-                     className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab
-                           ? 'bg-black text-white shadow-lg'
-                           : 'text-slate-400 hover:text-black'
-                        }`}
-                  >
-                     {tab}
-                  </button>
-               ))}
-               <button className="ml-4 px-6 py-3 bg-[var(--desert-gold)] text-black rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md hover:shadow-xl transition-all flex items-center gap-2">
-                  <Plus size={16} strokeWidth={3} /> Dispatch
-               </button>
+
+            {/* ── Section 1 — Overview Metrics ───────────────────────────────── */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+               <MetricCard title="Total Assignments" value={totalAssignments} icon={<Briefcase size={16}/>}/>
+               <MetricCard title="Pending Tasks"     value={pendingTasks}     icon={<Clock size={16}/>}         color="text-amber-500"  bg="bg-amber-50"   border="border-amber-100"/>
+               <MetricCard title="Completed Tasks"   value={completedTasks}   icon={<CheckCircle2 size={16}/>}  color="text-emerald-500" bg="bg-emerald-50" border="border-emerald-100"/>
+               <MetricCard title="Flights Today"     value={flightsToday}     icon={<Plane size={16}/>}         color="text-blue-500"   bg="bg-blue-50"    border="border-blue-100"/>
+               <MetricCard title="Hotels Today"      value={hotelsToday}      icon={<Hotel size={16}/>}         color="text-indigo-500" bg="bg-indigo-50"  border="border-indigo-100"/>
+               <MetricCard title="Transports Today"  value={transportsToday}  icon={<Truck size={16}/>}         color="text-purple-500" bg="bg-purple-50"  border="border-purple-100"/>
+               <MetricCard title="Staff Active"      value={staffActive}      icon={<UserCheck size={16}/>}     color="text-[var(--desert-gold)]" bg="bg-[var(--desert-gold)]/10" border="border-[var(--desert-gold)]/20"/>
             </div>
-         </div>
 
-         {/* 1. Overview Section */}
-         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            <MetricCard title="Total Assignments" value={totalAssignments} icon={<Briefcase size={16}/>} />
-            <MetricCard title="Pending Tasks" value={pendingTasks} icon={<Clock size={16}/>} color="text-amber-500" bg="bg-amber-50" border="border-amber-100" />
-            <MetricCard title="Completed Tasks" value={completedTasks} icon={<CheckCircle2 size={16}/>} color="text-emerald-500" bg="bg-emerald-50" border="border-emerald-100" />
-            <MetricCard title="Flights Today" value={flightsToday} icon={<Plane size={16}/>} color="text-blue-500" bg="bg-blue-50" border="border-blue-100" />
-            <MetricCard title="Hotels Today" value={hotelsToday} icon={<Hotel size={16}/>} color="text-indigo-500" bg="bg-indigo-50" border="border-indigo-100" />
-            <MetricCard title="Transports Today" value={transportsToday} icon={<Truck size={16}/>} color="text-purple-500" bg="bg-purple-50" border="border-purple-100" />
-            <MetricCard title="Staff Active" value={staffActive} icon={<UserCheck size={16}/>} color="text-[var(--desert-gold)]" bg="bg-[var(--desert-gold)]/10" border="border-[var(--desert-gold)]/20" />
-         </div>
+         
 
-         {/* Operational Bento Grid */}
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Live Movement Feed */}
-            <div className="lg:col-span-8 space-y-10">
-               <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                  <div className="p-10 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
-                     <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] flex items-center gap-3">
-                        <Radio size={18} className="text-red-500 animate-pulse" /> Live Deployment Feed
-                     </h3>
-                     <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                           <span className="w-2 h-2 rounded-full bg-emerald-500"></span> 12 Active
-                        </span>
-                        <button className="p-3 bg-white border border-slate-200 rounded-xl hover:border-black transition-all">
-                           <Filter size={14} />
-                        </button>
+            {/* ══════════════════════════════════════════════════════════════════
+                Section 2 — Dispatch Assignments
+            ══════════════════════════════════════════════════════════════════ */}
+            <div className="space-y-6">
+
+               {/* Section header */}
+               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 pb-6 border-b border-slate-200">
+                  <div className="space-y-1">
+                     <div className="flex items-center gap-2 text-[var(--desert-gold)] text-[9px] font-black uppercase tracking-[0.4em]">
+                        <Briefcase size={12} strokeWidth={3}/> Section 2
                      </div>
+                     <h2 className="text-3xl font-manrope font-extrabold text-slate-900 tracking-tight">
+                        Dispatch Assignments
+                     </h2>
+                     <p className="text-slate-400 text-sm">Full operational details per assignment — flight, hotel, transport, visa & package.</p>
                   </div>
-
-                  <div className="divide-y divide-slate-100">
-                     {isLoading ? (
-                        <div className="p-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50 text-black">Synchronizing Deployment Vectors...</div>
-                     ) : taskData.length === 0 ? (
-                        <div className="p-20 text-center text-sm font-bold uppercase tracking-widest text-slate-400 opacity-50 text-black">No active deployments detected.</div>
-                     ) : taskData.map((task) => (
-                        <div key={task.id} className="p-10 group hover:bg-slate-50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-8">
-                           <div className="flex items-center gap-8">
-                              <div className={`w-16 h-16 rounded-xl flex items-center justify-center border transition-all ${task.status === 'In Transit' ? 'bg-blue-50 border-blue-100 text-blue-500' :
-                                    task.status === 'Completed' ? 'bg-emerald-50 border-emerald-100 text-emerald-500' :
-                                       'bg-red-50 border-red-100 text-red-500'
-                                 }`}>
-                                 {task.service.includes('Pickup') ? <Truck size={28} strokeWidth={2} /> :
-                                    task.service.includes('Ziyarat') ? <Users size={28} strokeWidth={2} /> :
-                                       <MapPin size={28} strokeWidth={2} />}
-                              </div>
-                              <div>
-                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-2">
-                                    {getCustomerName(task)}
-                                 </p>
-                                 <div className="flex items-center gap-4 text-[10px] text-slate-400 font-black uppercase tracking-widest">
-                                    <span className="text-black">{task.service || 'Operational task'}</span>
-                                    <span>•</span>
-                                    <span>{task.id}</span>
-                                 </div>
-                              </div>
-                           </div>
-
-                           <div className="flex items-center gap-12">
-                              <div className="text-right hidden md:block">
-                                 <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1">
-                                    {getStaffName(task)}
-                                 </p>
-                                 <p className="text-[9px] text-slate-400 uppercase tracking-widest">Assigned Staff</p>
-                              </div>
-                              <div className="min-w-[140px]">
-                                 <div className={`flex items-center justify-center gap-3 px-5 py-3 rounded-full border text-[9px] font-black uppercase tracking-widest ${task.status === 'In Transit' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                       task.status === 'Completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                          'bg-red-50 text-red-600 border-red-100 shadow-[0_4px_12px_rgba(239,68,68,0.1)] font-black'
-                                    }`}>
-                                    {task.status === 'In Transit' ? <Clock size={12} strokeWidth={3} /> :
-                                       task.status === 'Completed' ? <CheckCircle2 size={12} strokeWidth={3} /> :
-                                          <AlertCircle size={12} strokeWidth={3} />}
-                                    {task.status}
-                                 </div>
-                                 <p className="text-right text-[8px] font-black text-slate-300 uppercase tracking-widest mt-2">{task.time}</p>
-                              </div>
-                           </div>
-                        </div>
-                     ))}
-                  </div>
-
-
-                  <div className="p-8 bg-slate-50 border-t border-slate-100 text-center">
-                     <button className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] hover:text-black transition-all">
-                        Load Historical Dispatches
-                     </button>
-                  </div>
-               </div>
-            </div>
-
-            {/* Staff Performance & Availability */}
-            <div className="lg:col-span-4 space-y-10">
-               <div className="bg-black rounded-xl p-10 text-white shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] group-hover:scale-110 transition-transform"></div>
-                  <h3 className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-12 relative z-10">Staff </h3>
-
-                  <div className="space-y-8 relative z-10">
-                     {isLoading ? (
-                        <div className="py-10 text-center text-[10px] font-black text-white/20 uppercase tracking-[0.2em] leading-relaxed">Auditing Ground Personnel...</div>
-                     ) : staffData.map((member) => (
-                        <div key={member.id} className="group/item cursor-pointer">
-                           <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center gap-4 text-white">
-                                 <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 group-hover/item:border-white/30 transition-all font-black text-xs">
-                                    {member.name.charAt(0)}
-                                 </div>
-                                 <div>
-                                    <p className="text-xs font-black tracking-tight text-white mb-1 uppercase">{member.name}</p>
-                                    <p className="text-[9px] text-white/40 uppercase tracking-widest font-black">{member.role} • {member.location}</p>
-                                 </div>
-                              </div>
-                              <div className={`w-2 h-2 rounded-full ${member.status === 'Available' ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' :
-                                    member.status === 'On Task' ? 'bg-blue-500' : 'bg-slate-600'
-                                 }`}></div>
-                           </div>
-                           <div className="flex items-center justify-between pl-16">
-                              <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em]">{member.status}</span>
-                              <button className="p-2 hover:bg-white/10 rounded-xl transition-all text-white/40 hover:text-white">
-                                 <Phone size={14} />
-                              </button>
-                           </div>
-                        </div>
-                     ))}
-                  </div>
-
-
-                  <button className="w-full mt-12 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-white/40 uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all">
-                     Recruit Global Staff
+                  <button className="shrink-0 flex items-center gap-2 px-5 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--desert-gold)] hover:text-black transition-all">
+                     <Plus size={14} strokeWidth={3}/> New Assignment
                   </button>
                </div>
 
-               {/* Sector Summary */}
-               <div className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm relative overflow-hidden">
-                  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10">Sector Saturation</h3>
-                  <div className="space-y-8">
-                     {saturationData.map((sector) => (
-                        <div key={sector.sector}>
-                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-3">
-                              <span className="text-slate-900">{sector.sector}</span>
-                              <span className="text-slate-400">{sector.value}</span>
-                           </div>
-                           <div className="h-2 bg-slate-50 rounded-full overflow-hidden border border-slate-100 text-black">
-                              <div className={`h-full ${sector.color} transition-all duration-1000`} style={{ width: sector.value }}></div>
-                           </div>
-                        </div>
+               {/* Filter bar */}
+               <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Search */}
+                  <div className="relative flex-1 max-w-xs">
+                     <User2 size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/>
+                     <input
+                        type="text"
+                        placeholder="Search by name, staff, task…"
+                        value={dispatchSearch}
+                        onChange={e => setDispatchSearch(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-white focus:outline-none focus:border-slate-400 font-medium text-slate-700 placeholder:text-slate-300"
+                     />
+                  </div>
+                  {/* Status pills */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                     {STATUS_FILTERS.map(f => (
+                        <button
+                           key={f}
+                           onClick={() => setDispatchFilter(f)}
+                           className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${
+                              dispatchFilter === f
+                                 ? 'bg-black text-white border-black'
+                                 : 'bg-white text-slate-400 border-slate-200 hover:border-slate-400 hover:text-slate-600'
+                           }`}
+                        >
+                           {f}
+                        </button>
                      ))}
                   </div>
+                  {/* Count */}
+                  <span className="self-center ml-auto text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                     {filteredAssignments.length} Result{filteredAssignments.length !== 1 ? 's' : ''}
+                  </span>
+               </div>
 
+               {/* Assignment list */}
+               <div className="space-y-3 min-h-[300px]">
+                  {assignmentsLoading ? (
+                     <div className="py-20 flex flex-col items-center justify-center text-slate-400 space-y-4">
+                        <Loader2 size={32} className="animate-spin text-[var(--desert-gold)]"/>
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em]">Synchronizing Dispatch Data...</p>
+                     </div>
+                  ) : filteredAssignments.length === 0 ? (
+                     <div className="py-20 text-center text-sm font-bold uppercase tracking-widest text-slate-300 border border-dashed border-slate-200 rounded-2xl">
+                        No assignments match your filters.
+                     </div>
+                  ) : (
+                     filteredAssignments.map(a => (
+                        <AssignmentRow key={a.assignment_id || a.id} a={a}/>
+                     ))
+                  )}
                </div>
             </div>
+
          </div>
-      </div>
-   </>
+      </>
    );
 };
 
-const MetricCard = ({ title, value, icon, color = "text-slate-600", bg = "bg-slate-100", border = "border-slate-200" }) => (
+// ─── Metric Card Component ────────────────────────────────────────────────────
+const MetricCard = ({ title, value, icon, color = 'text-slate-600', bg = 'bg-slate-100', border = 'border-slate-200' }) => (
    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
       <div className="space-y-1">
          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight">{title}</p>

@@ -34,27 +34,6 @@ const Bookings = () => {
 
    const bookingsToShow = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
 
-   const filtered = React.useMemo(() => {
-     return bookingsToShow.filter(b => {
-       const customer = getCustomerName(b.customer).toLowerCase();
-       const pkg = getPackageName(b.package).toLowerCase();
-       const id = b.id?.toString();
-       return customer.includes(searchTerm.toLowerCase()) || 
-              pkg.includes(searchTerm.toLowerCase()) || 
-              id?.includes(searchTerm);
-     });
-   }, [bookingsToShow, searchTerm]);
-
-   const {
-     paginatedData,
-     currentPage,
-     totalPages,
-     goToPage,
-     startIndex,
-     endIndex,
-     totalItems
-   } = usePagination(filtered, 10);
-
    const getCustomerName = (c) => {
       if (!c) return 'Customer Info';
       if (typeof c === 'string') return c;
@@ -76,6 +55,28 @@ const Bookings = () => {
       if (!c || typeof c !== 'object') return 'text-[var(--sacred-emerald)]';
       return c.is_active == 0 ? 'text-red-400' : 'text-[var(--sacred-emerald)]';
    };
+
+   const filtered = React.useMemo(() => {
+     return bookingsToShow.filter(b => {
+       const customer = getCustomerName(b.customer).toLowerCase();
+       const pkg = getPackageName(b.package).toLowerCase();
+       const id = b.id?.toString();
+       return customer.includes(searchTerm.toLowerCase()) || 
+              pkg.includes(searchTerm.toLowerCase()) || 
+              id?.includes(searchTerm);
+     });
+   }, [bookingsToShow, searchTerm]);
+
+   const {
+     paginatedData,
+     currentPage,
+     totalPages,
+     goToPage,
+     startIndex,
+     endIndex,
+     totalItems
+   } = usePagination(filtered, 10);
+
    return (
       <div className="space-y-12 animate-in fade-in duration-1000 font-inter pb-20">
          {/* Premium Header */}
