@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import useAssignmentStore from '../store/useAssignmentStore';
 import useUserStore from '../store/useUserStore';
+import useAuthStore from '../store/useAuthStore';
 import useBookingStore from '../store/useBookingStore';
 import useFlightStore from '../store/useFlightStore';
 import useHotelStore from '../store/useHotelStore';
@@ -47,6 +48,7 @@ const Assignment = () => {
   const [form,        setForm]        = useState(DEFAULT_FORM);
 
   const { assignments, fetchAssignments, addAssignment, updateAssignment, deleteAssignment, isLoading: assignmentsLoading } = useAssignmentStore();
+  const { user: currentUser } = useAuthStore();
   const { users, fetchUsers } = useUserStore();
   const { bookings, fetchBookings } = useBookingStore();
   const { flights, fetchFlights } = useFlightStore();
@@ -66,9 +68,8 @@ const Assignment = () => {
     fetchTransports();
     fetchMasterData();
   }, []);
-  // console.log(transports);
-  
-
+     
+  console.log('currentUser', currentUser);  
   const patchForm = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
   const handleSubmit = async (e) => {
@@ -99,11 +100,14 @@ const Assignment = () => {
     });
   };
 
-  const filtered = useMemo(() => 
-    assignments.filter(a => {
+  const filtered = useMemo(() => {
+    const list = assignments.filter(a => {
       const staff = users.find(u => u.id === a.staff_id)?.name || '';
       return staff.toLowerCase().includes(search.toLowerCase());
-    }), [assignments, users, search]);
+    });
+    console.log('🔍 Filtered Assignments (for display):', list); 
+    return list;
+  }, [assignments, users, search]);
 
   const {
     paginatedData,
@@ -132,16 +136,18 @@ const Assignment = () => {
           </p>
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => { setIsAdding(!isAdding); if(isEditing) setIsEditing(false); setForm(DEFAULT_FORM); }}
-          className="h-12 px-8 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer"
-          style={isAdding || isEditing ? { background: '#ffffff', color: '#78776f', border: '1.5px solid #e2e0d8' } : { background: '#1a1916', color: '#ffffff', border: '1.5px solid #1a1916' }}
-        >
-          {isAdding || isEditing ? <X size={14} /> : <Plus size={14} />}
-          {isAdding || isEditing ? 'Cancel' : 'New Assignment'}
-        </motion.button>
+        {currentUser?.role_name !== 'Staff' && (
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => { setIsAdding(!isAdding); if(isEditing) setIsEditing(false); setForm(DEFAULT_FORM); }}
+            className="h-12 px-8 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer"
+            style={isAdding || isEditing ? { background: '#ffffff', color: '#78776f', border: '1.5px solid #e2e0d8' } : { background: '#1a1916', color: '#ffffff', border: '1.5px solid #1a1916' }}
+          >
+            {isAdding || isEditing ? <X size={14} /> : <Plus size={14} />}
+            {isAdding || isEditing ? 'Cancel' : 'New Assignment'}
+          </motion.button>
+        )}
       </div>
 
       <AnimatePresence mode="wait">
@@ -160,23 +166,27 @@ const Assignment = () => {
             
             <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               
-              {/* Staff Selection */}
-              <FormField label="Field Personnel" icon={<Users size={14} />}>
-                <select value={form.staff_id} onChange={e => patchForm('staff_id', e.target.value)} required className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
-                  <option value="">Select Staff...</option>
-                  {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-                </select>
-              </FormField>
+              {/* Staff Selection - Hidden for Staff */}
+              {currentUser?.role_name !== 'Staff' && (
+                <FormField label="Field Personnel" icon={<Users size={14} />}>
+                  <select value={form.staff_id} onChange={e => patchForm('staff_id', e.target.value)} required className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
+                    <option value="">Select Staff...</option>
+                    {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
+                  </select>
+                </FormField>
+              )}
 
-              {/* Task Type */}
-              <FormField label="Mission Type" icon={<Briefcase size={14} />}>
-                <select value={form.task_type_id} onChange={e => patchForm('task_type_id', e.target.value)} required className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
-                  <option value="">Select Task...</option>
-                  {(masterData.task_type || []).map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                </select>
-              </FormField>
+              {/* Task Type - Hidden for Staff */}
+              
+                <FormField label="Mission Type" icon={<Briefcase size={14} />}>
+                  <select value={form.task_type_id} onChange={e => patchForm('task_type_id', e.target.value)} required className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
+                    <option value="">Select Task...</option>
+                    {(masterData.task_type || []).map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </FormField>
+             
 
-              {/* Status */}
+              {/* Status - Always Visible */}
               <FormField label="Initial Status" icon={<Activity size={14} />}>
                 <select value={form.status_id} onChange={e => patchForm('status_id', e.target.value)} required className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
                   {(masterData.status_assignment
@@ -184,38 +194,44 @@ const Assignment = () => {
                 </select>
               </FormField>
 
-              {/* References Section */}
-              <div className="lg:col-span-3 border-t border-[#f0efe9] pt-8 mt-2">
-                <h4 className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#b0aea5] mb-6">Linked References (Optional)</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  <FormField label="Booking" icon={<Calendar size={14} />}>
-                    <select value={form.booking_id} onChange={e => patchForm('booking_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
-                      <option value="">None</option>
-                      {bookings.map(b => <option key={b.id} value={b.id}>#{b.id} - {b.lead?.name || 'Booking'}</option>)}
-                    </select>
-                  </FormField>
-                  <FormField label="Flight" icon={<Plane size={14} />}>
-                    <select value={form.flight_id} onChange={e => patchForm('flight_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
-                      <option value="">None</option>
-                      {flights.map(f => <option key={f.id} value={f.id}>{f.airline} </option>)}
-                    </select>
-                  </FormField>
-                  <FormField label="Hotel" icon={<Hotel size={14} />}>
-                    <select value={form.hotel_id} onChange={e => patchForm('hotel_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
-                      <option value="">None</option>
-                      {hotels.map(h => <option key={h.id} value={h.id}>{h.hotel_name}</option>)}
-                    </select>
-                  </FormField>
-                  <FormField label="Driver Name" icon={<Car size={14} />}>       
-                    <select value={form.transport_id} onChange={e => patchForm('transport_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
-                      <option value="">None</option>
-                      {transports.map(t => <option key={t.id} value={t.id}>{t.driver} </option>)}
-                    </select>
-                  </FormField>
-                  <FormField label="Task Detail" icon={<Info size={14} />}>
-                    <textarea value={form.task_detail} onChange={e => patchForm('task_detail', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer"></textarea>
-                  </FormField>
+              {/* References Section - Hidden for Staff */}
+              {currentUser?.role_name !== 'Staff' && (
+                <div className="lg:col-span-3 border-t border-[#f0efe9] pt-8 mt-2">
+                  <h4 className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#b0aea5] mb-6">Linked References (Optional)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <FormField label="Booking" icon={<Calendar size={14} />}>
+                      <select value={form.booking_id} onChange={e => patchForm('booking_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
+                        <option value="">None</option>
+                        {bookings.map(b => <option key={b.id} value={b.id}>#{b.id} - {b.lead?.name || 'Booking'}</option>)}
+                      </select>
+                    </FormField>
+                    <FormField label="Flight" icon={<Plane size={14} />}>
+                      <select value={form.flight_id} onChange={e => patchForm('flight_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
+                        <option value="">None</option>
+                        {flights.map(f => <option key={f.id} value={f.id}>{f.airline} </option>)}
+                      </select>
+                    </FormField>
+                    <FormField label="Hotel" icon={<Hotel size={14} />}>
+                      <select value={form.hotel_id} onChange={e => patchForm('hotel_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
+                        <option value="">None</option>
+                        {hotels.map(h => <option key={h.id} value={h.id}>{h.hotel_name}</option>)}
+                      </select>
+                    </FormField>
+                    <FormField label="Driver Name" icon={<Car size={14} />}>       
+                      <select value={form.transport_id} onChange={e => patchForm('transport_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
+                        <option value="">None</option>
+                        {transports.map(t => <option key={t.id} value={t.id}>{t.driver} </option>)}
+                      </select>
+                    </FormField>
+                  </div>
                 </div>
+              )}
+
+              {/* Task Detail - Always Visible */}
+              <div className="lg:col-span-3">
+                <FormField label="Task Detail" icon={<Info size={14} />}>
+                  <textarea value={form.task_detail} onChange={e => patchForm('task_detail', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer min-h-[100px]"></textarea>
+                </FormField>
               </div>
 
               <div className="lg:col-span-3 flex justify-end gap-3 mt-4">
@@ -297,13 +313,16 @@ const Assignment = () => {
                            </span>
                         </td>
                         <td className="px-8 py-6 text-right">
-                           <div className="flex items-center justify-end gap-2.5">
-                             <button onClick={() => handleEdit(a)} className="w-8 h-8 rounded-lg border-[1.5px] border-[#e2e0d8] flex items-center justify-center text-[#78776f] hover:border-[#1a1916] hover:text-[#1a1916] transition-all cursor-pointer">
-                               <Edit2 size={12} />
-                             </button>
-                             <button onClick={() => { if(window.confirm('Delete assignment?')) deleteAssignment(a.id); }} className="w-8 h-8 rounded-lg border-[1.5px] border-[#e2e0d8] flex items-center justify-center text-[#78776f] hover:border-[#c23b2e] hover:text-[#c23b2e] transition-all cursor-pointer">
-                               <Trash2 size={12} />
-                             </button>
+                               <div className="flex items-center justify-end gap-2.5">
+                          <button onClick={() => handleEdit(a)} className="w-8 h-8 rounded-lg border-[1.5px] border-[#e2e0d8] flex items-center justify-center text-[#78776f] hover:border-[#1a1916] hover:text-[#1a1916] transition-all cursor-pointer">
+                                 <Edit2 size={12} />
+                               </button>
+                           {currentUser?.role_name !== 'Staff' && (
+                               
+                               <button onClick={() => { if(window.confirm('Delete assignment?')) deleteAssignment(a.id); }} className="w-8 h-8 rounded-lg border-[1.5px] border-[#e2e0d8] flex items-center justify-center text-[#78776f] hover:border-[#c23b2e] hover:text-[#c23b2e] transition-all cursor-pointer">
+                                 <Trash2 size={12} />
+                               </button>
+                           )}
                            </div>
                         </td>
                       </tr>

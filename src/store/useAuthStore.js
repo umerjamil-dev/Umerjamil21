@@ -116,7 +116,7 @@ const useAuthStore = create((set) => ({
         data = data.data;
       }
       
-      const { permissions, is_admin, role_id, calculation_id } = data;
+      const { permissions, is_admin, role_id, calculation_id ,role_name } = data;
       const newPermissions = Array.isArray(permissions) ? permissions : [];
       
       set((state) => ({
@@ -128,7 +128,7 @@ const useAuthStore = create((set) => ({
           calculation_id: calculation_id
         }
       }));
-      
+      // console.log('user', useAuthStore.getState().user);
         
       const storedUser = localStorage.getItem('user');
       if (storedUser) {

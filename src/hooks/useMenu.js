@@ -31,6 +31,8 @@ export const useFilteredMenu = () => {
       return pName.toLowerCase() === perm.toLowerCase();
     });
   };
+  // console.log('userPermissions', userPermissions);
+
 
   return useMemo(() => {
     const menuItems = [

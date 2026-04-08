@@ -10,8 +10,10 @@ const useAssignmentStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.get('/assignments');
+      console.log('📡 Assignments API Response:', response.data);
+      const dataList = Array.isArray(response.data) ? response.data : (response.data.data || []);
       set({ 
-        assignments: Array.isArray(response.data) ? response.data : (response.data.data || []), 
+        assignments: dataList, 
         isLoading: false 
       });
     } catch (err) {
