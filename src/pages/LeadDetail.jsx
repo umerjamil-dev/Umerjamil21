@@ -171,7 +171,12 @@ const LeadDetail = () => {
                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                                         <Mail size={14} /> Email Address
                                     </p>
-                                    <p className="text-lg font-black text-gray-900 group-hover:text-blue-600 transition-colors cursor-pointer truncate">{lead.email}</p>
+                                    <p 
+                                        onClick={() => navigate(`/emails/${id}`)}
+                                        className="text-lg font-black text-gray-900 group-hover:text-blue-600 transition-colors cursor-pointer truncate"
+                                    >
+                                        {lead.email}
+                                    </p>
                                 </div>
                             </div>
                             
@@ -212,12 +217,12 @@ const LeadDetail = () => {
                             >
                                 <MessageCircle size={18} className="group-hover:scale-110 transition-transform" /> WhatsApp
                             </a>
-                            <a 
-                                href={`mailto:${lead.email}`}
+                            <button 
+                                onClick={() => navigate(`/emails/${id}`)}
                                 className="w-full sm:flex-1 py-4 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-blue-100 hover:border-blue-600"
                             >
                                 <Mail size={18} className="group-hover:scale-110 transition-transform" /> Email
-                            </a>
+                            </button>
                         </div>
 
                         {/* Message Box */}

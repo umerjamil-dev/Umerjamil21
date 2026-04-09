@@ -143,7 +143,7 @@ export const useFilteredMenu = () => {
           { title: 'Roles', path: '/settings/roles', permission: 'MANAGE_ROLES' },
           { title: 'Permissions', path: '/settings/permissions', permission: 'MANAGE_PERMISSIONS' },
           { title: 'Assign Permissions', path: '/settings/assign-permissions', permission: 'ASSIGN_PERMISSIONS' },
-          { title: 'Master Types', path: '/settings/master-types', permission: 'MANAGE_MASTER_TYPES' },
+          // { title: 'Master Types', path: '/settings/master-types', permission: 'MANAGE_MASTER_TYPES' },
           { title: 'API Sync', path: '/settings/api', permission: 'MANAGE_API_SYNC' },
           { title: 'Subscription', path: '/settings/subscription', permission: 'MANAGE_SUBSCRIPTION' },
           { title: 'Personnel Registry', path: '/settings/users', permission: 'MANAGE_USERS' },

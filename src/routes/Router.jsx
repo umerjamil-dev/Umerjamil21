@@ -60,6 +60,7 @@ import Subscription from '../pages/settings/Subscription'
 import BookingAnalytics from '../pages/reports/BookingAnalytics';
 import PaymentReports from '../pages/reports/PaymentReports';
 import SalesPerformance from '../pages/reports/SalesPerformance';
+import EmailSystem from '../pages/EmailSystem';
 
 const Router = () => {
   return (
@@ -76,6 +77,8 @@ const Router = () => {
         <Route path="/leads/add" element={<ProtectedRoute permission="CREATE_LEADS"><Layout><AddLead /></Layout></ProtectedRoute>} />
         <Route path="/leads/:id" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><LeadDetail /></Layout></ProtectedRoute>} />
         <Route path="/leads/:id/edit" element={<ProtectedRoute permission="CREATE_LEADS"><Layout><UpdateLead /></Layout></ProtectedRoute>} />
+        <Route path="/emails/:id" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><EmailSystem /></Layout></ProtectedRoute>} />
+        <Route path="/emails/:id/:folder" element={<ProtectedRoute permission="VIEW_LEADS"><Layout><EmailSystem /></Layout></ProtectedRoute>} />
         <Route path="/customers" element={<ProtectedRoute permission="VIEW_CUSTOMERS"><Layout><Customers /></Layout></ProtectedRoute>} />
         <Route path="/customers/add" element={<ProtectedRoute permission="VIEW_CUSTOMERS"><Layout><AddCustomer /></Layout></ProtectedRoute>} />
         <Route path="/customers/:id" element={<ProtectedRoute permission="VIEW_CUSTOMERS"><Layout><CustomerDetail /></Layout></ProtectedRoute>} />
