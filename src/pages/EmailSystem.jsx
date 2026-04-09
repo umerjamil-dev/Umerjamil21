@@ -3,18 +3,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
     Mail, Inbox, Send, Trash2, X, Search, Star,
     MoreVertical, Reply, Paperclip, FileText,
-    Image as ImageIcon, ArrowLeft, Plus, ChevronDown
+    Image as ImageIcon, ArrowLeft, Plus, ChevronDown, Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import useLeadStore from '../store/useLeadStore';
 import useEmailStore from '../store/useEmailStore';
+import useAuthStore from '../store/useAuthStore';
 
 const EmailSystem = () => {
     const { id, folder } = useParams();
     const navigate = useNavigate();
     const { getLead } = useLeadStore();
+    const { user } = useAuthStore();
     const { 
         sentEmails, inboxEmails, trashEmails, sourceEmails, 
         fetchSentEmails, fetchInboxEmails, fetchTrashEmails,
@@ -33,6 +35,7 @@ const EmailSystem = () => {
     const [bccEmail, setBccEmail] = useState('');
     const [subject, setSubject] = useState('');
     const [editorContent, setEditorContent] = useState('');
+    const [attachments, setAttachments] = useState([]);
     const [showCcBcc, setShowCcBcc] = useState(false);
     const [isComposeOpen, setIsComposeOpen] = useState(false);
 
@@ -66,10 +69,10 @@ const EmailSystem = () => {
     }, [folder]);
 
     useEffect(() => {
-        if (activeFolder === 'sent') fetchSentEmails();
-        if (activeFolder === 'inbox') fetchInboxEmails();
-        if (activeFolder === 'trash') fetchTrashEmails();
-    }, [activeFolder, fetchSentEmails, fetchInboxEmails, fetchTrashEmails]);
+        if (activeFolder === 'sent') fetchSentEmails(id, user?.id);
+        if (activeFolder === 'inbox') fetchInboxEmails(id, user?.id);
+        if (activeFolder === 'trash') fetchTrashEmails(id, user?.id);
+    }, [activeFolder, id, user?.id, fetchSentEmails, fetchInboxEmails, fetchTrashEmails]);
 
     useEffect(() => {
         sourceEmailFetch();
@@ -77,17 +80,28 @@ const EmailSystem = () => {
 
     useEffect(() => {
         if (isComposeOpen && quillRef.current && !editorInstance.current) {
+            // Register custom attachment icon
+            const icons = Quill.import('ui/icons');
+            icons['attachment'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.51a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>';
+
             editorInstance.current = new Quill(quillRef.current, {
                 theme: 'snow',
                 placeholder: 'Write your message...',
                 modules: {
-                    toolbar: [
-                        [{ header: [1, 2, false] }],
-                        ['bold', 'italic', 'underline'],
-                        ['link', 'image'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['clean'],
-                    ],
+                    toolbar: {
+                        container: [
+                            [{ header: [1, 2, false] }],
+                            ['bold', 'italic', 'underline'],
+                            ['link', 'image', 'attachment'],
+                            [{ list: 'ordered' }, { list: 'bullet' }],
+                            ['clean'],
+                        ],
+                        handlers: {
+                            attachment: function() {
+                                document.getElementById('composer-file-input').click();
+                            }
+                        }
+                    },
                 },
             });
             editorInstance.current.on('text-change', () => {
@@ -98,6 +112,23 @@ const EmailSystem = () => {
             editorInstance.current = null;
         }
     }, [isComposeOpen]);
+
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        const newAttachments = files.map(file => ({
+            id: Math.random().toString(36).substr(2, 9),
+            name: file.name,
+            size: (file.size / 1024).toFixed(1) + ' KB',
+            type: file.type,
+            file: file // Store the actual file object
+        }));
+        setAttachments(prev => [...prev, ...newAttachments]);
+        e.target.value = null; // Reset input
+    };
+
+    const removeAttachment = (id) => {
+        setAttachments(prev => prev.filter(a => a.id !== id));
+    };
 
     const handleFolderChange = (folderId) => {
         navigate(`/emails/${id}/${folderId}`);
@@ -194,7 +225,7 @@ const EmailSystem = () => {
             `}</style>
 
             {/* Shell */}
-            <div className="flex h-[calc(100vh-140px)] rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+            <div className="flex h-[calc(100vh-140px)] rounded-2xl mx-auto overflow-hidden border border-gray-200 bg-white shadow-sm">
 
                 {/* ── Sidebar ── */}
                 <aside className="w-56 flex-shrink-0 bg-[#0c1527] flex flex-col px-4 py-5">
@@ -204,7 +235,7 @@ const EmailSystem = () => {
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                             <Mail size={15} color="#fff" strokeWidth={2} />
                         </div>
-                        <span className="text-white font-semibold text-[15px] tracking-tight">MailOrbit</span>
+                        <span className="text-white font-semibold text-[15px] tracking-tight">Mailer</span>
                     </div>
 
                     {/* Nav */}
@@ -430,7 +461,7 @@ const EmailSystem = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
+                        className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
                         onClick={() => setIsComposeOpen(false)}
                     >
                         <motion.div
@@ -438,36 +469,39 @@ const EmailSystem = () => {
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.96, opacity: 0, y: 14 }}
                             transition={{ duration: 0.18 }}
-                            className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden max-h-[88vh]"
+                            className="bg-white w-full max-w-xl rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-gray-100 flex flex-col overflow-hidden max-h-[90vh]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Modal Header */}
-                            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gray-50/80">
-                                <div className="flex items-center gap-2.5">
-                                    <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
-                                        <Mail size={14} color="#fff" strokeWidth={2} />
+                            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-50 bg-white">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                                        <Mail size={16} color="#fff" strokeWidth={2.5} />
                                     </div>
-                                    <span className="text-[14px] font-semibold text-gray-900">New Message</span>
+                                    <div>
+                                        <h3 className="text-[15px] font-bold text-gray-900 leading-none">New Message</h3>
+                                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest mt-1">Compose Draft</p>
+                                    </div>
                                 </div>
                                 <button
                                     onClick={() => setIsComposeOpen(false)}
-                                    className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+                                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-50 text-gray-400 hover:text-gray-900 transition-all border border-transparent hover:border-gray-100"
                                 >
-                                    <X size={15} className="text-gray-500" strokeWidth={2} />
+                                    <X size={16} strokeWidth={2.5} />
                                 </button>
                             </div>
 
                             {/* Modal Body */}
-                            <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4">
-                                {/* From / To */}
-                                <div className="grid grid-cols-2 gap-3">
+                            <div className="p-0 overflow-y-auto">
+                                <div className="p-6 pb-2 space-y-4">
+                                    {/* From Selector */}
                                     <div className="flex flex-col gap-1.5">
-                                        <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">From</label>
+                                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">From</label>
                                         <div className="relative">
                                             <select
                                                 value={fromEmail}
                                                 onChange={(e) => setFromEmail(e.target.value) }
-                                                className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 pr-8 text-[13px] text-gray-800 outline-none focus:border-blue-400 transition-colors cursor-pointer"
+                                                className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-[13px] text-gray-800 outline-none focus:border-blue-400 focus:bg-white transition-all cursor-pointer font-medium"
                                             >
                                                 {sourceEmails.length > 0
                                                     ? sourceEmails.map((e) => (
@@ -476,99 +510,115 @@ const EmailSystem = () => {
                                                     : <option value="info@mailorbit.com">info@mailorbit.com</option>
                                                 }
                                             </select>
-                                            <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                            <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-gray-400">
+                                                <ChevronDown size={14} />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col gap-1.5">
-                                        <div className="flex justify-between items-center">
-                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">To</label>
-                                            <button
-                                                onClick={() => setShowCcBcc(!showCcBcc)}
-                                                className="text-[10px] font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-                                            >
-                                                {showCcBcc ? 'Hide CC/BCC' : '+ CC/BCC'}
-                                            </button>
+                                    {/* To / CC / BCC */}
+                                    <div className="space-y-4">
+                                        <div className="relative flex flex-col gap-1.5">
+                                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Recipient</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="email"
+                                                    value={toEmail}
+                                                    onChange={(e) => setToEmail(e.target.value)}
+                                                    placeholder="To"
+                                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pr-20 text-[13px] font-semibold text-gray-800 outline-none focus:border-blue-400 focus:bg-white transition-all placeholder:text-gray-300"
+                                                />
+                                                <button 
+                                                    onClick={() => setShowCcBcc(!showCcBcc)}
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-black text-blue-500 hover:text-blue-600 uppercase tracking-widest px-2 py-1 rounded-md bg-blue-50/50 transition-all border border-blue-100/50"
+                                                >
+                                                    {showCcBcc ? 'Hide' : 'CC/BCC'}
+                                                </button>
+                                            </div>
                                         </div>
-                                        <input
-                                            type="email"
-                                            value={toEmail}
-                                            onChange={(e) => setToEmail(e.target.value)}
-                                            placeholder="recipient@example.com"
-                                            className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-gray-800 outline-none focus:border-blue-400 transition-colors"
-                                        />
-                                    </div>
-                                </div>
 
-                                {/* CC / BCC */}
-                                <AnimatePresence>
-                                    {showCcBcc && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="grid grid-cols-2 gap-3">
+                                        {showCcBcc && (
+                                            <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
                                                 <div className="flex flex-col gap-1.5">
-                                                    <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">CC</label>
                                                     <input
-                                                        type="text"
+                                                        type="email"
                                                         value={ccEmail}
                                                         onChange={(e) => setCcEmail(e.target.value)}
-                                                        placeholder="cc@example.com"
-                                                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-gray-800 outline-none focus:border-blue-400 transition-colors"
+                                                        placeholder="Cc"
+                                                        className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-4 py-2 text-[12px] font-medium text-gray-600 outline-none focus:border-blue-200 focus:bg-white transition-all"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col gap-1.5">
-                                                    <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">BCC</label>
                                                     <input
-                                                        type="text"
+                                                        type="email"
                                                         value={bccEmail}
                                                         onChange={(e) => setBccEmail(e.target.value)}
-                                                        placeholder="bcc@example.com"
-                                                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-gray-800 outline-none focus:border-blue-400 transition-colors"
+                                                        placeholder="Bcc"
+                                                        className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-4 py-2 text-[12px] font-medium text-gray-600 outline-none focus:border-blue-200 focus:bg-white transition-all"
                                                     />
                                                 </div>
                                             </div>
-                                        </motion.div>
+                                        )}
+
+                                        <div className="flex flex-col gap-1.5">
+                                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Topic</label>
+                                            <input
+                                                type="text"
+                                                value={subject}
+                                                onChange={(e) => setSubject(e.target.value)}
+                                                placeholder="Subject"
+                                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-gray-800 outline-none focus:border-blue-400 focus:bg-white transition-all placeholder:text-gray-300"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Editor Wrap */}
+                                    <div className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+                                        <div ref={quillRef} style={{ height: '300px', border: 'none' }} />
+                                    </div>
+
+                                    {/* Attachments Display */}
+                                    {attachments.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 pt-2">
+                                            {attachments.map(file => (
+                                                <div key={file.id} className="flex items-center gap-2 bg-blue-50/30 border border-blue-100/50 px-3 py-1.5 rounded-xl group hover:bg-white hover:border-blue-200 transition-all">
+                                                    <FileText size={12} className="text-blue-500" />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[11px] font-bold text-gray-700 truncate max-w-[120px]">{file.name}</span>
+                                                        <span className="text-[9px] text-gray-400 font-medium uppercase tracking-tighter">{file.size}</span>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => removeAttachment(file.id)}
+                                                        className="p-1 text-gray-300 hover:text-red-500 rounded-full hover:bg-red-50 transition-all"
+                                                    >
+                                                        <X size={10} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
                                     )}
-                                </AnimatePresence>
-
-                                {/* Subject */}
-                                <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Subject</label>
-                                    <input
-                                        type="text"
-                                        value={subject}
-                                        onChange={(e) => setSubject(e.target.value)}
-                                        placeholder="Subject heading..."
-                                        className="bg-transparent border-0 border-b border-gray-200 focus:border-blue-500 pb-2 text-[17px] font-semibold text-gray-900 outline-none transition-colors placeholder-gray-300"
+                                    
+                                    {/* Hidden File Input */}
+                                    <input 
+                                        id="composer-file-input"
+                                        type="file" 
+                                        multiple
+                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
+                                        className="hidden" 
+                                        onChange={handleFileChange}
                                     />
-                                </div>
-
-                                {/* Quill Editor */}
-                                <div className="flex-1">
-                                    <div ref={quillRef} />
                                 </div>
                             </div>
 
                             {/* Modal Footer */}
-                            <div className="flex items-center justify-between px-5 py-3.5 border-t border-gray-100 bg-gray-50/80">
+                            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-50 bg-gray-50/30">
                                 <div className="flex gap-1">
-                                    <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] text-gray-500 font-medium hover:bg-gray-100 transition-colors">
-                                        <Paperclip size={13} strokeWidth={2} />
-                                        Attach
-                                    </button>
-                                    <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] text-gray-500 font-medium hover:bg-gray-100 transition-colors">
-                                        <ImageIcon size={13} strokeWidth={2} />
-                                        Image
-                                    </button>
+                                    
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setIsComposeOpen(false)}
-                                        className="px-4 py-2 text-[12px] font-medium text-gray-500 hover:text-red-500 rounded-lg transition-colors"
+                                        className="px-4 py-2 text-[12px] font-bold text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest text-[10px]"
                                     >
                                         Discard
                                     </button>
@@ -583,18 +633,24 @@ const EmailSystem = () => {
                                                     bcc: bccEmail,
                                                     account_id: fromEmail,
                                                     lead_id: id,
+                                                    user_id: user?.id,
                                                     subject : subject,
                                                     body: editorContent,
+                                                    attachments: attachments.map(a => ({
+                                                        name: a.name,
+                                                        type: a.type
+                                                    }))
                                                 });
+                                                setAttachments([]);
                                                 setIsComposeOpen(false);
                                             } catch (err) {
                                                 alert('Send failed: ' + (err.response?.data?.message || err.message));
                                             }
                                         }}
-                                        className="flex items-center gap-2 px-5 py-2 bg-gray-900 hover:bg-black text-white text-[12px] font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-bold rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
                                     >
-                                        {isEmailLoading ? 'Sending...' : 'Send'}
-                                        <Send size={13} strokeWidth={2} />
+                                        {isEmailLoading ? 'Sending...' : 'Send Message'}
+                                        <Send size={14} strokeWidth={2.5} />
                                     </button>
                                 </div>
                             </div>

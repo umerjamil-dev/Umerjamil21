@@ -23,10 +23,11 @@ const useEmailStore = create((set, get) => ({
   },
 
 
-  fetchSentEmails: async () => {
+  fetchSentEmails: async (leadId, userId) => {
+    if (!leadId || !userId) return;
     set({ isLoading: true });
     try {
-      const response = await api.get('/emails/sent');
+      const response = await api.get(`/emails/${leadId}/sent/${userId}`);
       const emails = response.data?.data || response.data || [];
       set({ sentEmails: Array.isArray(emails) ? emails : [], isLoading: false });
     } catch (err) {
@@ -36,10 +37,11 @@ const useEmailStore = create((set, get) => ({
   },
 
 
-fetchInboxEmails: async () => {
+fetchInboxEmails: async (leadId, userId) => {
+  if (!leadId || !userId) return;
   set({ isLoading: true });
   try {
-    const response = await api.get('/emails/inbox');
+    const response = await api.get(`/emails/${leadId}/inbox/${userId}`);
     const emails = response.data?.data || response.data || [];
     set({ inboxEmails: Array.isArray(emails) ? emails : [], isLoading: false });
   } catch (err) {
@@ -47,10 +49,11 @@ fetchInboxEmails: async () => {
     console.error('Fetch Inbox Emails Error:', err);
   }
 },
-fetchTrashEmails: async () => {
+fetchTrashEmails: async (leadId, userId) => {
+  if (!leadId || !userId) return;
   set({ isLoading: true });
   try {
-    const response = await api.get('/emails/trash');
+    const response = await api.get(`/emails/${leadId}/trash/${userId}`);
     const emails = response.data?.data || response.data || [];
     set({ trashEmails: Array.isArray(emails) ? emails : [], isLoading: false });
   } catch (err) {
@@ -58,6 +61,7 @@ fetchTrashEmails: async () => {
     console.error('Fetch Trash Emails Error:', err);
   }
 },
+
 
   sendEmail: async (emailData) => {
     set({ isLoading: true });

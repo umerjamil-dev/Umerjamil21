@@ -173,7 +173,7 @@ const AddPackage = () => {
                               </div>
                            </div>
                         </div>
-                        <div className="p-10 bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)] group/slider hover:bg-white transition-all shadow-sm col-span-1 md:col-span-2">
+                        <div className="   p-10 bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)] group/slider hover:bg-white transition-all shadow-sm col-span-1 md:col-span-2">
                            <div className="flex items-center justify-between mb-8">
                               <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Operational Status</p>
                               <ShieldCheck size={18} className="text-[var(--on-surface-variant)]" strokeWidth={2.5} />

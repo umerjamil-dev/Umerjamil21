@@ -362,7 +362,7 @@ const AddBooking = () => {
                 iconColor="#1a7a52"
               />
             </div>
-
+         
             {/* Remaining Amount Display */}
             {(formData.totalAmount || formData.paidAmount) && (
               <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between relative z-10">

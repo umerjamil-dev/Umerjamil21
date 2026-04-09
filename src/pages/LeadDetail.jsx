@@ -321,7 +321,6 @@ const LeadDetail = () => {
             </div>
         </div>
         
-        
         </>
     );
 };

@@ -81,7 +81,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       className={`
         w-[280px] h-screen fixed left-0 top-0 bg-[#0B0F19] text-white flex flex-col z-50 
         transition-transform duration-300 font-inter border-r border-white/5 shadow-2xl shadow-black/50
-        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}
     >
       {/* Brand Section - High-End Editorial */}
@@ -101,7 +101,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
           {/* Mobile Close Button */}
           <button 
-            className="md:hidden p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+            className="lg:hidden p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
             onClick={() => setIsOpen && setIsOpen(false)}
           >
             <X size={20} />

@@ -22,7 +22,7 @@ const Topbar = ({ onMenuClick }) => {
       {/* Mobile Menu Button & Search Wrapper */}
       <div className="flex items-center gap-3 w-full md:w-auto">
         <button 
-          className="md:hidden p-2 -ml-2 text-gray-600 hover:bg-black/5 rounded-xl transition-colors shrink-0"
+          className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-black/5 rounded-xl transition-colors shrink-0"
           onClick={onMenuClick}
         >
           <Menu size={24} />
