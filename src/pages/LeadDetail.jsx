@@ -209,14 +209,12 @@ const LeadDetail = () => {
                             >
                                 <Phone size={18} className="group-hover:scale-110 transition-transform" /> Call Lead
                             </a>
-                            <a 
-                                href={`https://wa.me/${(lead.phone || '').replace(/\D/g, '')}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <button 
+                                onClick={() => navigate(`/whatsapp/${id}`)}
                                 className="w-full sm:flex-1 py-4 bg-emerald-50 hover:bg-emerald-500 text-emerald-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-emerald-100 hover:border-emerald-500"
                             >
                                 <MessageCircle size={18} className="group-hover:scale-110 transition-transform" /> WhatsApp
-                            </a>
+                            </button>
                             <button 
                                 onClick={() => navigate(`/emails/${id}`)}
                                 className="w-full sm:flex-1 py-4 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 flex items-center justify-center gap-2 group border border-blue-100 hover:border-blue-600"

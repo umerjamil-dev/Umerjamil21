@@ -128,7 +128,6 @@ const useAuthStore = create((set) => ({
           calculation_id: calculation_id
         }
       }));
-      // console.log('user', useAuthStore.getState().user);
         
       const storedUser = localStorage.getItem('user');
       if (storedUser) {

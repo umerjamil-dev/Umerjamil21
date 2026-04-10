@@ -134,7 +134,10 @@ const Packages = () => {
                <h3 className="text-xs font-extrabold text-[var(--on-surface)] uppercase tracking-[0.2em]">Craft New</h3>
                <p className="text-[9px] text-[var(--on-surface-variant)] mt-3 font-medium max-w-[150px] leading-relaxed opacity-60">Design and authorize a new pilgrimage for the season.</p>
             </Link>
-         </div>
+         </div> 
+
+            
+
       </div>
    );
 };

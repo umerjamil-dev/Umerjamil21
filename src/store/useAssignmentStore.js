@@ -48,6 +48,7 @@ const useAssignmentStore = create((set) => ({
       }));
       return { success: true, data: updatedAssignment };
     } catch (err) {
+      
       set({ error: err.message, isLoading: false });
       return { success: false, error: err.message };
     }

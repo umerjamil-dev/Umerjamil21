@@ -249,7 +249,6 @@ const Home = () => {
                         />
                     </div>
                 </motion.div>
-
                 {/* Pie Chart — Acquisition */}
                 <motion.div
                     variants={itemVariants}

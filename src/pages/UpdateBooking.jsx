@@ -128,7 +128,7 @@ const UpdateBooking = () => {
 
   const remaining = (parseFloat(formData.totalAmount) || 0) - (parseFloat(formData.paidAmount) || 0);
   const selectedPackage = packages.find(p => p.id == formData.packageId);
-
+  
   const handleSubmit = async () => {
     if (!formData.customerId || !formData.packageId || !formData.totalAmount) {
       toast.error('Customer, Package and Total Amount are required.');
@@ -154,6 +154,9 @@ const UpdateBooking = () => {
   };
 
   return (
+  <>
+  
+  
     <div className="font-sans space-y-10 pb-24 px-4 md:px-0 animate-in slide-in-from-bottom-6 duration-700">
 
       {/* ── Header ── */}
@@ -174,7 +177,7 @@ const UpdateBooking = () => {
           </h1>
         </div>
 
-        <button
+        <button  
           onClick={handleSubmit}
           disabled={isBookingLoading}
           className={`flex items-center gap-2.5 px-8 py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.25em] shadow-lg transition-all duration-200
@@ -399,6 +402,7 @@ const UpdateBooking = () => {
         </div>
       </div>
     </div>
+  </>
   );
 };
 

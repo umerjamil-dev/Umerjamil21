@@ -112,4 +112,4 @@ const MasterTypes = () => {
    );
 };
 
-export default MasterTypes;
+export default MasterTypes ;  

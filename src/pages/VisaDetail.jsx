@@ -46,6 +46,7 @@ const VisaDetail = () => {
   const customerName = visa.customer_full_name || 'Unknown Applicant';
 
   return (
+    <>
     <div className="font-inter space-y-8 animate-in fade-in duration-700 pb-20">
       {/* Header Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
@@ -182,6 +183,7 @@ const VisaDetail = () => {
         </div>
       </div>
     </div>  
+    </>
   );
 };
 

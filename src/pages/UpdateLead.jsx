@@ -71,6 +71,8 @@ const UpdateLead = () => {
          navigate(`/leads/${id}`);
       } catch (err) {
          toast.error('Operational failure: ' + err.message);
+         alert("Operational failure: " + err.message);
+         
       }
    };
 

@@ -66,7 +66,8 @@ const UpdatePackage = () => {
     };
 
     return (
-        <div className="font-inter space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-24">
+        <>
+<div className="font-inter space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-24">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-4">
                 <div className="space-y-2">
@@ -288,7 +289,8 @@ const UpdatePackage = () => {
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>         
+        </>
     );
 };
 

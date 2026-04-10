@@ -69,6 +69,7 @@ const UpdateCustomer = () => {
    };
 
    return (
+     <>
       <div className="font-inter  space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Header */}
          <div className="flex items-center justify-between">
@@ -246,6 +247,9 @@ const UpdateCustomer = () => {
             </div>
          </div>
       </div>
+     
+     
+     </>
    );
 };
 

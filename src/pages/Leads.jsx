@@ -182,15 +182,13 @@ const Leads = () => {
                         >
                           <MessageSquare size={14} strokeWidth={2.5} />
                         </a>
-                        <a
-                          href={`https://wa.me/${(lead.phone || '').replace(/\D/g, '')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Link
+                          to={`/whatsapp/${lead.id}`}
                           className="w-8 h-8 flex items-center justify-center bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm"
                           title="WhatsApp"
                         >
                           <MessageCircle size={14} strokeWidth={2.5} />
-                        </a>
+                        </Link>
                       </div>
 
                       {/* Operational Actions - Unveiled on Row Hover */}
