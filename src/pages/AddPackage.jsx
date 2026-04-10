@@ -274,6 +274,7 @@ const AddPackage = () => {
                      <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 mb-10 group-hover:rotate-12 transition-transform">
                         <Workflow className="text-[var(--desert-gold)]" size={32} strokeWidth={1.5} />
                      </div>
+                     <div className='text-3xl font-black italic evenly '></div>
                      <h4 className="text-3xl font-manrope font-black tracking-tighter mb-6 leading-tight">Operational <br /><span className="italic font-light opacity-50">Guarantee</span></h4>
                      <p className="text-[12px] font-medium text-white/40 leading-relaxed mb-10 max-w-[24ch]">
                         This  configuration will be globally active and available for quotation synthesis once authorized.

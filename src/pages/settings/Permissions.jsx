@@ -26,6 +26,7 @@ const Permissions = () => {
          return;
       }
 
+
       const payload = {
          name: newName.toUpperCase().replace(/\s+/g, '_'),
          url: newUrl.trim()
