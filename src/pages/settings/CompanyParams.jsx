@@ -17,7 +17,7 @@ const CompanyParams = () => {
       if (settings?.company) {
          setFormData(settings.company || {});
          if (settings.company.logo) {
-             setLogoPreview(`http://192.168.5.178:8000/${settings.company.logo}`);
+            setLogoPreview(`http://192.168.5.111:8000/${settings.company.logo}`);
          }
       }
    }, [settings]);
@@ -41,11 +41,11 @@ const CompanyParams = () => {
    const handleSave = async () => {
       try {
          const data = new FormData();
-         
+
          // Append all text fields
-       Object.keys(formData).forEach(key => {
-   data.append(`company.${key}`, formData[key]);   // ← dot (.) use karo, bracket nahi
-});
+         Object.keys(formData).forEach(key => {
+            data.append(`company.${key}`, formData[key]);   // ← dot (.) use karo, bracket nahi
+         });
 
          // Append the file if present
          if (logoFile) {
@@ -53,7 +53,7 @@ const CompanyParams = () => {
          }
 
          const isUpdate = !!settings?.company;
-         
+
          if (isUpdate) {
             // Laravel PATCH spoofing for FormData
             data.append('_method', 'PATCH');
@@ -84,23 +84,23 @@ const CompanyParams = () => {
                   Establish the firmographic identity, localization, and primary contact parameters for your global operations.
                </p>
             </div>
-            
+
             {/* Primary Action Button */}
             <div className="px-6 md:px-0">
-                <button
-                onClick={handleSave}
-                disabled={isLoading}
-                className={`
+               <button
+                  onClick={handleSave}
+                  disabled={isLoading}
+                  className={`
                     px-10 py-5 rounded-full text-[11px] font-black uppercase tracking-[0.3em] shadow-lg
                     transition-all flex items-center gap-3 shrink-0
-                    ${isLoading 
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ${isLoading
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-[#111827] text-white hover:bg-[#D4AF37] hover:text-[#111827] hover:scale-105 active:scale-95'}
                 `}
-                >
-                <Save size={18} strokeWidth={2.5} />
-                {isLoading ? 'Syncing Vault...' : 'Sync Global Parameters'}
-                </button>
+               >
+                  <Save size={18} strokeWidth={2.5} />
+                  {isLoading ? 'Syncing Vault...' : 'Sync Global Parameters'}
+               </button>
             </div>
          </div>
 
@@ -133,7 +133,7 @@ const CompanyParams = () => {
                      </div>
                   </div>
                ))}
-               
+
                {/* Upload Area */}
                <div className="group flex flex-col mt-4 relative z-10">
                   <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Primary Watermark/Logo</label>
@@ -143,7 +143,7 @@ const CompanyParams = () => {
                         <div className="absolute inset-0 w-full h-full p-4 flex items-center justify-center bg-white">
                            <img src={logoPreview} alt="Logo Preview" className="max-w-full max-h-full object-contain drop-shadow-md" />
                            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold uppercase tracking-widest">
-                               Click to Change Asset
+                              Click to Change Asset
                            </div>
                         </div>
                      ) : (

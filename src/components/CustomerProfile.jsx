@@ -6,7 +6,7 @@ import {
   Calendar, Package
 } from 'lucide-react';
 
-const BASE_URL = 'http://192.168.5.178:8000/';
+const BASE_URL = 'http://192.168.5.111:8000/';
 
 const Row = ({ icon: Icon, label, value, accent }) => (
   <div className="flex items-center justify-between py-4 border-b border-[var(--outline-variant)] last:border-0">
@@ -127,13 +127,13 @@ const CustomerProfile = ({ open, onClose, onConfirm, customer, inputs, results }
             </h3>
 
             <div className="bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)] px-6">
-              <Row icon={Users}      label="Pilgrim Quota"            value={inputs?.persons} />
-              <Row icon={Hotel}      label="Hospitality Grade"        value={inputs?.hotelCategory} />
-              <Row icon={MapPin}     label="Makkah Residency (Nights)" value={inputs?.makkahNights} />
-              <Row icon={MapPin}     label="Madinah Residency (Nights)" value={inputs?.madinahNights} />
-              <Row icon={Calendar}   label="Total Days"               value={totalDays} />
-              <Row icon={Plane}      label="Aviation Cost (Unit)"     value={inputs?.flightCost ? `$${Number(inputs.flightCost).toLocaleString()}` : '—'} />
-              <Row icon={ShieldCheck} label="Visa Allotment (Unit)"   value={inputs?.visaCost ? `$${Number(inputs.visaCost).toLocaleString()}` : '—'} />
+              <Row icon={Users} label="Pilgrim Quota" value={inputs?.persons} />
+              <Row icon={Hotel} label="Hospitality Grade" value={inputs?.hotelCategory} />
+              <Row icon={MapPin} label="Makkah Residency (Nights)" value={inputs?.makkahNights} />
+              <Row icon={MapPin} label="Madinah Residency (Nights)" value={inputs?.madinahNights} />
+              <Row icon={Calendar} label="Total Days" value={totalDays} />
+              <Row icon={Plane} label="Aviation Cost (Unit)" value={inputs?.flightCost ? `$${Number(inputs.flightCost).toLocaleString()}` : '—'} />
+              <Row icon={ShieldCheck} label="Visa Allotment (Unit)" value={inputs?.visaCost ? `$${Number(inputs.visaCost).toLocaleString()}` : '—'} />
               <Row
                 icon={DollarSign}
                 label="Total Price"

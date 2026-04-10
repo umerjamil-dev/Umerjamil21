@@ -28,7 +28,9 @@ const useEmailStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await api.get(`/emails/${leadId}/sent/${userId}`);
+
       const emails = response.data?.data || response.data || [];
+      console.log('📡 Sent Emails API Response:', response.data[0].id);
       set({ sentEmails: Array.isArray(emails) ? emails : [], isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
@@ -43,6 +45,7 @@ fetchInboxEmails: async (leadId, userId) => {
   try {
     const response = await api.get(`/emails/${leadId}/inbox/${userId}`);
     const emails = response.data?.data || response.data || [];
+    console.log('📡 Inbox Emails API Response:', emails[0]?.id || 'No data');
     set({ inboxEmails: Array.isArray(emails) ? emails : [], isLoading: false });
   } catch (err) {
     set({ error: err.message, isLoading: false });
@@ -55,6 +58,7 @@ fetchTrashEmails: async (leadId, userId) => {
   try {
     const response = await api.get(`/emails/${leadId}/trash/${userId}`);
     const emails = response.data?.data || response.data || [];
+    console.log('📡 Trash Emails API Response:', emails[0]?.id || 'No data');
     set({ trashEmails: Array.isArray(emails) ? emails : [], isLoading: false });
   } catch (err) {
     set({ error: err.message, isLoading: false });
@@ -62,6 +66,8 @@ fetchTrashEmails: async (leadId, userId) => {
   }
 },
 
+
+ 
 
   sendEmail: async (emailData) => {
     set({ isLoading: true });

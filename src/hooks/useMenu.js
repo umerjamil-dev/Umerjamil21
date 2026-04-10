@@ -67,7 +67,7 @@ export const useFilteredMenu = () => {
           { title: 'Customers', path: '/customers', permission: 'VIEW_CUSTOMERS' },
           { title: 'Packages', path: '/packages', permission: 'VIEW_PACKAGES' },
           { title: 'Calculator', path: '/calculator', permission: 'USE_CALCULATOR' },
-          { title: 'Live Booking (API)', path: '/live-booking', permission: 'VIEW_LIVE_BOOKING' }
+          // { title: 'Live Booking (API)', path: '/live-booking', permission: 'VIEW_LIVE_BOOKING' }
         ]
       },
 

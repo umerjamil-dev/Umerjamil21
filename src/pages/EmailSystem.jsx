@@ -20,8 +20,20 @@ const EmailSystem = () => {
     const { 
         sentEmails, inboxEmails, trashEmails, sourceEmails, 
         fetchSentEmails, fetchInboxEmails, fetchTrashEmails,
-        sendEmail, sourceEmailFetch, isLoading: isEmailLoading 
+        sendEmail, sourceEmailFetch, moveToTrash, isLoading: isEmailLoading 
     } = useEmailStore();
+
+    const handleDelete = async () => {
+        if (!selectedEmail) return;
+        if (!window.confirm('Are you sure you want to move this email to trash?')) return;
+        
+        try {
+            await moveToTrash([selectedEmail.id], activeFolder, id, user?.id);
+            setSelectedEmail(null);
+        } catch (err) {
+            alert('Delete failed: ' + err.message);
+        }
+    };
 
     const [lead, setLead] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -113,15 +125,26 @@ const EmailSystem = () => {
         }
     }, [isComposeOpen]);
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
-        const newAttachments = files.map(file => ({
-            id: Math.random().toString(36).substr(2, 9),
-            name: file.name,
-            size: (file.size / 1024).toFixed(1) + ' KB',
-            type: file.type,
-            file: file // Store the actual file object
-        }));
+        
+        const filePromises = files.map(file => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    resolve({
+                        id: Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        size: (file.size / 1024).toFixed(1) + ' KB',
+                        type: file.type,
+                        base64: reader.result.split(',')[1],  
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        const newAttachments = await Promise.all(filePromises);
         setAttachments(prev => [...prev, ...newAttachments]);
         e.target.value = null; // Reset input
     };
@@ -390,6 +413,12 @@ const EmailSystem = () => {
                                         >
                                             <Reply size={15} className="text-blue-600" strokeWidth={2} />
                                         </button>
+                                        <button 
+                                            onClick={handleDelete}
+                                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                                        >
+                                            <Trash2 size={15} strokeWidth={2} />
+                                        </button>
                                         <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
                                             <MoreVertical size={15} className="text-gray-400" strokeWidth={2} />
                                         </button>
@@ -638,7 +667,8 @@ const EmailSystem = () => {
                                                     body: editorContent,
                                                     attachments: attachments.map(a => ({
                                                         name: a.name,
-                                                        type: a.type
+                                                        type: a.type,
+                                                        base64: a.base64
                                                     }))
                                                 });
                                                 setAttachments([]);

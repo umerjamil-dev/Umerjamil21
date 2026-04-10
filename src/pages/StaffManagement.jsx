@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search, Filter, Activity, Users, ShieldCheck, 
+  Search, Filter, Activity, Users, ShieldCheck,
   MapPin, PhoneCall, Mail
 } from 'lucide-react';
 import useOperationsStore from '../store/useOperationsStore';
@@ -10,15 +10,15 @@ import useOperationsStore from '../store/useOperationsStore';
 const EASE = [0.22, 1, 0.36, 1];
 
 const STATUS_MAP = {
-  'active':    { label: 'Active',    dot: '#1a7a4a', bg: '#edf7f1', border: '#9fe1cb', text: '#1a7a4a' },
-  'on_leave':  { label: 'On Leave',  dot: '#ba7517', bg: '#faeeda', border: '#fac775', text: '#854f0b' },
+  'active': { label: 'Active', dot: '#1a7a4a', bg: '#edf7f1', border: '#9fe1cb', text: '#1a7a4a' },
+  'on_leave': { label: 'On Leave', dot: '#ba7517', bg: '#faeeda', border: '#fac775', text: '#854f0b' },
   'suspended': { label: 'Suspended', dot: '#c23b2e', bg: '#fff1f0', border: '#f7c1c1', text: '#c23b2e' },
-  'default':   { label: 'Unknown',   dot: '#b0aea5', bg: '#f5f4f0', border: '#e2e0d8', text: '#78776f' },
+  'default': { label: 'Unknown', dot: '#b0aea5', bg: '#f5f4f0', border: '#e2e0d8', text: '#78776f' },
 };
 
 const StaffManagement = () => {
   const [search, setSearch] = useState('');
-  
+
   const { staff, fetchOperationsData, isLoading } = useOperationsStore();
 
   useEffect(() => {
@@ -37,12 +37,12 @@ const StaffManagement = () => {
   }, [staff, search]);
 
   const activeCount = Array.isArray(staff) ? staff.filter(s => s.status === 'active' || s.is_active || s.status_id === '1' || s.status_id === 1).length : 0;
-  
+
   // Resolve image URL (similar to ManageUsers)
   const resolveImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('data:') || path.startsWith('blob:') || path.startsWith('http')) return path;
-    return `http://192.168.5.178:8000/storage/${path}`;
+    return `http://192.168.5.111:8000/storage/${path}`;
   };
 
   return (
@@ -184,19 +184,19 @@ const StaffManagement = () => {
                       <td className="px-7 py-4">
                         <div className="flex items-center gap-3.5">
                           <div
-                              className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
-                              style={{ background: '#1a1916' }}
+                            className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                            style={{ background: '#1a1916' }}
                           >
-                              {s.name?.charAt(0).toUpperCase() || '?'}
+                            {s.name?.charAt(0).toUpperCase() || '?'}
                           </div>
                           <div>
-                              <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
+                            <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
                               {s.name || 'Incognito Staff'}
-                              </div>
-                              <div className="flex items-center gap-1 text-[10px] text-[#b0aea5] mt-0.5">
-                                <Mail size={9} />
-                                {s.email || '—'}
-                              </div>
+                            </div>
+                            <div className="flex items-center gap-1 text-[10px] text-[#b0aea5] mt-0.5">
+                              <Mail size={9} />
+                              {s.email || '—'}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -219,7 +219,7 @@ const StaffManagement = () => {
                           <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#1a7a4a]">Online</span>
                         </div>
                       </td>
-                      
+
                     </motion.tr>
                   );
                 }) : (

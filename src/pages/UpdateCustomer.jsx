@@ -13,7 +13,7 @@ const UpdateCustomer = () => {
    const { id } = useParams();
    const navigate = useNavigate();
    const { getCustomer, updateCustomer, isLoading } = useCustomerStore();
-   const imgBaseUrl = 'http://192.168.5.178:8000/';
+   const imgBaseUrl = 'http://192.168.5.111:8000/';
 
    const [formData, setFormData] = useState({
       firstName: '',
@@ -79,8 +79,8 @@ const UpdateCustomer = () => {
                <span className="text-[10px] font-extrabold uppercase tracking-[0.25em]">Pilgrim Profile</span>
             </Link>
             <div className="text-center absolute left-1/2 -translate-x-1/2">
-                <h1 className="text-2xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight uppercase">Update</h1>
-                <p className="text-[10px] text-[var(--on-surface-variant)] font-extrabold uppercase tracking-[0.3em] mt-1">Record ID: {id}</p>
+               <h1 className="text-2xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight uppercase">Update</h1>
+               <p className="text-[10px] text-[var(--on-surface-variant)] font-extrabold uppercase tracking-[0.3em] mt-1">Record ID: {id}</p>
             </div>
             <button
                onClick={handleSubmit}
@@ -100,10 +100,10 @@ const UpdateCustomer = () => {
                   <div className="relative mx-auto mb-8 w-32 h-32">
                      <div className="w-full h-full bg-[var(--surface)] rounded-[2.5rem] flex items-center justify-center text-[var(--on-surface-variant)] group-hover:bg-white group-hover:shadow-xl transition-all border border-[var(--outline-variant)] relative z-10 overflow-hidden">
                         {formData.customer_image ? (
-                           <img 
-                              src={typeof formData.customer_image === 'string' ? imgBaseUrl + formData.customer_image : URL.createObjectURL(formData.customer_image)} 
-                              alt="Profile" 
-                              className="w-full h-full object-cover" 
+                           <img
+                              src={typeof formData.customer_image === 'string' ? imgBaseUrl + formData.customer_image : URL.createObjectURL(formData.customer_image)}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
                            />
                         ) : (
                            <User size={40} strokeWidth={1.5} />

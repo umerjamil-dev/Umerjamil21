@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-    ArrowLeft, User, Phone, Mail, 
-    MapPin, Fingerprint, ShieldCheck, 
-    FileText, Save, Globe, CreditCard, 
+import {
+    ArrowLeft, User, Phone, Mail,
+    MapPin, Fingerprint, ShieldCheck,
+    FileText, Save, Globe, CreditCard,
     Calendar, Plane, Hotel, Star,
     MessageSquare, Trash2, Edit3,
     ChevronRight, History, Activity,
@@ -58,7 +58,7 @@ const CustomerDetail = () => {
     if (!customer) return null;
 
     const fullName = `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || customer.name || 'Unnamed Pilgrim';
-    const imgBaseUrl = 'http://192.168.5.178:8000/'
+    const imgBaseUrl = 'http://192.168.5.111:8000/'
 
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 font-inter pb-20">
@@ -70,23 +70,23 @@ const CustomerDetail = () => {
                     </Link>
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                             <span className="px-3 py-1 text-black bg-[var(--grad-black)]  text-[10px] font-black uppercase tracking-widest rounded-lg">Verified Pilgrim</span>
-                             <span className="text-[10px] font-bold text-[var(--on-surface-variant)] opacity-40">/</span>
-                             <span className="text-[10px] font-bold text-[var(--on-surface-variant)]">{customer.id}</span>
+                            <span className="px-3 py-1 text-black bg-[var(--grad-black)]  text-[10px] font-black uppercase tracking-widest rounded-lg">Verified Pilgrim</span>
+                            <span className="text-[10px] font-bold text-[var(--on-surface-variant)] opacity-40">/</span>
+                            <span className="text-[10px] font-bold text-[var(--on-surface-variant)]">{customer.id}</span>
                         </div>
                         <h1 className="text-4xl font-manrope font-black text-[var(--on-surface)] tracking-tighter">{fullName}</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button 
+                    <button
                         onClick={() => navigate(`/customers/${id}/edit`)}
                         className="flex items-center gap-2 px-6 py-4 bg-[var(--surface-container-low)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all"
                     >
                         <Edit3 size={14} />
                         Refine Profile
                     </button>
-                    <button 
+                    <button
                         onClick={handleDelete}
                         className="flex items-center gap-2 px-6 py-4 bg-red-50 border border-red-100 rounded-xl text-[10px] font-extrabold uppercase tracking-widest text-red-600 hover:bg-red-100 transition-all"
                     >
@@ -98,13 +98,13 @@ const CustomerDetail = () => {
 
             {/* Main Bento Core */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
+
                 {/* Identity & Status Sidebar */}
                 <div className="lg:col-span-4 space-y-8">
-                
+
                     <div className="bg-[var(--surface-container-lowest)] rounded-3xl p-10 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--surface)] rounded-bl-[5rem] translate-x-8 -translate-y-8 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform opacity-30"></div>
-                        
+
                         <div className="relative z-10 flex flex-col items-center mb-10">
                             <div className="w-32 h-32 bg-[var(--surface)] rounded-[2.5rem] border-2 border-[var(--outline-variant)] p-1 mb-6 transition-all">
                                 <div className="w-full h-full rounded-[2.2rem] bg-[var(--surface-container-high)] flex items-center justify-center text-[var(--on-surface-variant)] overflow-hidden">
@@ -139,7 +139,7 @@ const CustomerDetail = () => {
                                     <ChevronRight size={12} className="text-[var(--on-surface-variant)] opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover/item:translate-x-0 transition-all" />
                                 </div>
                             ))}
-                        </div>
+                        </div>   
                     </div>
 
                     <div className="bg-[#111827] rounded-3xl p-10 text-black relative overflow-hidden group">
@@ -164,7 +164,7 @@ const CustomerDetail = () => {
 
                 {/* Content Area */}
                 <div className="lg:col-span-8 space-y-8">
-                    
+
                     {/* Navigation Tabs */}
                     <div className="flex items-center gap-2 p-2 bg-[var(--surface-container-low)] rounded-2xl border border-[var(--outline-variant)] w-fit">
                         {[
@@ -176,11 +176,10 @@ const CustomerDetail = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all ${
-                                    activeTab === tab.id 
-                                    ? 'bg-white text-[var(--on-surface)] shadow-lg' 
-                                    : 'text-[var(--on-surface-variant)] hover:bg-white/50'
-                                }`}
+                                className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all ${activeTab === tab.id
+                                        ? 'bg-white text-[var(--on-surface)] shadow-lg'
+                                        : 'text-[var(--on-surface-variant)] hover:bg-white/50'
+                                    }`}
                             >
                                 <tab.icon size={14} />
                                 {tab.label}
@@ -240,12 +239,12 @@ const CustomerDetail = () => {
                                             { date: 'Yesterday, 09:12', title: 'Visa Document Uploaded', desc: 'Electronic visa certificate attached to profile.', icon: FileText },
                                             { date: 'Mar 28, 2024', title: 'Pilgrim Initialized', desc: 'Record created in central database.', icon: Plus }
                                         ].map((item, i) => (
-                                             <div key={i} className="relative group">
-                                                 <div className="absolute -left-[41px] top-0 w-4 h-4 bg-white border-2 border-[var(--on-surface)] rounded-full group-hover:scale-125 transition-transform"></div>
-                                                 <span className="text-[8px] font-black uppercase text-[var(--on-surface-variant)] tracking-widest opacity-40">{item.date}</span>
-                                                 <h5 className="text-sm font-manrope font-extrabold text-[var(--on-surface)] mt-1">{item.title}</h5>
-                                                 <p className="text-[11px] text-[var(--on-surface-variant)] mt-2 leading-relaxed">{item.desc}</p>
-                                             </div>
+                                            <div key={i} className="relative group">
+                                                <div className="absolute -left-[41px] top-0 w-4 h-4 bg-white border-2 border-[var(--on-surface)] rounded-full group-hover:scale-125 transition-transform"></div>
+                                                <span className="text-[8px] font-black uppercase text-[var(--on-surface-variant)] tracking-widest opacity-40">{item.date}</span>
+                                                <h5 className="text-sm font-manrope font-extrabold text-[var(--on-surface)] mt-1">{item.title}</h5>
+                                                <p className="text-[11px] text-[var(--on-surface-variant)] mt-2 leading-relaxed">{item.desc}</p>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
@@ -253,7 +252,7 @@ const CustomerDetail = () => {
                                 <div className="pt-10 border-t border-[var(--outline-variant)]">
                                     <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block">Official Internal Comment</label>
                                     <div className="relative bg-[var(--surface)] border border-[var(--outline-variant)] rounded-2xl p-6 focus-within:border-[var(--on-surface)] transition-all">
-                                        <textarea 
+                                        <textarea
                                             placeholder="Append internal intelligence..."
                                             className="w-full bg-transparent text-sm font-medium outline-none h-24 resize-none placeholder-[var(--on-surface-variant)]/30"
                                         ></textarea>

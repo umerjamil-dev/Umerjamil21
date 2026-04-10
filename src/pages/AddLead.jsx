@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-   ArrowLeft, UserPlus, Phone,
+   UserPlus, Phone,
    Mail, MapPin, MessageSquare,
    Tag, Info, Save, X,
    Globe, ChevronRight, ShieldCheck,
@@ -39,7 +39,6 @@ const AddLead = () => {
       comments: ''
    });
 
-   // Auto-select defaults once master data is loaded
    useEffect(() => {
       if (!formData.source_id && masterData.leadsource.length > 0) {
          setFormData(prev => ({ ...prev, source_id: masterData.leadsource[0].id || masterData.leadsource[0] }));
@@ -54,7 +53,6 @@ const AddLead = () => {
          toast.error('Identity name and primary contact are mandatory.');
          return;
       }
-
       try {
          await addLead(formData);
          toast.success('Inquiry successfully officialized.');
@@ -64,77 +62,126 @@ const AddLead = () => {
       }
    };
 
+   const inputBase = `
+      w-full bg-transparent text-base font-semibold text-[var(--on-surface)] 
+      outline-none placeholder-[var(--on-surface-variant)]/40
+   `;
+
+   const fieldWrap = `
+      relative border-b-2 border-[var(--outline-variant)] 
+      focus-within:border-[var(--primary)] transition-colors duration-200 pb-2.5
+   `;
+
+   const labelBase = `
+      block text-[10px] font-bold uppercase tracking-[0.18em] 
+      text-[var(--on-surface-variant)] mb-2 ml-0.5
+   `;
+
+   const cardBase = `
+      bg-[var(--surface-container-lowest)] rounded-2xl 
+      border border-[var(--outline-variant)] shadow-sm
+   `;
+
+   const sideCardBase = `
+      bg-[var(--surface-container-lowest)] rounded-2xl 
+      border border-[var(--outline-variant)]
+   `;
+
+   const sectionTitle = `
+      text-[10px] font-extrabold uppercase tracking-[0.22em] 
+      text-[var(--on-surface-variant)] flex items-center gap-2 mb-7
+   `;
 
    return (
-      <div className="font-inter space-y-10 animate-in fade-in duration-700">
-         {/* Header */}
-         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
+      <div className="font-inter space-y-8 animate-in fade-in duration-500 max-w-[1400px] mx-auto">
+
+         {/* ── Header ─────────────────────────────────── */}
+         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-               <h1 className="text-3xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Capture New Inquiry</h1>
-               <p className="text-[var(--on-surface-variant)] text-sm mt-1 font-medium">Formalizing a new pilgrimage journey into the database.</p>
+               <h1 className="text-2xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight leading-tight">
+                  Capture New Inquiry
+               </h1>
+               <p className="text-[var(--on-surface-variant)] text-[13px] mt-1">
+                  Formalizing a new pilgrimage journey into the database.
+               </p>
             </div>
-            <div className="flex items-center gap-3">
+
+            <div className="flex items-center gap-3 shrink-0">
                <Link
                   to="/leads"
-                  className="px-6 py-3 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[11px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all flex items-center gap-2"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[var(--outline-variant)] text-[11px] font-bold uppercase tracking-widest text-[var(--on-surface-variant)] bg-[var(--surface-container-lowest)] hover:bg-[var(--surface-container-high)] transition-colors"
                >
-                  Discard & Exit
+                  <X size={14} strokeWidth={2.5} />
+                  Discard
                </Link>
                <button
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className={`btn-primary px-8 py-3 rounded-xl text-white text-[11px] font-extrabold uppercase shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-[11px] font-extrabold uppercase tracking-widest text-white transition-all
+                     ${isLoading
+                        ? 'opacity-50 cursor-not-allowed bg-[var(--primary)]'
+                        : 'bg-[var(--primary)] hover:brightness-110 active:scale-[0.98]'
+                     }`}
                >
-                  <Save size={18} strokeWidth={2.5} />
-                  {isLoading ? 'Officializing...' : 'Verify & Save'}
+                  <Save size={15} strokeWidth={2.5} />
+                  {isLoading ? 'Saving...' : 'Verify & Save'}
                </button>
             </div>
          </div>
 
-         {/* Bento Style Layout */}
-         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+         {/* ── Bento Grid ─────────────────────────────── */}
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {/* Main Form Fields (2/3) */}
-            <div className="lg:col-span-2 space-y-8">
-               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-10 flex items-center gap-2">
-                     <Info size={14} strokeWidth={2.5} /> Personal
+            {/* ─── LEFT / MAIN (2 cols) ─────────────────── */}
+            <div className="lg:col-span-2 flex flex-col gap-6">
+
+               {/* Personal Info Card */}
+               <div className={`${cardBase} p-7 lg:p-9`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-[var(--primary)]/10 flex items-center justify-center">
+                        <Info size={12} strokeWidth={2.5} className="text-[var(--primary)]" />
+                     </span>
+                     Personal Information
                   </h3>
 
-                  <div className="space-y-10">
-                     <div className="group">
-                        <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Full Identity Name</label>
-                        <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
+                  <div className="space-y-8">
+                     {/* Full Name */}
+                     <div>
+                        <label className={labelBase}>Full Identity Name</label>
+                        <div className={fieldWrap}>
                            <input
                               type="text"
                               placeholder="Enter name as per passport..."
-                              className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                              className={`${inputBase} text-lg`}
                               value={formData.name}
                               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                            />
                         </div>
                      </div>
 
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div className="group">
-                           <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Primary Contact</label>
-                           <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
+                     {/* Phone + Email */}
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                           <label className={labelBase}>Primary Contact</label>
+                           <div className={`${fieldWrap} flex items-center gap-2`}>
+                              <Phone size={15} className="text-[var(--on-surface-variant)]/60 shrink-0" />
                               <input
                                  type="text"
                                  placeholder="+92 3--"
-                                 className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                                 className={inputBase}
                                  value={formData.phone}
                                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                               />
                            </div>
                         </div>
-                        <div className="group">
-                           <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Email Archive</label>
-                           <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
+                        <div>
+                           <label className={labelBase}>Email Address</label>
+                           <div className={`${fieldWrap} flex items-center gap-2`}>
+                              <Mail size={15} className="text-[var(--on-surface-variant)]/60 shrink-0" />
                               <input
                                  type="email"
                                  placeholder="customer@domain.com"
-                                 className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                                 className={inputBase}
                                  value={formData.email}
                                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                               />
@@ -142,57 +189,73 @@ const AddLead = () => {
                         </div>
                      </div>
 
-                     <div className="group">
-                        <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Geographical Origin</label>
-                        <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3 flex items-center justify-between">
+                     {/* City */}
+                     <div>
+                        <label className={labelBase}>Geographical Origin</label>
+                        <div className={`${fieldWrap} flex items-center gap-2`}>
                            <input
                               type="text"
-                              placeholder="Citizen City..."
-                              className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                              placeholder="City of residence..."
+                              className={inputBase}
                               value={formData.city}
                               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                            />
-                           <MapPin size={20} className="text-[var(--on-surface-variant)]" />
+                           <MapPin size={16} className="text-[var(--on-surface-variant)]/60 shrink-0" />
                         </div>
                      </div>
                   </div>
                </div>
 
-               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8 flex items-center gap-2">
-                     <MessageSquare size={14} strokeWidth={2.5} /> Inquiry Transcription
+               {/* Inquiry Message Card */}
+               <div className={`${cardBase} p-7 lg:p-9`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-blue-500/10 flex items-center justify-center">
+                        <MessageSquare size={12} strokeWidth={2.5} className="text-blue-500" />
+                     </span>
+                     Inquiry Transcription
                   </h3>
                   <textarea
                      placeholder="Record the customer's spiritual requirements and package preferences..."
-                     className="w-full p-6 bg-[var(--surface)] border-none rounded-xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
+                     className="w-full px-5 py-4 bg-[var(--surface-container-low)] rounded-xl text-[13px] font-medium text-[var(--on-surface)] outline-none focus:ring-2 focus:ring-[var(--primary)]/30 transition-all h-36 resize-none placeholder-[var(--on-surface-variant)]/50 border border-transparent focus:border-[var(--primary)]/20"
                      value={formData.message}
                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  ></textarea>
+                  />
                </div>
 
-               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8 flex items-center gap-2">
-                     <ShieldCheck size={14} strokeWidth={2.5} /> Operational Intelligence
+               {/* Internal Notes Card */}
+               <div className={`${cardBase} p-7 lg:p-9`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-amber-500/10 flex items-center justify-center">
+                        <ShieldCheck size={12} strokeWidth={2.5} className="text-amber-500" />
+                     </span>
+                     Operational Intelligence
                   </h3>
                   <textarea
                      placeholder="Add internal performance notes, staff comments, or special operational instructions..."
-                     className="w-full p-6 bg-[var(--surface)] border-none rounded-xl text-sm font-medium text-[var(--on-surface-variant)] outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all h-32 resize-none placeholder-[var(--on-surface-variant)]/60"
+                     className="w-full px-5 py-4 bg-[var(--surface-container-low)] rounded-xl text-[13px] font-medium text-[var(--on-surface)] outline-none focus:ring-2 focus:ring-[var(--primary)]/30 transition-all h-36 resize-none placeholder-[var(--on-surface-variant)]/50 border border-transparent focus:border-[var(--primary)]/20"
                      value={formData.comments}
                      onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
-                  ></textarea>
+                  />
                </div>
             </div>
 
-            {/* Metadata Sidebar (1/3) */}
-            <div className="space-y-8">
-               <div className="bg-[var(--surface-container-low)]    rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8">Acquisition Channel</h3>
-                  <div className="grid grid-cols-1 gap-3">
+            {/* ─── RIGHT / SIDEBAR (1 col) ──────────────── */}
+            <div className="flex flex-col gap-6">
+
+               {/* Acquisition Channel */}
+               <div className={`${sideCardBase} p-6`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-green-500/10 flex items-center justify-center">
+                        <Rss size={12} strokeWidth={2.5} className="text-green-500" />
+                     </span>
+                     Acquisition Channel
+                  </h3>
+                  <div className="flex flex-col gap-2">
                      {masterData.leadsource.map((src) => {
                         const sourceName = src.name || src;
                         const srcId = src.id || sourceName;
-                        
-                        // Icon Mapping
+                        const isSelected = formData.source_id === srcId;
+
                         const getIcon = (name) => {
                            const n = name.toLowerCase();
                            if (n.includes('facebook')) return FacebookIcon;
@@ -204,87 +267,114 @@ const AddLead = () => {
                         const SourceIcon = getIcon(sourceName);
 
                         return (
-                            <button
-                               key={srcId}
-                               onClick={() => setFormData({ ...formData, source_id: srcId })}
-                               className={`flex items-center justify-between p-4 rounded-xl border transition-all ${formData.source_id === srcId
-                                  ? 'bg-white border-transparent shadow-xl shadow-black/5 ring-1 ring-[var(--on-surface)]/10'
-                                  : 'bg-white/40 border-transparent hover:border-[var(--outline-variant)] text-[var(--on-surface-variant)]'
-                                  }`}
-                            >
-                               <div className="flex items-center gap-3">
-                                  <SourceIcon size={16} className={formData.source_id === srcId ? 'text-[var(--on-surface)]' : ''} />
-                                  <span className={`text-[10px] font-extrabold uppercase tracking-widest ${formData.source_id === srcId ? 'text-[var(--on-surface)]' : ''}`}>
-                                     {sourceName}
-                                  </span>
-                               </div>
-                               {formData.source_id === srcId && <div className="w-2 h-2 rounded-full bg-[var(--on-surface)]"></div>}
-                            </button>
+                           <button
+                              key={srcId}
+                              onClick={() => setFormData({ ...formData, source_id: srcId })}
+                              className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-150
+                                 ${isSelected
+                                    ? 'bg-[var(--primary)]/8 border-[var(--primary)]/30 shadow-sm'
+                                    : 'bg-[var(--surface-container-low)] border-transparent hover:border-[var(--outline-variant)] hover:bg-[var(--surface-container-high)]'
+                                 }`}
+                           >
+                              <div className="flex items-center gap-3">
+                                 <SourceIcon
+                                    size={15}
+                                    className={isSelected ? 'text-[var(--primary)]' : 'text-[var(--on-surface-variant)]'}
+                                 />
+                                 <span className={`text-[11px] font-bold uppercase tracking-widest
+                                    ${isSelected ? 'text-[var(--primary)]' : 'text-[var(--on-surface-variant)]'}`}>
+                                    {sourceName}
+                                 </span>
+                              </div>
+                              {isSelected && (
+                                 <div className="w-2 h-2 rounded-full bg-[var(--primary)]" />
+                              )}
+                           </button>
                         );
                      })}
                   </div>
                </div>
-               
-               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
-                     <UserCheck size={14} /> Delegation Protocol
+
+               {/* Assign Staff */}
+               <div className={`${sideCardBase} p-6`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-purple-500/10 flex items-center justify-center">
+                        <UserCheck size={12} strokeWidth={2.5} className="text-purple-500" />
+                     </span>
+                     Delegation Protocol
                   </h3>
-                  <select
-                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer"
-                     value={formData.assigned_to_id}
-                     onChange={(e) => setFormData({ ...formData, assigned_to_id: e.target.value })}
-                  >
-                     <option value="">Select Staff Member</option>
-                      {users.filter(u => u.is_admin === 0).map(u => (
-                         <option key={u.id} value={u.id}>{u.name || u.email}</option>
-                      ))}
-                  </select>
+                  <div className="relative">
+                     <select
+                        className="w-full px-4 py-3 bg-[var(--surface-container-low)] rounded-xl text-[12px] font-semibold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer hover:border-[var(--primary)]/40 focus:border-[var(--primary)]/50 focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
+                        value={formData.assigned_to_id}
+                        onChange={(e) => setFormData({ ...formData, assigned_to_id: e.target.value })}
+                     >
+                        <option value="">— Select Staff Member —</option>
+                        {users.filter(u => u.is_admin === 0).map(u => (
+                           <option key={u.id} value={u.id}>{u.name || u.email}</option>
+                        ))}
+                     </select>
+                     <ChevronRight size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 rotate-90 text-[var(--on-surface-variant)] pointer-events-none" />
+                  </div>
                </div>
 
-               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
-                     <Calendar size={14} /> Follow-up Matrix
+               {/* Follow-up Date */}
+               <div className={`${sideCardBase} p-6`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-teal-500/10 flex items-center justify-center">
+                        <Calendar size={12} strokeWidth={2.5} className="text-teal-500" />
+                     </span>
+                     Follow-up Date
                   </h3>
                   <input
                      type="date"
-                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer"
+                     className="w-full px-4 py-3 bg-[var(--surface-container-low)] rounded-xl text-[12px] font-semibold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer hover:border-[var(--primary)]/40 focus:border-[var(--primary)]/50 focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
                      value={formData.follow_up_date}
                      onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
                   />
                </div>
 
-               <div className="bg-[var(--surface-container-lowest)]    rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
-                     <Activity size={14} /> Lifecycle Status
+               {/* Lifecycle Status */}
+               <div className={`${sideCardBase} p-6`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-rose-500/10 flex items-center justify-center">
+                        <Activity size={12} strokeWidth={2.5} className="text-rose-500" />
+                     </span>
+                     Lifecycle Status
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
-                     {masterData.lead.map((s) => (
-                         <button
-                            key={s.id || s}
-                            onClick={() => setFormData({ ...formData, status_id: s.id || s })}
-                            className={`py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-widest transition-all border ${formData.status_id === (s.id || s)
-                               ? 'bg-[var(--on-surface)] text-white border-transparent shadow-lg'
-                               : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-[var(--surface-container-high)]'
-                               }`}
-                         >
-                            {s.name || s}
-                         </button>
-                     ))}
+                     {masterData.lead.map((s) => {
+                        const sId = s.id || s;
+                        const isSelected = formData.status_id === sId;
+                        return (
+                           <button
+                              key={sId}
+                              onClick={() => setFormData({ ...formData, status_id: sId })}
+                              className={`py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all duration-150 border
+                                 ${isSelected
+                                    ? 'bg-[var(--on-surface)] text-[var(--surface)] border-transparent'
+                                    : 'bg-[var(--surface-container-low)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-[var(--surface-container-high)] hover:border-[var(--outline)]'
+                                 }`}
+                           >
+                              {s.name || s}
+                           </button>
+                        );
+                     })}
                   </div>
                </div>
 
-             
-
-               <div className="bg-[var(--grad-black)]    rounded-xl p-8 text-white relative overflow-hidden group">
-                  <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-tl-[4rem] group-hover:scale-110 transition-transform"></div>
-                  <ShieldCheck className="text-white/40 mb-6" size={28} strokeWidth={1.5} />
-                  <h4 className="text-[11px] font-extrabold uppercase   mb-2">Protocol Note</h4>
-                  <p className="text-[10px] text-white/60 leading-relaxed font-medium">
+               {/* Protocol Note Banner */}
+               <div className="rounded-2xl p-6 bg-[var(--on-surface)] text-[var(--surface)] relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-white/5" />
+                  <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-white/5" />
+                  <ShieldCheck className="text-white/30 mb-4" size={22} strokeWidth={1.5} />
+                  <h4 className="text-[11px] font-extrabold uppercase tracking-widest mb-1.5 text-white/90">Protocol Note</h4>
+                  <p className="text-[11px] text-white/55 leading-relaxed font-medium">
                      Ensure all data points are verified against the customer's travel documentation before authorization.
                   </p>
                </div>
-            </div>
 
+            </div>
          </div>
       </div>
    );

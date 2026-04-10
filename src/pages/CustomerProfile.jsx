@@ -9,9 +9,9 @@ import {
 import toast from 'react-hot-toast';
 import useCalculatorStore from '../store/useCalculatorStore';
 import useCustomerStore from '../store/useCustomerStore';
-import { useRef, useEffect, useState } from 'react'; 
+import { useRef, useEffect, useState } from 'react';
 
-const BASE_URL = 'http://192.168.5.178:8000/';
+const BASE_URL = 'http://192.168.5.111:8000/';
 
 /* ─── small reusable row ─────────────────────────────────────────────────── */
 const DetailRow = ({ icon: Icon, label, value, accent }) => (
@@ -25,9 +25,8 @@ const DetailRow = ({ icon: Icon, label, value, accent }) => (
       </span>
     </div>
     <span
-      className={`text-sm font-manrope font-extrabold ${
-        accent ? 'text-[var(--sacred-emerald,#10b981)]' : 'text-[var(--on-surface)]'
-      }`}
+      className={`text-sm font-manrope font-extrabold ${accent ? 'text-[var(--sacred-emerald,#10b981)]' : 'text-[var(--on-surface)]'
+        }`}
     >
       {value ?? '—'}
     </span>
@@ -48,11 +47,11 @@ const CustomerProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const printRef = useRef(null);
-  const { 
-    saveCalculation, 
-    getCalculation, 
-    confirmCalculation, 
-    isLoading: savingLoading 
+  const {
+    saveCalculation,
+    getCalculation,
+    confirmCalculation,
+    isLoading: savingLoading
   } = useCalculatorStore();
   const { getCustomer } = useCustomerStore();
 
@@ -69,7 +68,7 @@ const CustomerProfile = () => {
     const fetchData = async () => {
       try {
         const calc = await getCalculation(id);
-        
+
         // Map from API response (provided by user) to component state
         const mappedInputs = {
           persons: calc.pilgrim_quota || 0,
@@ -119,7 +118,7 @@ const CustomerProfile = () => {
     };
 
     if (id) {
-       fetchData();
+      fetchData();
     }
   }, [id, getCalculation, getCustomer]);
 
@@ -129,8 +128,8 @@ const CustomerProfile = () => {
   /* ── confirm: go back to calculator ───────────────────────────────────── */
   const handleConfirm = async () => {
     if (!token) {
-       toast.error("Calculation token not found.");
-       return;
+      toast.error("Calculation token not found.");
+      return;
     }
     try {
       await confirmCalculation(token, 'confirmed');
@@ -143,8 +142,8 @@ const CustomerProfile = () => {
 
   const handleCancel = async () => {
     if (!token) {
-       navigate('/');
-       return;
+      navigate('/');
+      return;
     }
     try {
       await confirmCalculation(token, 'cancelled');
@@ -187,9 +186,9 @@ const CustomerProfile = () => {
   }
 
   const fullName = `${customer.firstName ?? ''} ${customer.lastName ?? ''}`.trim();
-  const pdfUrl = customer.pdf_view_url; 
+  const pdfUrl = customer.pdf_view_url;
   console.log(pdfUrl);
-  
+
 
   return (
     <div className="font-inter space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
@@ -217,7 +216,7 @@ const CustomerProfile = () => {
 
         {/* Download button top-right */}
         <button
-        onClick={() => window.open(pdfUrl, '_blank')}
+          onClick={() => window.open(pdfUrl, '_blank')}
           // onClick={handleDownload}
           className="flex cursor-pointer  items-center gap-2.5 px-7 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-[var(--on-surface)] hover:shadow-lg hover:-translate-y-0.5 transition-all"
         >
@@ -278,8 +277,8 @@ const CustomerProfile = () => {
 
             {/* Mini stats */}
             <div className="flex items-center shrink-0 mt-4 md:mt-0">
-              <StatCard label="Total Days"  value={totalDays} />
-              <StatCard label="Pilgrims"    value={inputs.persons ?? '—'} />
+              <StatCard label="Total Days" value={totalDays} />
+              <StatCard label="Pilgrims" value={inputs.persons ?? '—'} />
               <StatCard
                 label="Total Price"
                 value={results.finalPrice ? `$${Number(results.finalPrice).toLocaleString()}` : '—'}
@@ -430,7 +429,7 @@ const CustomerProfile = () => {
 
       {/* ── Action buttons ────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4 max-w-5xl mx-auto">
-       
+
 
         <button
           onClick={handleCancel}

@@ -13,38 +13,38 @@ import toast from 'react-hot-toast';
 
 /* ─── Constants ─────────────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1];
-const DEFAULT_FORM = { 
-  name: '', email: '', phone: '', password: '', 
+const DEFAULT_FORM = {
+  name: '', email: '', phone: '', password: '',
   is_admin: '0', role_id: '', status_id: '1',
-  emergency_contact: '', passport_visa: '', profile_photo: null 
+  emergency_contact: '', passport_visa: '', profile_photo: null
 };
 
 const STATUS_MAP = {
-  '1':       { label: 'Active',    dot: '#1a7a4a', bg: '#edf7f1', border: '#9fe1cb', text: '#1a7a4a' },
-  '2':       { label: 'Suspended', dot: '#c23b2e', bg: '#fff1f0', border: '#f7c1c1', text: '#c23b2e' },
-  '5':       { label: 'Pending',   dot: '#ba7517', bg: '#faeeda', border: '#fac775', text: '#854f0b' },
-  'default': { label: 'Unknown',   dot: '#b0aea5', bg: '#f5f4f0', border: '#e2e0d8', text: '#78776f' },
+  '1': { label: 'Active', dot: '#1a7a4a', bg: '#edf7f1', border: '#9fe1cb', text: '#1a7a4a' },
+  '2': { label: 'Suspended', dot: '#c23b2e', bg: '#fff1f0', border: '#f7c1c1', text: '#c23b2e' },
+  '5': { label: 'Pending', dot: '#ba7517', bg: '#faeeda', border: '#fac775', text: '#854f0b' },
+  'default': { label: 'Unknown', dot: '#b0aea5', bg: '#f5f4f0', border: '#e2e0d8', text: '#78776f' },
 };
 
 const FORM_FIELDS = [
-  { label: 'Full Name', key: 'name',     type: 'text',     placeholder: 'Umar Jamil',       Icon: User },
-  { label: 'Email',     key: 'email',    type: 'email',    placeholder: 'umar@albayan.com',  Icon: Mail },
-  { label: 'Phone',     key: 'phone',    type: 'text',     placeholder: '+971 50 000 0000',  Icon: Smartphone },
+  { label: 'Full Name', key: 'name', type: 'text', placeholder: 'Umar Jamil', Icon: User },
+  { label: 'Email', key: 'email', type: 'email', placeholder: 'umar@albayan.com', Icon: Mail },
+  { label: 'Phone', key: 'phone', type: 'text', placeholder: '+971 50 000 0000', Icon: Smartphone },
   { label: 'Emergency Contact', key: 'emergency_contact', type: 'text', placeholder: 'Name (+971...)', Icon: PhoneCall },
-  { label: 'Password',  key: 'password', type: 'password', placeholder: '••••••••',          Icon: Lock },
+  { label: 'Password', key: 'password', type: 'password', placeholder: '••••••••', Icon: Lock },
 ];
 
 /* ════════════════════════════════════════════════════════════════════════
    ManageUsers
    ════════════════════════════════════════════════════════════════════════ */
 const ManageUsers = () => {
-  const [isAdding,      setIsAdding]      = useState(false);
-  const [isEditing,     setIsEditing]     = useState(false);
-  const [editingUser,   setEditingUser]   = useState(null);
-  const [search,        setSearch]        = useState('');
-  const [form,          setForm]          = useState(DEFAULT_FORM);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [search, setSearch] = useState('');
+  const [form, setForm] = useState(DEFAULT_FORM);
 
-  const { users, fetchUsers, addUser, updateUser, deleteUser, isLoading: usersLoading }    = useUserStore();
+  const { users, fetchUsers, addUser, updateUser, deleteUser, isLoading: usersLoading } = useUserStore();
   const { roles, fetchSettings, isLoading: settingsLoading } = useSettingsStore();
   const isLoading = usersLoading || settingsLoading;
 
@@ -64,8 +64,8 @@ const ManageUsers = () => {
   const resolveImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('data:') || path.startsWith('blob:') || path.startsWith('http')) return path;
-    return `http://192.168.5.178:8000/storage/${path}`;
-    
+    return `http://192.168.5.111:8000/storage/${path}`;
+
   };
 
   useEffect(() => { fetchUsers(); fetchSettings(); }, [fetchUsers, fetchSettings]);
@@ -93,13 +93,13 @@ const ManageUsers = () => {
 
   const handleEdit = (user) => {
     setEditingUser(user); setIsEditing(true); setIsAdding(false);
-    setForm({ 
-      name: user.name || '', 
-      email: user.email || '', 
-      phone: user.phone || '', 
-      role_id: user.role_id || '', 
-      status_id: user.status_id || '1', 
-      is_admin: user.is_admin ?? '0', 
+    setForm({
+      name: user.name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      role_id: user.role_id || '',
+      status_id: user.status_id || '1',
+      is_admin: user.is_admin ?? '0',
       password: '',
       emergency_contact: user.emergency_contact || '',
       passport_visa: user.passport_visa || '',
@@ -114,8 +114,8 @@ const ManageUsers = () => {
     }
   };
 
-  const patchForm    = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
-  const activeCount  = users.filter(u => u.status_id === '1').length;
+  const patchForm = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
+  const activeCount = users.filter(u => u.status_id === '1').length;
 
   return (
     <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
@@ -209,7 +209,7 @@ const ManageUsers = () => {
 
               {/* Profile Photo Upload */}
               <div className="relative group/photo">
-                <div 
+                <div
                   className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-dashed border-[#e2e0d8] group-hover/photo:border-[#1a1916] transition-all"
                   style={{ background: '#f5f4f0' }}
                 >
@@ -381,7 +381,7 @@ const ManageUsers = () => {
 
                 <tbody>
                   {filtered.length > 0 ? filtered.map((u, i) => {
-                    const role   = roles.find(r => r.id?.toString() === u.role_id?.toString()) || { name: 'Personnel' };
+                    const role = roles.find(r => r.id?.toString() === u.role_id?.toString()) || { name: 'Personnel' };
                     const status = STATUS_MAP[u.status_id] || STATUS_MAP['default'];
 
                     return (
@@ -398,28 +398,28 @@ const ManageUsers = () => {
                         <td className="px-7 py-4">
                           <div className="flex items-center gap-3.5">
                             <div className="relative flex-shrink-0">
-                                {u.profile_photo || u.photo ? (
-                                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#e2e0d8]">
-                                        <img src={resolveImageUrl(u.profile_photo || u.photo)} alt="" className="w-full h-full object-cover" />
-                                    </div>
-                                ) : (
-                                    <div
-                                        className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
-                                        style={{ background: '#1a1916' }}
-                                    >
-                                        {u.name?.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
+                              {u.profile_photo || u.photo ? (
+                                <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#e2e0d8]">
+                                  <img src={resolveImageUrl(u.profile_photo || u.photo)} alt="" className="w-full h-full object-cover" />
+                                </div>
+                              ) : (
+                                <div
+                                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                                  style={{ background: '#1a1916' }}
+                                >
+                                  {u.name?.charAt(0).toUpperCase()}
+                                </div>
+                              )}
                               <span
                                 className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white"
                                 style={{ background: status.dot }}
                               />
                             </div>
                             <div>
-                                <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
+                              <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
                                 {u.name || 'Incognito User'}
-                                </div>
-                                <div className="text-[10px] text-[#b0aea5] mt-0.5">{u.email || '—'}</div>
+                              </div>
+                              <div className="text-[10px] text-[#b0aea5] mt-0.5">{u.email || '—'}</div>
                             </div>
                           </div>
                         </td>
@@ -427,12 +427,12 @@ const ManageUsers = () => {
                         {/* Contact */}
                         <td className="px-7 py-4 min-w-[200px]">
                           <div className="flex flex-col gap-1">
-                                <span className="text-[11px] font-medium text-[#78776f]">{u.phone || '—'}</span>
-                                {u.emergency_contact && (
-                                    <span className="text-[9px] font-bold text-[#b0aea5] flex items-center gap-1">
-                                        <PhoneCall size={10} /> {u.emergency_contact}
-                                    </span>
-                                )}
+                            <span className="text-[11px] font-medium text-[#78776f]">{u.phone || '—'}</span>
+                            {u.emergency_contact && (
+                              <span className="text-[9px] font-bold text-[#b0aea5] flex items-center gap-1">
+                                <PhoneCall size={10} /> {u.emergency_contact}
+                              </span>
+                            )}
                           </div>
                         </td>
 
@@ -474,7 +474,7 @@ const ManageUsers = () => {
                         {/* Actions */}
                         <td className="px-7 py-4 text-right">
                           <div className="flex items-center gap-2 justify-end">
-                            <ActionBtn icon={Edit2}  title="Edit"   onClick={() => handleEdit(u)} />
+                            <ActionBtn icon={Edit2} title="Edit" onClick={() => handleEdit(u)} />
                             <ActionBtn icon={Trash2} title="Delete" onClick={() => handleDelete(u.id)} danger />
                           </div>
                         </td>
@@ -534,11 +534,11 @@ const ActionBtn = ({ icon: Icon, title, onClick, danger }) => (
     className="flex items-center justify-center w-8 h-8 rounded-lg cursor-pointer transition-all"
     style={{ background: '#ffffff', border: '1.5px solid #e2e0d8' }}
     onMouseEnter={e => {
-      e.currentTarget.style.background   = danger ? '#fff1f0' : '#f5f4f0';
-      e.currentTarget.style.borderColor  = danger ? '#f7c1c1' : '#c5c2b8';
+      e.currentTarget.style.background = danger ? '#fff1f0' : '#f5f4f0';
+      e.currentTarget.style.borderColor = danger ? '#f7c1c1' : '#c5c2b8';
     }}
     onMouseLeave={e => {
-      e.currentTarget.style.background  = '#ffffff';
+      e.currentTarget.style.background = '#ffffff';
       e.currentTarget.style.borderColor = '#e2e0d8';
     }}
   >

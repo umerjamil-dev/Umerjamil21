@@ -22,7 +22,7 @@ const Transport = () => {
 
   const filtered = React.useMemo(() => {
     return transportData.filter(t => 
-      t.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      // t.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       t.customer_full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       t.vehicle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       t.driver?.toLowerCase().includes(searchTerm.toLowerCase())
