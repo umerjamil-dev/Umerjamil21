@@ -60,6 +60,7 @@ import Subscription from '../pages/settings/Subscription'
 import BookingAnalytics from '../pages/reports/BookingAnalytics';
 import PaymentReports from '../pages/reports/PaymentReports';
 import SalesPerformance from '../pages/reports/SalesPerformance';
+import ServiceStatusReport from '../pages/reports/ServiceStatusReport';
 import WhatsAppSystem from '../pages/WhatsAppSystem';
 import EmailSystem from '../pages/EmailSystem';
 
@@ -106,6 +107,7 @@ const Router = () => {
         <Route path="/reports" element={<ProtectedRoute permission="VIEW_REPORTS"><Layout><Reports /></Layout></ProtectedRoute>} />
         <Route path="/reports/bookings" element={<ProtectedRoute permission="VIEW_BOOKING_ANALYTICS"><Layout><BookingAnalytics /></Layout></ProtectedRoute>} />
         <Route path="/reports/payments" element={<ProtectedRoute permission="VIEW_PAYMENT_REPORTS"><Layout><PaymentReports /></Layout></ProtectedRoute>} />
+        <Route path="/reports/service-status" element={<ProtectedRoute permission="VIEW_SERVICE_STATUS_REPORT"><Layout><ServiceStatusReport /></Layout></ProtectedRoute>} />
         <Route path="/reports/sales" element={<ProtectedRoute permission="VIEW_SALES_PERFORMANCE"><Layout><SalesPerformance /></Layout></ProtectedRoute>} />
 
         {/* Isolated Settings Pages */}
