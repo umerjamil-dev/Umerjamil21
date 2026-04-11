@@ -53,7 +53,9 @@ const CustomerProfile = () => {
     confirmCalculation,
     isLoading: savingLoading
   } = useCalculatorStore();
-  const { getCustomer } = useCustomerStore();
+  const { getCustomer, showActionButton } = useCustomerStore();
+  const [isActionClicked, setIsActionClicked] = useState(false);
+  const [hideActionButtons, setHideActionButtons] = useState(false);
 
   const [localData, setLocalData] = useState({
     customer: state?.customer ?? null,
@@ -112,6 +114,11 @@ const CustomerProfile = () => {
           const cust = await getCustomer(calc.customer_id);
           setLocalData(prev => ({ ...prev, customer: cust }));
         }
+
+        if (calc.customer_id) {
+          const shouldHide = await showActionButton(id);
+          setHideActionButtons(shouldHide);
+        }
       } catch (err) {
         console.error('Fetch error:', err);
       }
@@ -131,26 +138,33 @@ const CustomerProfile = () => {
       toast.error("Calculation token not found.");
       return;
     }
+    if (isActionClicked) return;
+    setIsActionClicked(true);
     try {
       await confirmCalculation(token, 'confirmed');
       toast.success('Confirmed successfully.');
       navigate('/');
     } catch (err) {
       toast.error('Failed to confirm calculation: ' + err.message);
+      setIsActionClicked(false);
     }
   };
 
   const handleCancel = async () => {
     if (!token) {
+      toast.error("Calculation token not found.");
       navigate('/');
       return;
     }
+    if (isActionClicked) return;
+    setIsActionClicked(true);
     try {
       await confirmCalculation(token, 'cancelled');
       toast.success('Cancelled successfully.');
       navigate('/');
     } catch (err) {
       toast.error('Failed to cancel calculation: ' + err.message);
+      setIsActionClicked(false);
     }
   };
 
@@ -428,27 +442,29 @@ const CustomerProfile = () => {
       </div>{/* end printRef */}
 
       {/* ── Action buttons ────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row gap-4 pt-4 max-w-5xl mx-auto">
+      {!hideActionButtons && (
+      <div className=  "flex flex-col sm:flex-row gap-4 pt-4 max-w-5xl mx-auto">
 
 
         <button
           onClick={handleCancel}
-          disabled={savingLoading}
-          className={`flex-1 flex items-center justify-center gap-3 py-5 bg-red-50 border border-red-200 rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all ${savingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={savingLoading || isActionClicked}
+          className={`flex-1 flex items-center justify-center gap-3 py-5 bg-red-50 border border-red-200 rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <XCircle size={18} strokeWidth={2.5} />
-          {savingLoading ? 'Processing...' : 'Cancel'}
+          {savingLoading || isActionClicked ? 'Processing...' : 'Cancel'}
         </button>
 
         <button
           onClick={handleConfirm}
-          disabled={savingLoading}
-          className={`flex-1 flex items-center justify-center gap-3 py-5 btn-primary rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20 ${savingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={savingLoading || isActionClicked}
+          className={`flex-1 flex items-center justify-center gap-3 py-5 btn-primary rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20 ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <CheckCircle2 size={18} strokeWidth={2.5} />
-          {savingLoading ? 'Processing...' : 'Confirm'}
+          {savingLoading || isActionClicked ? 'Processing...' : 'Confirm'}
         </button>
       </div>
+      )}
     </div>
   );
 };

@@ -104,6 +104,26 @@ const useCustomerStore = create((set) => ({
       set({ error: err.message, isLoading: false });
       throw err;
     }
+  },
+  showActionButton: async (id) => {
+    try {
+      const response = await api.get(`/confirm/${id}`);
+      const data = response.data?.data || response.data || [];
+      console.log(response);
+
+      let matchFound = false;
+      if (Array.isArray(data)) {
+        matchFound = data.some(item => String(item.customer_id) === String(id) || String(item.id) === String(id)
+          || String(item.customer_id) === String(id) || String(item.id) === String(id)
+        ); 
+      } else if (data && typeof data === 'object') {
+        matchFound = String(data.customer_id) === String(id) || String(data.id) === String(id);
+      }
+      return matchFound;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   }
 }));
 

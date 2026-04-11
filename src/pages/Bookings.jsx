@@ -247,12 +247,7 @@ const Bookings = () => {
                                  <button onClick={(e) => { e.stopPropagation(); navigate(`/bookings/${booking.id}/edit`); }} className="w-8 h-8 flex items-center justify-center bg-[#616B7B] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Edit">
                                    <Wand2 size={14} strokeWidth={2.5} />
                                  </button>
-                                 <button className="w-8 h-8 flex items-center justify-center bg-[#636569] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Categories">
-                                   <Shapes size={14} strokeWidth={2.5} />
-                                 </button>
-                                 <button className="w-8 h-8 flex items-center justify-center bg-[#726888] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Tag">
-                                   <Tag size={14} strokeWidth={2.5} />
-                                 </button>
+                                 
                                  <button onClick={(e) => { e.stopPropagation(); handleDelete(booking.id); }} className="w-8 h-8 flex items-center justify-center bg-[#A5413D] rounded-xl text-white shadow-sm hover:brightness-110 transition-all" title="Delete">
                                    <Trash2 size={14} strokeWidth={2.5} />
                                  </button>
