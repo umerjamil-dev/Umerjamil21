@@ -3,7 +3,7 @@ import {
    ArrowLeft, User, Phone,
    Mail, MapPin, Fingerprint,
    ShieldCheck, FileText, Save,
-   Globe, CreditCard, Calendar
+   Globe, CreditCard, Calendar, X
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useCustomerStore from '../store/useCustomerStore';
@@ -22,7 +22,8 @@ const AddCustomer = () => {
       address: '',
       city: '',
       nationality: 'Pakistani',
-      photo: null
+      photo: null,
+      documents: []
    });
 
    const handleSubmit = async () => {
@@ -39,9 +40,6 @@ const AddCustomer = () => {
          toast.error('Registry failure: ' + err.message);
       }
    };
-
-
-
    
    return (
       <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
@@ -252,6 +250,51 @@ const AddCustomer = () => {
                         />
                         <MapPin size={18} className="text-[var(--on-surface-variant)]" />
                      </div>
+                  </div>
+
+                  <div className="group relative z-10 mt-16">
+                     <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1"> Supporting Documents</label>
+                     <label className="relative border-2 border-dashed border-[var(--outline-variant)] hover:border-[var(--on-surface-variant)] transition-all py-6 rounded-xl flex items-center justify-center gap-3 cursor-pointer">
+                        <FileText size={20} className="text-[var(--on-surface-variant)]" />
+                        <span className="text-sm font-manrope font-extrabold text-[var(--on-surface-variant)]">
+                            Click to Upload Identity Documents or Visas (Multiple)
+                        </span>
+                        <input
+                           type="file"
+                           multiple
+                           className="hidden"
+                           onChange={(e) => {
+                              const newFiles = Array.from(e.target.files);
+                              setFormData({ ...formData, documents: [...(formData.documents || []), ...newFiles] });
+                           }}
+                        />
+                     </label>
+                     {formData.documents && formData.documents.length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                           {formData.documents.map((file, index) => (
+                              <div key={index} className="flex items-center justify-between p-4 rounded-xl bg-[var(--surface-container-low)] border border-[var(--outline-variant)] shadow-sm">
+                                 <div className="flex items-center gap-3 overflow-hidden">
+                                    <div className="p-2 bg-[var(--outline-variant)]/30 rounded-lg">
+                                       <FileText size={16} className="text-[var(--on-surface)]" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-[var(--on-surface)] truncate max-w-[150px]">
+                                       {file.name}
+                                    </span>
+                                 </div>
+                                 <button
+                                    onClick={() => {
+                                       const newDocs = formData.documents.filter((_, i) => i !== index);
+                                       setFormData({ ...formData, documents: newDocs });
+                                    }}
+                                    className="p-2 hover:bg-red-50 hover:text-red-500 text-[var(--on-surface-variant)] rounded-lg transition-colors border border-transparent hover:border-red-100"
+                                    title="Remove Document"
+                                 >
+                                    <X size={16} />
+                                 </button>
+                              </div>
+                           ))}
+                        </div>
+                     )}
                   </div>
                </div>
             </div>

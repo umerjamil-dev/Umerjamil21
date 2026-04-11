@@ -101,6 +101,7 @@ const AddBooking = () => {
     totalAmount: '',
     paidAmount: '',
     paymentMethod: '',
+    statusId: '',
   });
 
   useEffect(() => {
@@ -127,6 +128,7 @@ const AddBooking = () => {
         remaining_amount: remaining,
         travel_date: formData.travelDate,
         transaction_type: formData.paymentMethod,
+        status_id: formData.statusId,
       };
       await createBooking(payload);
       toast.success('Booking successfully registered.');
@@ -334,6 +336,25 @@ const AddBooking = () => {
                     <option value="Cash">Cash</option>
                     <option value="Cheque">Cheque</option>
                     <option value="Online">Online Payment</option>
+                  </>
+                )}
+              </UnderlineSelect>
+
+              <UnderlineSelect
+                label="Booking Status"
+                value={formData.statusId}
+                onChange={e => setFormData({ ...formData, statusId: e.target.value })}
+              >
+                <option value="">Select Status...</option>
+                {masterData?.status_booking?.map((item, idx) => (
+                  <option key={idx} value={item.id || item}>
+                    {item.name || item}
+                  </option>
+                ))}
+                {(!masterData?.status_booking || masterData.status_booking.length === 0) && (
+                  <>
+                    <option value="1">Confirmed</option>
+                    <option value="2">Pending</option>
                   </>
                 )}
               </UnderlineSelect>

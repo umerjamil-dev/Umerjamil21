@@ -44,7 +44,8 @@ const useMasterTypeStore = create((set) => ({
         'package_type',
         'task_type',
         'assignment_status',
-        'status_assignment'
+        'status_assignment',
+        'status_booking'
       ];
 
       // Fetch all types in parallel

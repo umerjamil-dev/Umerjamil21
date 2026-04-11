@@ -213,8 +213,8 @@ const Bookings = () => {
                                  </p>
                               </div>
                            </td>
-                           <td className="px-10 py-10">
-                              <span className="text-[10px] font-black text-slate-900 bg-white px-5 py-2.5 rounded-xl border border-slate-100 shadow-sm group-hover:border-slate-300 uppercase tracking-widest transition-all">
+                           <td className="py-10">
+                              <span className="  font-black text-slate-900 bg-white    uppercase tracking-widest transition-all">
                                  {getPackageName(booking.package)}
                               </span>
                            </td>

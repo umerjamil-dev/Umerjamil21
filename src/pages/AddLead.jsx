@@ -5,7 +5,7 @@ import {
    Tag, Info, Save, X,
    Globe, ChevronRight, ShieldCheck,
    UserCheck, Calendar, Activity,
-   Rss
+   Rss, FileText
 } from 'lucide-react';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -36,7 +36,8 @@ const AddLead = () => {
       assigned_to_id: '',
       follow_up_date: '',
       status_id: '',
-      comments: ''
+      comments: '',
+      documents: []
    });
 
    useEffect(() => {
@@ -236,6 +237,56 @@ const AddLead = () => {
                      value={formData.comments}
                      onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
                   />
+               </div>
+
+               {/* Document Upload Card */}
+               <div className={`${cardBase} p-7 lg:p-9`}>
+                  <h3 className={sectionTitle}>
+                     <span className="w-5 h-5 rounded-md bg-slate-500/10 flex items-center justify-center">
+                        <FileText size={12} strokeWidth={2.5} className="text-slate-500" />
+                     </span>
+                     Official Documents
+                  </h3>
+                  <div className="flex flex-col gap-4">
+                     <label className="flex flex-1 items-center justify-center gap-2 px-5 py-6 rounded-xl border-2 border-dashed border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] hover:border-[var(--primary)] cursor-pointer transition-all">
+                        <FileText size={20} className="text-[var(--primary)]" />
+                        <span className="text-[12px] font-semibold text-[var(--on-surface-variant)]">
+                            Click to Upload Relevant Documents (Multiple allowed)
+                        </span>
+                        <input
+                           type="file"
+                           multiple
+                           className="hidden"
+                           onChange={(e) => {
+                              const newFiles = Array.from(e.target.files);
+                              setFormData({ ...formData, documents: [...(formData.documents || []), ...newFiles] });
+                           }}
+                        />
+                     </label>
+                     {formData.documents && formData.documents.length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                           {formData.documents.map((file, index) => (
+                              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-[var(--surface-container-low)] border border-[var(--outline-variant)]">
+                                 <div className="flex items-center gap-2 overflow-hidden">
+                                    <FileText size={14} className="text-[var(--primary)] shrink-0" />
+                                    <span className="text-[11px] font-medium text-[var(--on-surface)] truncate">
+                                       {file.name}
+                                    </span>
+                                 </div>
+                                 <button
+                                    onClick={() => {
+                                       const newDocs = formData.documents.filter((_, i) => i !== index);
+                                       setFormData({ ...formData, documents: newDocs });
+                                    }}
+                                    className="p-1.5 hover:bg-red-50 hover:text-red-500 text-[var(--on-surface-variant)] rounded-md transition-colors"
+                                 >
+                                    <X size={14} />
+                                 </button>
+                              </div>
+                           ))}
+                        </div>
+                     )}
+                  </div>
                </div>
             </div>
 
