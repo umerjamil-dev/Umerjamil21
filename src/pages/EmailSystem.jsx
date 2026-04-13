@@ -104,7 +104,7 @@ const EmailSystem = () => {
                         container: [
                             [{ header: [1, 2, false] }],
                             ['bold', 'italic', 'underline'],
-                            ['link', 'image', 'attachment'],
+                            ['link', 'attachment'],
                             [{ list: 'ordered' }, { list: 'bullet' }],
                             ['clean'],
                         ],

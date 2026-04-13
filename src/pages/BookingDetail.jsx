@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 
 // ─── Error State Component ───────────────────────────────────────────────────
 const ErrorState = ({ message, onRetry }) => (
+ <>
   <div className="p-20 flex flex-col items-center justify-center gap-6">
     <div className="w-16 h-16 flex items-center justify-center bg-red-50 rounded-2xl border border-red-100">
       <AlertTriangle size={28} className="text-red-400" strokeWidth={2} />
@@ -31,6 +32,7 @@ const ErrorState = ({ message, onRetry }) => (
       </button>
     )}
   </div>
+ </>
 );
 
 // ─── Empty Field Fallback ────────────────────────────────────────────────────

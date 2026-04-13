@@ -158,6 +158,7 @@ const AddReservation = () => {
    const activeType = types.find(t => t.id === formData.type);
 
    return (
+     <>
       <div style={{ fontFamily: "'Inter', sans-serif" }} className="pb-20">
 
          {/* ── Header ── */}
@@ -458,6 +459,8 @@ const AddReservation = () => {
             </div>
          </div>
       </div>
+     
+     </>
    );
 };
 

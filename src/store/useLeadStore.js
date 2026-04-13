@@ -23,7 +23,13 @@ const useLeadStore = create((set, get) => ({
   addLead: async (leadData) => {
     set({ isLoading: true });
     try {
-      const response = await api.post('/leads', leadData);
+      console.log(leadData);
+      
+      const response = await api.post('/leads', leadData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       // Prepend the new lead, ensuring we extract it correctly from potential wrapper
       const newLead = response.data?.data || response.data || leadData;
       

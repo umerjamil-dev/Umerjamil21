@@ -42,6 +42,8 @@ const AddCustomer = () => {
    };
    
    return (
+    <>
+    
       <div className="font-inter max-w-7xl mx-auto space-y-12 animate-in slide-in-from-bottom-8 duration-1000 pb-20">
          {/* Header */}
          <div className="flex items-center justify-between">
@@ -300,6 +302,7 @@ const AddCustomer = () => {
             </div>
          </div>
       </div>
+    </>
    );
 };
 

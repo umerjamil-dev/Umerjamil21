@@ -120,6 +120,7 @@ const Assignment = () => {
   } = usePagination(filtered, 10);
 
   return (
+   <>
     <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
       
       {/* HEADER */}
@@ -351,6 +352,8 @@ const Assignment = () => {
       </AnimatePresence>
 
     </div>
+   
+   </>
   );
 };
 

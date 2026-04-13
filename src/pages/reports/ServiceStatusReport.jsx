@@ -48,6 +48,8 @@ const ServiceStatusReport = () => {
   };
 
   return (
+    <>
+    
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 font-inter">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -180,6 +182,10 @@ const ServiceStatusReport = () => {
         </div>
       </div>
     </div>
+    
+    
+    
+    </>
   );
 };
 

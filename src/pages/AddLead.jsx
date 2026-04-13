@@ -13,13 +13,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import useLeadStore from '../store/useLeadStore';
 import useMasterTypeStore from '../store/useMasterTypeStore';
 import useUserStore from '../store/useUserStore';
+import useAuthStore from '../store/useAuthStore';
 import toast from 'react-hot-toast';
+
 
 const AddLead = () => {
    const navigate = useNavigate();
    const { addLead, isLoading } = useLeadStore();
    const { masterData, fetchMasterData } = useMasterTypeStore();
    const { users, fetchUsers } = useUserStore();
+   const { user } = useAuthStore();
 
    useEffect(() => {
       fetchMasterData();
@@ -37,6 +40,7 @@ const AddLead = () => {
       follow_up_date: '',
       status_id: '',
       comments: '',
+      assigned_by: user?.id || '',
       documents: []
    });
 
@@ -54,8 +58,22 @@ const AddLead = () => {
          toast.error('Identity name and primary contact are mandatory.');
          return;
       }
+
+      const payload = new FormData();
+      Object.keys(formData).forEach(key => {
+         if (key === 'documents') {
+            formData.documents.forEach((file) => {
+               payload.append('documents[]', file);
+            });
+         } else {
+            if (formData[key] !== null && formData[key] !== undefined) {
+               payload.append(key, formData[key]);
+            }
+         }
+      });
+
       try {
-         await addLead(formData);
+         await addLead(payload);
          toast.success('Inquiry successfully officialized.');
          navigate('/leads');
       } catch (err) {
@@ -94,6 +112,7 @@ const AddLead = () => {
    `;
 
    return (
+     <>
       <div className="font-inter space-y-8 animate-in fade-in duration-500 max-w-[1400px] mx-auto">
 
          {/* ── Header ─────────────────────────────────── */}
@@ -428,6 +447,7 @@ const AddLead = () => {
             </div>
          </div>
       </div>
+     </>
    );
 };
 
