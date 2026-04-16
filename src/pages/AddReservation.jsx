@@ -145,6 +145,7 @@ const AddReservation = () => {
                time: formData.time,
                notes: formData.notes,
                vehicle_type: formData.vehicleType,
+               status: formData.status,
             });
          }
          toast.success(`${formData.type} reservation saved.`);
@@ -299,7 +300,6 @@ const AddReservation = () => {
                <p className="text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: '#94a3b8' }}>
                   {activeType?.label} Information
                </p>
-
                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
 
                   {/* ── VISA ── */}
@@ -350,7 +350,15 @@ const AddReservation = () => {
                         <Field label="Room">
                            <input type="text" placeholder="Double, Triple, Quad..." className={inputCls}
                               value={formData.roomType} onChange={e => set('roomType', e.target.value)} />
-                              
+                        </Field>
+                        <Field label="Hotel Status">
+                           <select className={selectCls} value={formData.status || ''}
+                              onChange={e => set('status', e.target.value)}>
+                              <option value="">Select status...</option>
+                              {(masterData?.statusvisa || []).map(s => (
+                                 <option key={s.id} value={s.id}>{s.name}</option>
+                              ))}
+                           </select>
                         </Field>
                      </>
                   )}
@@ -373,6 +381,15 @@ const AddReservation = () => {
                         <Field label="Arrival Time">
                            <input type="time" className={inputCls}
                               value={formData.arrivalTime} onChange={e => set('arrivalTime', e.target.value)} />
+                        </Field>
+                        <Field label="Flight Status">
+                           <select className={selectCls} value={formData.status || ''}
+                              onChange={e => set('status', e.target.value)}>
+                              <option value="">Select status...</option>
+                              {(masterData?.statusvisa || []).map(s => (
+                                 <option key={s.id} value={s.id}>{s.name}</option>
+                              ))}
+                           </select>
                         </Field>
                      </>
                   )}
@@ -433,6 +450,15 @@ const AddReservation = () => {
                         <Field label="Time">
                            <input type="time" className={inputCls}
                               value={formData.time} onChange={e => set('time', e.target.value)} />
+                        </Field>
+                        <Field label="Transport Status">
+                           <select className={selectCls} value={formData.status || ''}
+                              onChange={e => set('status', e.target.value)}>
+                              <option value="">Select status...</option>
+                              {(masterData?.statusvisa || []).map(s => (
+                                 <option key={s.id} value={s.id}>{s.name}</option>
+                              ))}
+                           </select>
                         </Field>
                         <Field label="Notes" span2>
                            <input type="text" placeholder="Additional notes..." className={inputCls}

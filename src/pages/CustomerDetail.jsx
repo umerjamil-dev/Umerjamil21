@@ -139,7 +139,7 @@ const CustomerDetail = () => {
                                     <ChevronRight size={12} className="text-[var(--on-surface-variant)] opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover/item:translate-x-0 transition-all" />
                                 </div>
                             ))}
-                        </div>   
+                        </div>
                     </div>
 
                     <div className="bg-[#111827] rounded-3xl p-10 text-black relative overflow-hidden group">
@@ -177,8 +177,8 @@ const CustomerDetail = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all ${activeTab === tab.id
-                                        ? 'bg-white text-[var(--on-surface)] shadow-lg'
-                                        : 'text-[var(--on-surface-variant)] hover:bg-white/50'
+                                    ? 'bg-white text-[var(--on-surface)] shadow-lg'
+                                    : 'text-[var(--on-surface-variant)] hover:bg-white/50'
                                     }`}
                             >
                                 <tab.icon size={14} />

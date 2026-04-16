@@ -3,15 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Calendar, Plane, Hotel, Car, CheckCircle,
   Plus, Search, Filter, Edit2, Trash2, X,
-  Activity, Zap, Users, Briefcase, Info
+  Activity, Zap, Users, Briefcase, Info,
+  ShieldCheck
 } from 'lucide-react';
 import useAssignmentStore from '../store/useAssignmentStore';
-import useUserStore from '../store/useUserStore';
 import useAuthStore from '../store/useAuthStore';
-import useBookingStore from '../store/useBookingStore';
-import useFlightStore from '../store/useFlightStore';
-import useHotelStore from '../store/useHotelStore';
-import useTransportStore from '../store/useTransportStore';
 import useMasterTypeStore from '../store/useMasterTypeStore';
 import toast from 'react-hot-toast';
 import usePagination from '../hooks/usePagination';
@@ -25,6 +21,7 @@ const DEFAULT_FORM = {
   flight_id: '',
   hotel_id: '',
   transport_id: '',
+  visa_id: '',
   task_type_id: '',
   status_id: '1' ,
   task_detail:''
@@ -47,29 +44,32 @@ const Assignment = () => {
   const [search,      setSearch]      = useState('');
   const [form,        setForm]        = useState(DEFAULT_FORM);
 
-  const { assignments, fetchAssignments, addAssignment, updateAssignment, deleteAssignment, isLoading: assignmentsLoading } = useAssignmentStore();
+  const { 
+    assignments, 
+    staff_dropdown,
+    hotel_dropdown,
+    flight_dropdown,
+    visa_dropdown,
+    transport_dropdown,
+    booking_dropdown,
+    fetchAssignments, 
+    addAssignmentData,
+    addAssignment, 
+    updateAssignment, 
+    deleteAssignment, 
+    isLoading: assignmentsLoading 
+  } = useAssignmentStore();
   const { user: currentUser } = useAuthStore();
-  const { users, fetchUsers } = useUserStore();
-  const { bookings, fetchBookings } = useBookingStore();
-  const { flights, fetchFlights } = useFlightStore();
-  const { hotels, fetchHotels } = useHotelStore();
-  const { transports, fetchTransports } = useTransportStore();
   const { masterData, fetchMasterData, loading: masterLoading } = useMasterTypeStore();
-  
-
+ 
   const isLoading = assignmentsLoading || masterLoading;
 
   useEffect(() => {
     fetchAssignments();
-    fetchUsers();
-    fetchBookings();
-    fetchFlights();
-    fetchHotels();
-    fetchTransports();
+    addAssignmentData();
     fetchMasterData();
   }, []);
      
-  console.log('currentUser', currentUser);  
   const patchForm = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
   const handleSubmit = async (e) => {
@@ -95,6 +95,7 @@ const Assignment = () => {
       flight_id: item.flight_id || '',
       hotel_id: item.hotel_id || '',
       transport_id: item.transport_id || '',
+      visa_id: item.visa_id || '',
       task_type_id: item.task_type_id || '',
       status_id: item.status_id?.toString() || '1'
     });
@@ -102,12 +103,11 @@ const Assignment = () => {
 
   const filtered = useMemo(() => {
     const list = assignments.filter(a => {
-      const staff = users.find(u => u.id === a.staff_id)?.name || '';
+      const staff = staff_dropdown.find(u => u.id === a.staff_id)?.name || '';
       return staff.toLowerCase().includes(search.toLowerCase());
     });
-    console.log('🔍 Filtered Assignments (for display):', list); 
     return list;
-  }, [assignments, users, search]);
+  }, [assignments, staff_dropdown, search]);
 
   const {
     paginatedData,
@@ -168,11 +168,11 @@ const Assignment = () => {
             <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               
               {/* Staff Selection - Hidden for Staff */}
-              {currentUser?.role_name !== 'Staff' && (
+              {currentUser?.role_name !== 'Quality Assurance' && (
                 <FormField label="Field Personnel" icon={<Users size={14} />}>
                   <select value={form.staff_id} onChange={e => patchForm('staff_id', e.target.value)} required className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
                     <option value="">Select Staff...</option>
-                    {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
+                    {staff_dropdown.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                   </select>
                 </FormField>
               )}
@@ -203,31 +203,37 @@ const Assignment = () => {
                     <FormField label="Booking" icon={<Calendar size={14} />}>
                       <select value={form.booking_id} onChange={e => patchForm('booking_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
                         <option value="">None</option>
-                        {bookings.map(b => <option key={b.id} value={b.id}>#{b.id} - {b.lead?.name || 'Booking'}</option>)}
+                        {booking_dropdown.map(b => <option key={b.booking_id} value={b.booking_id}>{b.booking_name}</option>)}
                       </select>
                     </FormField>
                     <FormField label="Flight" icon={<Plane size={14} />}>
                       <select value={form.flight_id} onChange={e => patchForm('flight_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
                         <option value="">None</option>
-                        {flights.map(f => <option key={f.id} value={f.id}>{f.airline} </option>)}
+                        {flight_dropdown.map(f => <option key={f.id} value={f.id}>{f.airline} </option>)}
                       </select>
                     </FormField>
                     <FormField label="Hotel" icon={<Hotel size={14} />}>
                       <select value={form.hotel_id} onChange={e => patchForm('hotel_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
                         <option value="">None</option>
-                        {hotels.map(h => <option key={h.id} value={h.id}>{h.hotel_name}</option>)}
+                        {hotel_dropdown.map(h => <option key={h.id} value={h.id}>{h.hotel_name}</option>)}
                       </select>
                     </FormField>
                     <FormField label="Driver Name" icon={<Car size={14} />}>       
                       <select value={form.transport_id} onChange={e => patchForm('transport_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
                         <option value="">None</option>
-                        {transports.map(t => <option key={t.id} value={t.id}>{t.driver} </option>)}
+                        {transport_dropdown.map(t => <option key={t.id} value={t.id}>{t.driver} </option>)}
+                      </select>
+                    </FormField>
+                    <FormField label="Visa" icon={<ShieldCheck size={14} />}>       
+                      <select value={form.visa_id} onChange={e => patchForm('visa_id', e.target.value)} className="w-full bg-transparent border-none outline-none text-[12px] font-medium appearance-none cursor-pointer">
+                        <option value="">None</option>
+                        {visa_dropdown.map(v => <option key={v.id} value={v.id}>{v.visa_number} </option>)}
                       </select>
                     </FormField>
                   </div>
                 </div>
               )}
-
+                  
               {/* Task Detail - Always Visible */}
               <div className="lg:col-span-3">
                 <FormField label="Task Detail" icon={<Info size={14} />}>
@@ -275,7 +281,7 @@ const Assignment = () => {
                 </thead>
                 <tbody className="divide-y divide-[#f0efe9]">
                   {paginatedData.length > 0 ? paginatedData.map((a) => {
-                    const staff = users.find(u => u.id === a.staff_id) || { name: 'Unknown' };
+                    const staff = staff_dropdown.find(u => u.id === a.staff_id) || { name: 'Unknown' };
                     const task = (masterData.task_type || []).find(t => t.id === a.task_type_id) || { name: 'Field Duty' };
                     const status = STATUS_CONFIG[a.status_id] || STATUS_CONFIG.default;
                     
@@ -304,7 +310,8 @@ const Assignment = () => {
                              {a.flight_id && <RefBadge icon={<Plane size={8}/>} label={`FL#${a.flight_id}`} />}
                              {a.hotel_id && <RefBadge icon={<Hotel size={8}/>} label={`HT#${a.hotel_id}`} />}
                              {a.transport_id && <RefBadge icon={<Car size={8}/>} label={`TR#${a.transport_id}`} />}
-                             {!a.booking_id && !a.flight_id && !a.hotel_id && !a.transport_id && <span className="text-[11px] text-[#b0aea5]">General Assignment</span>}
+                             {a.visa_id && <RefBadge icon={<ShieldCheck size={8}/>} label={`VS#${a.visa_id}`} />}
+                             {!a.booking_id && !a.flight_id && !a.hotel_id && !a.transport_id && !a.visa_id && <span className="text-[11px] text-[#b0aea5]">General Assignment</span>}
                           </div>
                         </td>
                         <td className="px-8 py-6">

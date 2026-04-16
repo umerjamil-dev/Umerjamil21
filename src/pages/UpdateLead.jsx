@@ -210,6 +210,7 @@ const UpdateLead = () => {
                         const SourceIcon = getIcon(sourceName);
 
                         return (
+                           <>
                            <button
                               key={srcId}
                               onClick={() => setFormData({ ...formData, source_id: srcId })}
@@ -226,6 +227,8 @@ const UpdateLead = () => {
                               </div>
                               {formData.source_id === srcId && <div className="w-2 h-2 rounded-full bg-[var(--on-surface)]"></div>}
                            </button>
+                           
+                           </>
                         );
                      })}
                   </div>

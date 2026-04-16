@@ -183,6 +183,7 @@ const VisaDetail = () => {
         </div>
       </div>
     </div>  
+    
     </>
   );
 };

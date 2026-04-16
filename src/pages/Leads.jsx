@@ -14,7 +14,7 @@ const Leads = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { leads, fetchLeads, isLoading, error } = useLeadStore();
   const { masterData, fetchMasterData } = useMasterTypeStore();
-
+  console.log(leads, "leads")
   useEffect(() => {
     fetchLeads();
     fetchMasterData();

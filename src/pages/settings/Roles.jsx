@@ -46,6 +46,7 @@ const Roles = () => {
    };
 
    return (
+      <>
       <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
 
          {/* ── HEADER ── */}
@@ -247,11 +248,14 @@ const Roles = () => {
             </div>
          </div>
       </div>
+      
+      </>
    );
 };
 
 /* ─── Action Button ──────────────────────────────────────────────────── */
 const ActionBtn = ({ icon: Icon, title, onClick, danger }) => (
+ <>
    <motion.button
       title={title}
       onClick={onClick}
@@ -270,6 +274,7 @@ const ActionBtn = ({ icon: Icon, title, onClick, danger }) => (
    >
       <Icon size={13} style={{ color: danger ? '#c23b2e' : '#78776f' }} />
    </motion.button>
+ </>
 );
 
 export default Roles;

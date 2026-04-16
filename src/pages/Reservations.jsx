@@ -19,7 +19,6 @@ const Reservations = () => {
   useEffect(() => {
     fetchBookings();
   }, [fetchBookings]);
-  console.log(reservations);
 
   const getTypeIcon = (type) => {
     switch (type) {

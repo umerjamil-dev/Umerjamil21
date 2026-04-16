@@ -11,7 +11,7 @@ const getSafeJSON = (key) => {
 };
 
 
-const useAuthStore = create((set) => ({
+const useAuthStore = create((set, get) => ({
   user: getSafeJSON('user'),
   token: localStorage.getItem('token') || null,
   isAuthenticated: !!localStorage.getItem('token'),
@@ -43,7 +43,7 @@ const useAuthStore = create((set) => ({
       
       // Fetch dynamic permissions - non-blocking for login flow
       try {
-        await useAuthStore.getState().fetchUserPermissions();
+        await get().fetchUserPermissions();
       } catch (pErr) {
         console.error("Permission fetch failed but continuing login:", pErr);
       }
@@ -74,7 +74,7 @@ const useAuthStore = create((set) => ({
   refresh: async () => {
     try {
       const response = await api.post('/auth/refresh', {}, {
-        headers: { Authorization: `Bearer ${useAuthStore.getState().token}` }
+        headers: { Authorization: `Bearer ${get().token}` }
       });
       
       let data = response.data;
@@ -92,7 +92,7 @@ const useAuthStore = create((set) => ({
         if (userData) localStorage.setItem('user', JSON.stringify(userData));
         set({
           token: tokenData,
-          user: userData || useAuthStore.getState().user,
+          user: userData || get().user,
           isAuthenticated: true
         });
         return tokenData;
@@ -181,14 +181,14 @@ const useAuthStore = create((set) => ({
         localStorage.setItem('token', tokenData);
         if (userData) localStorage.setItem('user', JSON.stringify(userData));
         set({
-          user: userData || useAuthStore.getState().user,
+          user: userData || get().user,
           token: tokenData,
           isAuthenticated: true
         });
         
         // Non-blocking fetch
         try {
-          await useAuthStore.getState().fetchUserPermissions();
+          await get().fetchUserPermissions();
         } catch (e) {}
         
         set({ isLoading: false });

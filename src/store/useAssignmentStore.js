@@ -3,6 +3,12 @@ import api from '../api/axios';
 
 const useAssignmentStore = create((set) => ({
   assignments: [],
+  staff_dropdown: [],
+  hotel_dropdown: [],
+  flight_dropdown: [],
+  visa_dropdown: [],
+  transport_dropdown: [],
+  booking_dropdown: [],
   isLoading: false,
   error: null,
 
@@ -10,7 +16,6 @@ const useAssignmentStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.get('/assignments');
-      console.log('📡 Assignments API Response:', response.data);
       const dataList = Array.isArray(response.data) ? response.data : (response.data.data || []);
       set({ 
         assignments: dataList, 
@@ -20,7 +25,24 @@ const useAssignmentStore = create((set) => ({
       set({ error: err.message, isLoading: false });
     }
   },
-
+addAssignmentData : async (assignmentData) => {
+  set({ isLoading: true, error: null });
+  try {
+    const response = await api.get('/assignments/staff');
+    const { data, staff_dropdown, hotel_dropdown, flight_dropdown, visa_dropdown, transport_dropdown } = response.data;
+    set({ 
+      booking_dropdown: data || [], 
+      staff_dropdown: staff_dropdown || [],
+      hotel_dropdown: hotel_dropdown || [],
+      flight_dropdown: flight_dropdown || [],
+      visa_dropdown: visa_dropdown || [],
+      transport_dropdown: transport_dropdown || [],
+      isLoading: false 
+    });
+  } catch (err) {
+    set({ error: err.message, isLoading: false });
+  }
+},
   addAssignment: async (assignmentData) => {
     set({ isLoading: true, error: null });
     try {

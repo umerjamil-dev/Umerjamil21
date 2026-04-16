@@ -443,27 +443,27 @@ const CustomerProfile = () => {
 
       {/* ── Action buttons ────────────────────────────────────────────────── */}
       {!hideActionButtons && (
-      <div className=  "flex flex-col sm:flex-row gap-4 pt-4 max-w-5xl mx-auto">
+        <div className="flex flex-col sm:flex-row gap-4 pt-4 max-w-5xl mx-auto">
 
 
-        <button
-          onClick={handleCancel}
-          disabled={savingLoading || isActionClicked}
-          className={`flex-1 flex items-center justify-center gap-3 py-5 bg-red-50 border border-red-200 rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          <XCircle size={18} strokeWidth={2.5} />
-          {savingLoading || isActionClicked ? 'Processing...' : 'Cancel'}
-        </button>
+          <button
+            onClick={handleCancel}
+            disabled={savingLoading || isActionClicked}
+            className={`flex-1 flex items-center justify-center gap-3 py-5 bg-red-50 border border-red-200 rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <XCircle size={18} strokeWidth={2.5} />
+            {savingLoading || isActionClicked ? 'Processing...' : 'Cancel'}
+          </button>
 
-        <button
-          onClick={handleConfirm}
-          disabled={savingLoading || isActionClicked}
-          className={`flex-1 flex items-center justify-center gap-3 py-5 btn-primary rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20 ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          <CheckCircle2 size={18} strokeWidth={2.5} />
-          {savingLoading || isActionClicked ? 'Processing...' : 'Confirm'}
-        </button>
-      </div>
+          <button
+            onClick={handleConfirm}
+            disabled={savingLoading || isActionClicked}
+            className={`flex-1 flex items-center justify-center gap-3 py-5 btn-primary rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20 ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <CheckCircle2 size={18} strokeWidth={2.5} />
+            {savingLoading || isActionClicked ? 'Processing...' : 'Confirm'}
+          </button>
+        </div>
       )}
     </div>
   );

@@ -34,14 +34,14 @@ const UpdatePackage = () => {
                 const data = await getPackage(id);
                 setFormData({
     title: data.title || '',
-    makkah_hotel: data.makkah_hotel || '',     // Note: snake_case from API
-    madinah_hotel: data.madinah_hotel || '',   // Note: snake_case from API
-    nights_makkah: data.nights_makkah || 7,    // Note: snake_case from API
-    nightsMadinah: data.nights_madinah || 7,  // Note: snake_case from API
-    total_nights: data.total_nights || 0,      // Added total_nights
-    base_price: data.base_price || '',         // Note: snake_case from API
-    category: data.category_id || '',       // Note: category_name from API
-    status_id: data.active_status == 'Active' ? 1 : 0     // Added active_status
+    makkah_hotel: data.makkah_hotel || '',     
+    madinah_hotel: data.madinah_hotel || '',   
+    nights_makkah: data.nights_makkah || 7,    
+    nightsMadinah: data.nights_madinah || 7,  
+    total_nights: data.total_nights || 0,      
+    base_price: data.base_price || '',         
+    category: data.category_id || '',       
+    status_id: data.active_status == 'Active' ? 1 : 0     
 });
             } catch (err) {
                 toast.error("Failed to load configuration");

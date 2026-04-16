@@ -3,7 +3,7 @@ import {
     ArrowLeft, Phone, Mail, MapPin,
     Calendar, Clock, User, MessageSquare, MessageCircle,
     Save, Trash2, CheckCircle, AlertCircle,
-    History, Plus, ExternalLink, Activity, Target
+    History, Plus, ExternalLink, Activity, Target, Download
 } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import useLeadStore from '../store/useLeadStore';
@@ -91,7 +91,6 @@ const LeadDetail = () => {
 
     if (isLoading) return <div className="p-20 text-center font-manrope font-extrabold text-gray-400 animate-pulse tracking-widest uppercase text-xs">Retrieving Intelligence Dossier...</div>;
     if (!lead) return <div className="p-20 text-center font-manrope font-extrabold text-red-400 tracking-widest uppercase text-xs">Intelligence Outdated: Lead not found.</div>;
-
 
     return (
         <>
@@ -232,6 +231,40 @@ const LeadDetail = () => {
                                 "{lead.message}"
                             </div>
                         </div>
+
+                        {/* Documents Box */}
+                        {lead.documents && Array.isArray(lead.documents) && lead.documents.length > 0 && (
+                            <div className="mt-8 pt-8 border-t border-gray-100 relative z-10">
+                                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <ExternalLink size={14} /> Attached Documents
+                                </h3>
+                                <div className="flex flex-col gap-3">
+                                    {lead.documents.map((docUrl, index) => {
+                                        const fileName = typeof docUrl === 'string' ? docUrl.split('/').pop() : `Document ${index + 1}`;
+                                        return (
+                                            <a 
+                                                key={index}
+                                                href={docUrl}
+                                                download={fileName}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-[#111827] hover:shadow-sm transition-all group"
+                                            >
+                                                <div className="flex items-center gap-3 overflow-hidden">
+                                                    <div className="w-8 h-8 rounded-lg bg-[#111827]/5 flex items-center justify-center text-[#111827] shrink-0">
+                                                        <ExternalLink size={14} />
+                                                    </div>
+                                                    <span className="text-sm font-bold text-gray-700 truncate">{fileName}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-[#111827] opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    Download <Download size={14} />
+                                                </div>
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                 </div>

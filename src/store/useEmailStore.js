@@ -52,6 +52,7 @@ fetchInboxEmails: async (leadId, userId) => {
     console.error('Fetch Inbox Emails Error:', err);
   }
 },
+
 fetchTrashEmails: async (leadId, userId) => {
   if (!leadId || !userId) return;
   set({ isLoading: true });

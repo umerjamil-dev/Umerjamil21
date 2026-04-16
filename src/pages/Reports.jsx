@@ -312,7 +312,7 @@ const Reports = () => {
                 </div>
                 <div className="bg-slate-50 border-t border-slate-100 p-6 flex justify-center">
                     <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black transition-all">
-                        Load More Intelligence
+                        Load More Intelligence Information
                     </button>
                 </div>
             </div>

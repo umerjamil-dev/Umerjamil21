@@ -48,5 +48,4 @@ const useHotelStore = create((set) => ({
     }
   }
 }));
-
 export default useHotelStore;

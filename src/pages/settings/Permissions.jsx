@@ -50,7 +50,7 @@ const Permissions = () => {
          }
       }
    };
-    
+   
    const handleEdit = (p) => {
       setEditingPermission(p);
       setIsEditing(true);

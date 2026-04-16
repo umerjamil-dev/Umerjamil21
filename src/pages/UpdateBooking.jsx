@@ -315,8 +315,7 @@ const UpdateBooking = () => {
                 )}
               </UnderlineSelect>
             </div>
-          </div>
-
+          </div>    
           {/* Section: Financial Settlement */}
           <div className="bg-white rounded-2xl p-10 border border-slate-100 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 w-28 h-28 bg-slate-50 rounded-bl-[4rem] translate-x-10 -translate-y-10 pointer-events-none" />

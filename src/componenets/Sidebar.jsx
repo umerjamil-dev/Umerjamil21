@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useFilteredMenu } from '../hooks/useMenu';
+import useAuthStore from '../store/useAuthStore';
 import {
   LayoutDashboard,
   Users,
@@ -19,6 +20,15 @@ import {
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
   const menuItems = useFilteredMenu();
+  const { user, logout } = useAuthStore();
+
+  const userName = user?.name || user?.username || 'User';
+  const userInitials = userName
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
   const [openMenus, setOpenMenus] = useState({});
 
@@ -200,19 +210,24 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* Profile & Support - Minimalist Footer */}
       <div className="p-6 border-t border-white/5 relative overflow-hidden bg-white/[0.01]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1E293B] to-[#0F172A] border border-white/10 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-black/20 shrink-0">AZ</div>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1E293B] to-[#0F172A] border border-white/10 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-black/20 shrink-0">{userInitials}</div>
           <div className="flex-1 overflow-hidden">
-            <p className="text-[11px] font-bold text-white uppercase tracking-wider truncate">Admin Zeal</p>
+            <p className="text-[11px] font-bold text-white uppercase tracking-wider truncate">{userName}</p>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)] animate-pulse"></div>
               <p className="text-[8px] text-[var(--desert-gold)] uppercase tracking-widest truncate">Prime Controller</p>
             </div>
           </div>
-          <button className="p-2.5 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all cursor-pointer">
+          <button
+            onClick={logout}
+            title="Logout"
+            className="p-2.5 rounded-xl hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-all cursor-pointer"
+          >
             <LogOut size={16} strokeWidth={2} />
           </button>
         </div>
       </div>
+       {/* Profile & Support - Minimalist Footer */}
     </div>
   );
 };

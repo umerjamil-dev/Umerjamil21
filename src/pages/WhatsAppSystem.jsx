@@ -29,7 +29,7 @@ const WhatsAppSystem = () => {
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [showTemplates, setShowTemplates] = useState(false);
     const [attachments, setAttachments] = useState([]);
-    
+
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
 
@@ -120,12 +120,12 @@ const WhatsAppSystem = () => {
 
     return (
         <div className="flex h-[calc(100vh-140px)] rounded-3xl mx-auto overflow-hidden border border-gray-200 bg-white shadow-2xl">
-            
+
             {/* ── Sidebar: Info & Contacts ── */}
             <aside className="w-80 flex-shrink-0 bg-gray-50 border-r border-gray-100 flex flex-col">
                 <div className="p-6 bg-white border-b border-gray-100">
                     <div className="flex items-center gap-4 mb-6">
-                        <button 
+                        <button
                             onClick={() => navigate(`/leads/${id}`)}
                             className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-[#111827] hover:text-white rounded-xl transition-all group"
                         >
@@ -146,7 +146,7 @@ const WhatsAppSystem = () => {
                     </div>
                 </div>
 
-             
+
             </aside>
 
             {/* ── Chat Area ── */}
@@ -203,8 +203,8 @@ const WhatsAppSystem = () => {
                                     <div className={`max-w-[70%] group relative ${isMe ? 'items-end' : 'items-start'}`}>
                                         <div className={`
                                             px-5 py-3.5 rounded-3xl shadow-sm text-sm font-medium leading-relaxed
-                                            ${isMe 
-                                                ? 'bg-emerald-500 text-white rounded-tr-none' 
+                                            ${isMe
+                                                ? 'bg-emerald-500 text-white rounded-tr-none'
                                                 : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
                                             }
                                         `}>
@@ -235,7 +235,7 @@ const WhatsAppSystem = () => {
                                         <span className="text-[11px] font-bold text-gray-700 truncate max-w-[150px]">{file.name}</span>
                                         <span className="text-[9px] text-emerald-500 font-black uppercase tracking-tighter">{file.size}</span>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => setAttachments(prev => prev.filter(a => a.id !== file.id))}
                                         className="p-1 text-gray-300 hover:text-red-500 rounded-full transition-colors"
                                     >
@@ -248,23 +248,23 @@ const WhatsAppSystem = () => {
 
                     <form onSubmit={handleSendMessage} className="flex items-center gap-4">
                         <div className="flex items-center gap-1">
-                            <button 
+                            <button
                                 type="button"
                                 className="w-12 h-12 flex items-center justify-center rounded-2xl hover:bg-gray-100 text-gray-400 transition-colors"
                             >
                                 <Smile size={24} />
                             </button>
-                            <button 
+                            <button
                                 type="button"
                                 onClick={() => fileInputRef.current.click()}
                                 className="w-12 h-12 flex items-center justify-center rounded-2xl hover:bg-gray-100 text-gray-400 transition-colors"
                             >
                                 <Paperclip size={24} />
-                                <input 
-                                    type="file" 
+                                <input
+                                    type="file"
                                     ref={fileInputRef}
                                     multiple
-                                    className="hidden" 
+                                    className="hidden"
                                     onChange={handleFileChange}
                                 />
                             </button>
@@ -280,7 +280,7 @@ const WhatsAppSystem = () => {
                             />
                         </div>
 
-                        <button 
+                        <button
                             type="submit"
                             disabled={isWhatsAppLoading || (!messageText.trim() && attachments.length === 0)}
                             className="w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
@@ -293,5 +293,4 @@ const WhatsAppSystem = () => {
         </div>
     );
 };
-
 export default WhatsAppSystem;
