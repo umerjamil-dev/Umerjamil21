@@ -149,7 +149,7 @@ const useAuthStore = create((set, get) => ({
         data: err.response?.data,
         message: err.message
       });
-      // Don't throw, just log. We don't want to break the whole app for this.
+      
     }
   },
 

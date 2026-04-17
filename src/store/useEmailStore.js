@@ -13,7 +13,9 @@ const useEmailStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await api.get('/emails/accounts');
+      console.log(response)
       const emails = response.data?.data || response.data || [];
+      // console.log("source email", emails);
 
       set({ sourceEmails: Array.isArray(emails) ? emails : [], isLoading: false });
     } catch (error) {

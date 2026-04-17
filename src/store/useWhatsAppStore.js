@@ -42,7 +42,7 @@ const useWhatsAppStore = create((set, get) => ({
         messages: [...state.messages, newMessage], 
         isLoading: false 
       }));
-      
+      console.log("hello world",response.data);
       return response.data;
     } catch (err) {
       set({ error: err.message, isLoading: false });
