@@ -15,6 +15,7 @@ import AddReservation from './AddReservation';
 import Packages from './Packages';
 import AddPackage from './AddPackage';
 import LiveBooking from './LiveBooking';
+import LiveHotelBooking from './LiveHotelBooking';
 import Operations from './Operations';
 import Reports from './Reports';
 import Settings from './Settings';
@@ -24,5 +25,5 @@ export {
   Customers, Calculator, Bookings, 
   Reservations, Payments, AddLead,
   AddCustomer, AddBooking, AddPayment, AddReservation,
-  Packages, AddPackage, LiveBooking, Operations, Reports, Settings
+  Packages, AddPackage, LiveBooking, LiveHotelBooking, Operations, Reports, Settings
 };

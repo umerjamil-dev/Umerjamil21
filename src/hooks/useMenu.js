@@ -85,9 +85,8 @@ export const useFilteredMenu = () => {
           { title: 'Live Flight', path: '/live-booking', permission: 'VIEW_LIVE_FLIGHT' },
           { title: 'Live Hotel', path: '/live-booking-Hotels', permission: 'VIEW_LIVE_HOTEL' }
         ]
-      },
-
-      {
+      }, 
+     {
         title: 'Bookings',
         icon: BookOpen,
         path: '/bookings',

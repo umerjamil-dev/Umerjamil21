@@ -27,6 +27,7 @@ import AddPackage from '../pages/AddPackage'
 import PackageDetail from '../pages/PackageDetail'
 import UpdatePackage from '../pages/UpdatePackage'
 import LiveBooking from '../pages/LiveBooking'
+import LiveHotelBooking from '../pages/LiveHotelBooking'
 import Operations from '../pages/Operations'
 import Assignment from '../pages/Assignment'
 import LogisticsFeed from '../pages/LogisticsFeed'
@@ -136,7 +137,8 @@ const Router = () => {
         <Route path="/packages/add" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><AddPackage /></Layout></ProtectedRoute>} />
         <Route path="/packages/:id" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><PackageDetail /></Layout></ProtectedRoute>} />
         <Route path="/packages/:id/edit" element={<ProtectedRoute permission="VIEW_PACKAGES"><Layout><UpdatePackage /></Layout></ProtectedRoute>} />
-        <Route path="/live-booking" element={<ProtectedRoute permission="VIEW_LIVE_BOOKING"><Layout><LiveBooking /></Layout></ProtectedRoute>} />
+        <Route path="/live-booking" element={<ProtectedRoute permission="VIEW_LIVE_FLIGHT"><Layout><LiveBooking /></Layout></ProtectedRoute>} />
+        <Route path="/live-booking-Hotels" element={<ProtectedRoute permission="VIEW_LIVE_HOTEL"><Layout><LiveHotelBooking /></Layout></ProtectedRoute>} />
         
         
       </Routes>

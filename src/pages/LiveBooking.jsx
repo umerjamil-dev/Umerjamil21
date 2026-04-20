@@ -530,6 +530,7 @@ const LiveBooking = () => {
             </div>
          )}
 
+.
          {!isSearching && searchedFlights.length === 0 && (
             <div className="text-center py-20 bg-white rounded-2xl border-2 border-slate-200">
                <Plane className="mx-auto text-slate-300 mb-6" size={80} />
