@@ -1,375 +1,543 @@
-import React, { useState } from 'react';
-import {
-   User, Package, Plane,
-   Hotel, Calendar, CreditCard,
-   Clock, Save, ArrowLeft,
-   ShieldCheck, MapPin, Search,
-   ChevronRight, Activity, Car,
-   ArrowRight, Sparkles, AlertCircle
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Plane, Search, Loader2, Clock, ArrowRight, Calendar } from 'lucide-react';
+import useFlightStore from '../store/useFlightStore';
 
 const LiveBooking = () => {
-   const navigate = useNavigate();
-   const [step, setStep] = useState(1);
-   const [formData, setFormData] = useState({
-      customerId: '',
-      packageId: '',
-      flightApi: '',
-      hotelApi: '',
-      transportMode: 'VIP Private GMC',
-      startDate: '2024-10-15',
-      endDate: '2024-10-30'
-   });
+   const {
+      searchParams,
+      searchedFlights,
+      isSearching,
+      selectedFlight,
+      updateSearchParams,
+      searchFlights,
+      selectFlight
+   } = useFlightStore();
 
-   const steps = [
-      { id: 1, title: "Identity", icon: User },
-      { id: 2, title: "Inventory", icon: Package },
-      { id: 3, title: "Aviation", icon: Plane },
-      { id: 4, title: "Hospitality", icon: Hotel },
-      { id: 5, title: "Logistics", icon: Car }
-   ];
+   const handleAirportAdd = (airport) => {
+      if (airport && !searchParams.from.includes(airport)) {
+         updateSearchParams({ from: [...searchParams.from, airport] });
+      }
+   };
 
-   const handleNext = () => setStep(prev => Math.min(prev + 1, 5));
-   const handlePrev = () => setStep(prev => Math.max(prev - 1, 1));
+   const handleAirportRemove = (index) => {
+      const updatedFrom = searchParams.from.filter((_, i) => i !== index);
+      updateSearchParams({ from: updatedFrom });
+   };
+
+   const formatDuration = (minutes) => {
+      if (!minutes) return 'N/A';
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      return `${hours}h ${mins}m`;
+   };
 
    return (
-     <>
-     
-      <div className="font-inter space-y-12 animate-in fade-in duration-1000 pb-24">
-         {/* Premium Header */}
-         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200 relative">
-            <div className="space-y-4">
-               <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-black opacity-80">
-                  <Sparkles size={14} strokeWidth={3} />
-                  Live GDS Sync v2.4
-               </div>
-               <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
-                  Protocol
+      <div className="font-inter space-y-8 animate-in fade-in duration-1000 pb-24">
+         {/* Header */}
+         <div className="flex items-center justify-between pb-6 border-b-2 border-slate-200">
+            <div>
+               <h1 className="text-4xl font-black text-slate-900 tracking-tight flex items-center gap-4">
+                  <Plane className="text-[var(--desert-gold)]" size={40} />
+                  Live Flight Search
                </h1>
-               <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
-                  Synchronizing live travel assets for real-time  authorization. Validating across multiple API nodes.
-               </p>
-            </div>
-            <div className="flex items-center gap-4">
-               <button onClick={() => navigate('/bookings')} className="px-8 py-4 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all">
-                  Abort
-               </button>
-               {step === 5 && (
-                  <button className="px-10 py-5 bg-[var(--sacred-emerald)] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-[0_20px_40px_rgba(40,160,120,0.2)] flex items-center gap-3 hover:-translate-y-1 active:scale-95 transition-all">
-                     <Save size={18} strokeWidth={3} />
-                     Authorize Booking
-                  </button>
-               )}
+               <p className="text-slate-500 text-sm font-medium mt-2">Search and compare real-time flight prices</p>
             </div>
          </div>
 
-         {/* Step Navigation Matrix */}
-         <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-[8rem] translate-x-32 -translate-y-32 transition-all duration-700"></div>
+         {/* Search Form */}
+         <div className="bg-white rounded-2xl p-8 border-2 border-slate-200 shadow-lg space-y-8">
+            {/* From/To Section */}
+            <div>
+               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Route</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">From Airports</label>
+                     <div className="flex gap-2 mb-2">
+                        <input
+                           id="airport-input"
+                           type="text"
+                           onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                 handleAirportAdd(e.target.value.toUpperCase());
+                                 e.target.value = '';
+                              }
+                           }}
+                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                           placeholder="Add airport (e.g., KHI)"
+                        />
+                        <button
+                           onClick={() => {
+                              const input = document.getElementById('airport-input');
+                              if (input && input.value) {
+                                 handleAirportAdd(input.value.toUpperCase());
+                                 input.value = '';
+                              }
+                           }}
+                           className="px-6 py-4 bg-[var(--desert-gold)] text-black font-black text-xs uppercase rounded-xl hover:bg-[var(--sacred-emerald)] hover:text-white transition-all"
+                        >
+                           Add
+                        </button>
+                     </div>
+                     <div className="flex flex-wrap gap-2">
+                        {searchParams.from.map((airport, idx) => (
+                           <span key={idx} className="px-4 py-2 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] rounded-lg text-xs font-bold flex items-center gap-2">
+                              {airport}
+                              <button 
+                                 onClick={() => handleAirportRemove(idx)}
+                                 className="hover:text-red-500"
+                              >
+                                 ×
+                              </button>
+                           </span>
+                        ))}
+                     </div>
+                  </div>
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">To Airport</label>
+                     <input
+                        type="text"
+                        value={searchParams.to}
+                        onChange={(e) => updateSearchParams({ to: e.target.value.toUpperCase() })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                        placeholder="JED"
+                     />
+                  </div>
+               </div>
+            </div>
 
-            <div className="flex items-center justify-between max-w-4xl mx-auto relative z-10">
-               {steps.map((s) => (
-                  <div key={s.id} className="flex flex-col items-center gap-4 text-center">
-                     <button
-                        onClick={() => setStep(s.id)}
-                        className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all cursor-pointer border-2 ${step === s.id
-                              ? 'bg-[var(--desert-gold)] text-black border-transparent shadow-[0_0_30px_rgba(180,140,80,0.2)]'
-                              : step > s.id
-                                 ? 'bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] border-[var(--sacred-emerald)]/10'
-                                 : 'bg-slate-50 text-slate-300 border-slate-100 hover:bg-slate-100 hover:text-slate-500'
-                           }`}
+            {/* Dates & Trip Type */}
+            <div>
+               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Dates & Trip Type</h3>
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Trip Type</label>
+                     <select
+                        value={searchParams.trip_type}
+                        onChange={(e) => updateSearchParams({ trip_type: e.target.value })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
                      >
-                        <s.icon size={20} strokeWidth={step === s.id ? 3 : 2} />
-                     </button>
-                     <span className={`text-[8px] font-black uppercase tracking-[0.3em] ${step === s.id ? 'text-black' : 'text-slate-300'}`}>{s.title}</span>
+                        <option value="round">Round Trip</option>
+                        <option value="one">One Way</option>
+                     </select>
                   </div>
-               ))}
-               <div className="absolute left-0 right-0 top-7 h-px bg-slate-100 -z-10 mx-10"></div>
-            </div>
-         </div>
-
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Primary Action Matrix (8 Columns) */}
-            <div className="lg:col-span-8 space-y-10">
-               {step === 1 && (
-                  <div className="bg-white rounded-xl p-14 border border-slate-200 animate-in slide-in-from-right duration-700 shadow-sm relative overflow-hidden">
-                     <div className="absolute top-0 right-0 w-48 h-48 bg-slate-50 rounded-bl-[6rem] -translate-y-10 translate-x-10"></div>
-                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-16 flex items-center gap-4">
-                        <User className="text-[var(--desert-gold)]" size={20} /> Phase 01: Pilgrim Registry
-                     </h3>
-                     <div className="space-y-12">
-                        <div className="group">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Verified Identity Search</label>
-                           <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
-                              <Search className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <select
-                                 className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none cursor-pointer appearance-none"
-                                 onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
-                              >
-                                 <option value="" className="bg-white">Query Registry ...</option>
-                                 <option value="Muhammad Arif" className="bg-white">Muhammad Arif (PK-10294)</option>
-                                 <option value="Zahra Khan" className="bg-white">Zahra Khan (PK-10295)</option>
-                                 <option value="Omar Jamil" className="bg-white">Omar Jamil (PK-10296)</option>
-                              </select>
-                           </div>
-                        </div>
-                     </div>
-                     <div className="mt-20 flex justify-end">
-                        <button onClick={handleNext} className="px-12 py-5 bg-black text-white font-black text-[11px] uppercase tracking-[0.4em] rounded-xl shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-4">
-                           Proceed to Inventory <ArrowRight size={18} strokeWidth={3} />
-                        </button>
-                     </div>
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Departure Date</label>
+                     <input
+                        type="date"
+                        value={searchParams.departure_date}
+                        onChange={(e) => updateSearchParams({ departure_date: e.target.value })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                     />
                   </div>
-               )}
-
-               {step === 2 && (
-                  <div className="bg-white rounded-xl p-14 border border-slate-200 animate-in slide-in-from-right duration-700 shadow-sm">
-                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-16 flex items-center gap-4">
-                        <Package className="text-[var(--desert-gold)]" size={20} /> Phase 02: Inventory Synthesis
-                     </h3>
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {['Premium Hajj v1', 'Ramadan Umrah Platinum', 'Standard Umrah Premium'].map((pkg) => (
-                           <button
-                              key={pkg}
-                              onClick={() => setFormData({ ...formData, packageId: pkg })}
-                              className={`p-10 rounded-xl text-left border-2 transition-all group relative overflow-hidden ${formData.packageId === pkg
-                                    ? 'bg-slate-50 border-[var(--desert-gold)] shadow-sm'
-                                    : 'bg-white border-slate-100 hover:border-slate-300'
-                                 }`}
-                           >
-                              <div className="flex justify-between items-start mb-6">
-                                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Package Node</span>
-                                 {formData.packageId === pkg && <div className="w-2 h-2 rounded-full bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)]"></div>}
-                              </div>
-                              <h4 className="text-md font-manrope font-black text-slate-900 mb-2">{pkg}</h4>
-                              <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Base Valuation: $1,299</p>
-                           </button>
-                        ))}
-                     </div>
-                     <div className="mt-20 flex justify-between items-center">
-                        <button onClick={handlePrev} className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] hover:text-black transition-all">Back to Identity</button>
-                        <button onClick={handleNext} className="px-12 py-5 bg-black text-white font-black text-[11px] uppercase tracking-[0.4em] rounded-xl shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-4">
-                           Proceed to Aviation <ArrowRight size={18} strokeWidth={3} />
-                        </button>
-                     </div>
-                  </div>
-               )}
-
-               {step === 3 && (
-                  <div className="bg-white rounded-xl p-14 border border-slate-200 animate-in slide-in-from-right duration-700 shadow-sm">
-                     <div className="flex items-center justify-between mb-16">
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] flex items-center gap-4">
-                           <Plane className="text-[var(--desert-gold)]" size={20} /> Phase 03: Aviation Registry
-                        </h3>
-                        <div className="px-6 py-2 bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] rounded-full text-[9px] font-black uppercase tracking-[0.4em] border border-[var(--sacred-emerald)]/20 animate-pulse">Live API Syncing</div>
-                     </div>
-
-                     <div className="space-y-6">
-                        {['Saudia SV-724', 'Emirates EK-601', 'PIA PK-701'].map((flight) => (
-                           <div
-                              key={flight}
-                              onClick={() => setFormData({ ...formData, flightApi: flight })}
-                              className={`p-10 bg-slate-50 border-2 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-10 group transition-all cursor-pointer ${formData.flightApi === flight ? 'border-[var(--desert-gold)] bg-white' : 'border-slate-100 hover:border-slate-300'
-                                 }`}
-                           >
-                              <div className="flex items-center gap-8">
-                                 <div className="w-20 h-20 rounded-xl bg-white flex items-center justify-center border border-slate-100 shadow-sm">
-                                    <Plane className="text-slate-400 group-hover:text-[var(--desert-gold)] transition-all" size={28} />
-                                 </div>
-                                 <div className="space-y-1">
-                                    <h4 className="text-xl font-manrope font-black text-slate-900 tracking-tight">{flight}</h4>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">JFK → JED | 14:30 </p>
-                                 </div>
-                              </div>
-                              <div className="flex items-center gap-10">
-                                 <div className="text-right space-y-1">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Live Dynamic Val</p>
-                                    <p className="text-2xl font-manrope font-black text-slate-900 tracking-tighter">$845.00</p>
-                                 </div>
-                                 <div className={`px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.4em] transition-all ${formData.flightApi === flight ? 'bg-[var(--desert-gold)] text-black' : 'bg-slate-200 text-slate-400'
-                                    }`}>
-                                    {formData.flightApi === flight ? 'ed' : 'Secure Node'}
-                                 </div>
-                              </div>
-                           </div>
-                        ))}
-                     </div>
-                     <div className="mt-20 flex justify-between items-center">
-                        <button onClick={handlePrev} className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] hover:text-black transition-all">Back to Inventory</button>
-                        <button onClick={handleNext} className="px-12 py-5 bg-black text-white font-black text-[11px] uppercase tracking-[0.4em] rounded-xl shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-4">
-                           Proceed to Hospitality <ArrowRight size={18} strokeWidth={3} />
-                        </button>
-                     </div>
-                  </div>
-               )}
-
-               {step === 4 && (
-                  <div className="bg-white rounded-xl p-14 border border-slate-200 animate-in slide-in-from-right duration-700 shadow-sm text-slate-900">
-                     <div className="flex items-center justify-between mb-16">
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] flex items-center gap-4">
-                           <Hotel className="text-[var(--desert-gold)]" size={20} /> Phase 04: Hospitality Registry
-                        </h3>
-                        <div className="px-6 py-2 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] rounded-full text-[9px] font-black uppercase tracking-[0.4em] border border-[var(--desert-gold)]/20">LIVE API v5.2</div>
-                     </div>
-
-                     <div className="space-y-10">
-                        <div className="group">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Select Verified Hospitality node</label>
-                           <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
-                              <Hotel className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <select
-                                 className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none cursor-pointer appearance-none"
-                                 onChange={(e) => setFormData({ ...formData, hotelApi: e.target.value })}
-                              >
-                                 <option value="" className="bg-white">Query Hospitality API...</option>
-                                 <option value="Clock Tower Fairmont" className="bg-white">Fairmont Makkah Clock Royal Tower</option>
-                                 <option value="Pullman ZamZam" className="bg-white">Pullman ZamZam Makkah</option>
-                                 <option value="Hyatt Regency" className="bg-white">Hyatt Regency Jabal Omar</option>
-                                 <option value="Movenpick Enwar" className="bg-white">Anwar Al Madinah Mövenpick</option>
-                              </select>
-                           </div>
-                        </div>
-
-                        <div className="p-10 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-6">
-                           <AlertCircle className="text-[var(--desert-gold)] shrink-0" size={24} />
-                           <div>
-                              <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em] mb-2 leading-relaxed">System Recommendation</p>
-                              <p className="text-slate-500 text-xs font-medium leading-relaxed">Based on your selected aviation , Fairmont Makkah offers the highest synchronization efficiency for transit logistics.</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div className="mt-20 flex justify-between items-center">
-                        <button onClick={handlePrev} className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] hover:text-black transition-all">Back to Aviation</button>
-                        <button onClick={handleNext} className="px-12 py-5 bg-black text-white font-black text-[11px] uppercase tracking-[0.4em] rounded-xl shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-4">
-                           Proceed to Logistics <ArrowRight size={18} strokeWidth={3} />
-                        </button>
-                     </div>
-                  </div>
-               )}
-
-               {step === 5 && (
-                  <div className="bg-white rounded-xl p-14 border border-slate-200 animate-in slide-in-from-right duration-700 shadow-sm text-slate-900">
-                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-16 flex items-center gap-4">
-                        <Car className="text-[var(--desert-gold)]" size={20} /> Phase 05: Logistics & Temporal Registry
-                     </h3>
-
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16">
-                        <div className="group">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Transit Protocol</label>
-                           <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
-                              <Car className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <select
-                                 className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none cursor-pointer appearance-none"
-                                 value={formData.transportMode}
-                                 onChange={(e) => setFormData({ ...formData, transportMode: e.target.value })}
-                              >
-                                 <option className="bg-white">VIP Private GMC</option>
-                                 <option className="bg-white">Premium Bus </option>
-                                 <option className="bg-white">Standard Logistics</option>
-                              </select>
-                           </div>
-                        </div>
-
-                        <div className="group">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block">Inventory Dispatch Date</label>
-                           <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
-                              <Calendar className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <input
-                                 type="date"
-                                 className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none"
-                                 value={formData.startDate}
-                                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                              />
-                           </div>
-                        </div>
-
-                        <div className="group">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block"> Expiry Date</label>
-                           <div className="relative border-b-2 border-slate-100 group-focus-within:border-[var(--desert-gold)] transition-all pb-6 flex items-center gap-5">
-                              <Calendar className="text-slate-300 group-focus-within:text-[var(--desert-gold)]" size={24} />
-                              <input
-                                 type="date"
-                                 className="w-full bg-transparent text-xl font-manrope font-black text-slate-900 outline-none"
-                                 value={formData.endDate}
-                                 onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                              />
-                           </div>
-                        </div>
-                     </div>
-
-                     <div className="mt-20 flex justify-between items-center">
-                        <button onClick={handlePrev} className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] hover:text-black transition-all">Back to Hospitality</button>
-                        <div className="flex items-center gap-6 text-[10px] font-black text-[var(--sacred-emerald)] uppercase tracking-widest animate-pulse">
-                           <ShieldCheck size={18} strokeWidth={3} /> Ready for Authorization
-                        </div>
-                     </div>
-                  </div>
-               )}
-            </div>
-
-            {/* Live Workflow Summary (4 Columns) */}
-            <div className="lg:col-span-4 space-y-10">
-               <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-xl p-14 text-white shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-white/5 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--desert-gold)]/5 rounded-bl-[10rem] group-hover:scale-125 transition-all duration-1000 blur-3xl opacity-20"></div>
-
-                  <h4 className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] mb-16 flex items-center gap-3">
-                     <Clock size={16} className="text-[var(--desert-gold)]" /> Protocol
-                  </h4>
-
-                  <div className="space-y-12 relative z-10">
-                     <div className="flex flex-col gap-3 group/item transition-all hover:translate-x-2">
-                        <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">Verified Pilgrim</span>
-                        <span className="text-sm font-manrope font-black text-white uppercase tracking-tight">{formData.customerId || 'No Selection'}</span>
-                     </div>
-                     <div className="flex flex-col gap-3 group/item transition-all hover:translate-x-2">
-                        <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">Inventory Node</span>
-                        <span className="text-sm font-manrope font-black text-white uppercase tracking-tight">{formData.packageId || ' Pending'}</span>
-                     </div>
-                     <div className="grid grid-cols-2 gap-8">
-                        <div className="flex flex-col gap-2">
-                           <span className="text-[8px] font-black text-white/10 uppercase tracking-widest">Aviation</span>
-                           <span className="text-[10px] font-bold text-white/60">{formData.flightApi || 'PENDING'}</span>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                           <span className="text-[8px] font-black text-white/10 uppercase tracking-widest">Hospitality</span>
-                           <span className="text-[10px] font-bold text-white/60">{formData.hotelApi || 'PENDING'}</span>
-                        </div>
-                     </div>
-
-                     <div className="pt-20 mt-10 border-t border-white/5 text-center relative">
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#020617] text-[8px] font-black text-white/10 uppercase tracking-[0.4em] border border-white/5 rounded-full">
-                           Aggregated Floor
-                        </div>
-                        <p className="text-[10px] text-white/20 font-black uppercase tracking-[0.4em] mb-6">Estimated  valuation</p>
-                        <p className="text-5xl font-manrope font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                           $2,139.00
-                        </p>
-                     </div>
-                  </div>
-               </div>
-
-               <div className="bg-white rounded-xl p-12 border border-slate-200 shadow-sm">
-                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-12 flex items-center gap-3">
-                     <ShieldCheck size={18} className="text-[var(--sacred-emerald)]" /> Integrity Verifier
-                  </h4>
-                  <div className="space-y-8">
-                     {[
-                        { label: 'Visa Quota Sync', active: true },
-                        { label: 'Passport  Match', active: true },
-                        { label: 'Health Protocol Protocol', active: false }
-                     ].map(v => (
-                        <div key={v.label} className="flex items-center justify-between group">
-                           <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-slate-600 transition-all">{v.label}</span>
-                           <div className={`w-3 h-3 rounded-xl transition-all ${v.active ? 'bg-[var(--sacred-emerald)] shadow-[0_0_12px_var(--sacred-emerald)]' : 'bg-slate-100'}`}></div>
-                        </div>
-                     ))}
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Return Date</label>
+                     <input
+                        type="date"
+                        value={searchParams.return_date}
+                        onChange={(e) => updateSearchParams({ return_date: e.target.value })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                        disabled={searchParams.trip_type === 'one'}
+                     />
                   </div>
                </div>
             </div>
+
+            {/* Passengers */}
+            <div>
+               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Passengers</h3>
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Adults</label>
+                     <div className="flex items-center gap-4">
+                        <button 
+                           onClick={() => updateSearchParams({ adults: Math.max(1, searchParams.adults - 1) })}
+                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+                        >
+                           -
+                        </button>
+                        <input
+                           type="number"
+                           value={searchParams.adults}
+                           onChange={(e) => updateSearchParams({ adults: parseInt(e.target.value) || 1 })}
+                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all text-center"
+                           min="1"
+                        />
+                        <button 
+                           onClick={() => updateSearchParams({ adults: searchParams.adults + 1 })}
+                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+                        >
+                           +
+                        </button>
+                     </div>
+                  </div>
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Children</label>
+                     <div className="flex items-center gap-4">
+                        <button 
+                           onClick={() => updateSearchParams({ children: Math.max(0, searchParams.children - 1) })}
+                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+                        >
+                           -
+                        </button>
+                        <input
+                           type="number"
+                           value={searchParams.children}
+                           onChange={(e) => updateSearchParams({ children: parseInt(e.target.value) || 0 })}
+                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all text-center"
+                           min="0"
+                        />
+                        <button 
+                           onClick={() => updateSearchParams({ children: searchParams.children + 1 })}
+                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+                        >
+                           +
+                        </button>
+                     </div>
+                  </div>
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Infants</label>
+                     <div className="flex items-center gap-4">
+                        <button 
+                           onClick={() => updateSearchParams({ infants: Math.max(0, searchParams.infants - 1) })}
+                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+                        >
+                           -
+                        </button>
+                        <input
+                           type="number"
+                           value={searchParams.infants}
+                           onChange={(e) => updateSearchParams({ infants: parseInt(e.target.value) || 0 })}
+                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all text-center"
+                           min="0"
+                        />
+                        <button 
+                           onClick={() => updateSearchParams({ infants: searchParams.infants + 1 })}
+                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+                        >
+                           +
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {/* Preferences */}
+            <div>
+               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Preferences</h3>
+               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Cabin Class</label>
+                     <select
+                        value={searchParams.cabin_class}
+                        onChange={(e) => updateSearchParams({ cabin_class: e.target.value })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                     >
+                        <option value="economy">Economy</option>
+                        <option value="premium_economy">Premium Economy</option>
+                        <option value="business">Business</option>
+                        <option value="first">First Class</option>
+                     </select>
+                  </div>
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Currency</label>
+                     <select
+                        value={searchParams.currency}
+                        onChange={(e) => updateSearchParams({ currency: e.target.value })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                     >
+                        <option value="PKR">PKR (₨)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="SAR">SAR (﷼)</option>
+                     </select>
+                  </div>
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Sort By</label>
+                     <select
+                        value={searchParams.sort}
+                        onChange={(e) => updateSearchParams({ sort: e.target.value })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                     >
+                        <option value="price">Price (Low to High)</option>
+                        <option value="duration">Duration (Shortest)</option>
+                     </select>
+                  </div>
+                  <div>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Max Price</label>
+                     <input
+                        type="number"
+                        value={searchParams.max_price || ''}
+                        onChange={(e) => updateSearchParams({ max_price: e.target.value ? parseFloat(e.target.value) : null })}
+                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                        placeholder="No limit"
+                     />
+                  </div>
+               </div>
+               <div className="mt-6">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                     <input
+                        type="checkbox"
+                        checked={searchParams.non_stop}
+                        onChange={(e) => updateSearchParams({ non_stop: e.target.checked })}
+                        className="w-6 h-6 rounded border-2 border-slate-300 text-[var(--desert-gold)] focus:ring-[var(--desert-gold)]"
+                     />
+                     <span className="text-sm font-black text-slate-900">Non-stop flights only</span>
+                  </label>
+               </div>
+            </div>
+
+            {/* Search Button */}
+            <div className="flex justify-end">
+               <button
+                  onClick={searchFlights}
+                  disabled={isSearching}
+                  className="px-12 py-5 bg-[var(--desert-gold)] text-black font-black text-[12px] uppercase tracking-[0.2em] rounded-xl hover:bg-[var(--sacred-emerald)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg"
+               >
+                  {isSearching ? (
+                     <>
+                        <Loader2 size={20} className="animate-spin" />
+                        Searching Flights...
+                     </>
+                  ) : (
+                     <>
+                        <Search size={20} />
+                        Search Flights
+                     </>
+                  )}
+               </button>
+            </div>
          </div>
+
+         {/* Flight Results */}
+         {isSearching && (
+            <div className="text-center py-20">
+               <Loader2 size={64} className="mx-auto text-[var(--desert-gold)] animate-spin mb-6" />
+               <p className="text-slate-500 font-bold text-lg">Searching for the best flights...</p>
+            </div>
+         )}
+
+         {!isSearching && searchedFlights.length > 0 && (
+            <div className="space-y-6">
+               <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-black text-slate-900">{searchedFlights.length} Flights Found</h2>
+               </div>
+
+               {searchedFlights.map((flight, index) => {
+                  const price = flight.price || 0;
+                  const firstFlight = flight.flights?.[0] || {};
+                  const lastFlight = flight.flights?.[flight.flights.length - 1] || {};
+                  
+                  const airline = firstFlight.airline || 'Unknown';
+                  const airlineLogo = firstFlight.airline_logo || flight.airline_logo || '';
+                  const departure = firstFlight.departure_airport?.id || '';
+                  const arrival = lastFlight.arrival_airport?.id || '';
+                  const duration = formatDuration(flight.total_duration);
+                  const departureTime = firstFlight.departure_airport?.time || '';
+                  const arrivalTime = lastFlight.arrival_airport?.time || '';
+                  const stops = flight.layovers?.length || 0;
+                  const travelClass = firstFlight.travel_class || '';
+                  const flightNumber = firstFlight.flight_number || '';
+                  const airplane = firstFlight.airplane || '';
+                  
+                  return (
+                     <div
+                        key={index}
+                        onClick={() => selectFlight(flight)}
+                        className={`bg-white rounded-2xl border-2 transition-all cursor-pointer shadow-lg hover:shadow-2xl ${
+                           selectedFlight === flight 
+                              ? 'border-[var(--desert-gold)] ring-4 ring-[var(--desert-gold)]/20' 
+                              : 'border-slate-200 hover:border-[var(--desert-gold)]'
+                        }`}
+                     >
+                        <div className="p-8">
+                           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                              {/* Airline & Flight Info */}
+                              <div className="flex items-center gap-6 flex-1">
+                                 {airlineLogo ? (
+                                    <img src={airlineLogo} alt={airline} className="w-24 h-24 rounded-xl object-contain bg-white border-2 border-slate-100 shadow-lg" />
+                                 ) : (
+                                    <div className="w-24 h-24 rounded-xl bg-gradient-to-br from-[var(--desert-gold)] to-[var(--sacred-emerald)] flex items-center justify-center shadow-lg">
+                                       <Plane className="text-white" size={40} />
+                                    </div>
+                                 )}
+                                 <div className="space-y-2">
+                                    <h3 className="text-xl font-black text-slate-900">{airline}</h3>
+                                    <p className="text-sm font-bold text-slate-500">
+                                       {departure} → {arrival}
+                                    </p>
+                                    <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                                       <span className="flex items-center gap-2">
+                                          <Clock size={14} />
+                                          {duration}
+                                       </span>
+                                       {flightNumber && (
+                                          <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">
+                                             {flightNumber}
+                                          </span>
+                                       )}
+                                       {stops > 0 && (
+                                          <span className="px-3 py-1 bg-orange-100 text-orange-600 rounded-lg">
+                                             {stops} Stop{stops > 1 ? 's' : ''}
+                                          </span>
+                                       )}
+                                    </div>
+                                 </div>
+                              </div>
+
+                              {/* Time & Price */}
+                              <div className="flex items-center gap-12">
+                                 <div className="text-center space-y-2">
+                                    <p className="text-3xl font-black text-slate-900">
+                                       {departureTime ? new Date(departureTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : 'N/A'}
+                                    </p>
+                                    <p className="text-xs font-bold text-slate-400">{departure}</p>
+                                 </div>
+                                 
+                                 <div className="flex flex-col items-center">
+                                    <ArrowRight className="text-[var(--desert-gold)]" size={32} />
+                                    <p className="text-xs font-bold text-slate-400 mt-1">{duration}</p>
+                                 </div>
+
+                                 <div className="text-center space-y-2">
+                                    <p className="text-3xl font-black text-slate-900">
+                                       {arrivalTime ? new Date(arrivalTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : 'N/A'}
+                                    </p>
+                                    <p className="text-xs font-bold text-slate-400">{arrival}</p>
+                                 </div>
+
+                                 <div className="text-right pl-8 border-l-2 border-slate-200">
+                                    <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">Total Price</p>
+                                    <p className="text-3xl font-black text-[var(--desert-gold)]">
+                                       {searchParams.currency === 'USD' ? '$' : searchParams.currency === 'EUR' ? '€' : searchParams.currency === 'PKR' ? '₨' : '﷼'}{price.toLocaleString()}
+                                    </p>
+                                    <p className="text-xs font-bold text-slate-400 mt-1">{travelClass}</p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>   
+                        
+
+                        {/* Expanded Details */}
+                        {selectedFlight === flight && (
+                           <div className="border-t-2 border-slate-200 p-8 bg-slate-50">
+                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-6">Flight Details</h4>
+                              
+                              {/* Flight Legs */}
+                              <div className="space-y-6 mb-8">
+                                 {flight.flights.map((leg, legIdx) => (
+                                    <div key={legIdx} className="bg-white p-6 rounded-xl border-2 border-slate-200">
+                                       <div className="flex items-start justify-between mb-4">
+                                          <div className="flex items-center gap-4">
+                                             {leg.airline_logo && (
+                                                <img src={leg.airline_logo} alt={leg.airline} className="w-12 h-12 rounded-lg object-contain" />
+                                             )}
+                                             <div>
+                                                <p className="font-black text-slate-900">{leg.airline}</p>
+                                                <p className="text-xs font-bold text-slate-500">{leg.flight_number} • {leg.airplane}</p>
+                                             </div>
+                                          </div>
+                                          <span className="px-4 py-2 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] rounded-lg text-xs font-black">
+                                             {leg.travel_class}
+                                          </span>
+                                       </div>
+                                       
+                                       <div className="grid grid-cols-2 gap-4">
+                                          <div>
+                                             <p className="text-xs font-bold text-slate-400 mb-1">Departure</p>
+                                             <p className="text-lg font-black text-slate-900">
+                                                {leg.departure_airport?.time ? new Date(leg.departure_airport.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : 'N/A'}
+                                             </p>
+                                             <p className="text-sm font-bold text-slate-500">{leg.departure_airport?.name}</p>
+                                          </div>
+                                          <div>
+                                             <p className="text-xs font-bold text-slate-400 mb-1">Arrival</p>
+                                             <p className="text-lg font-black text-slate-900">
+                                                {leg.arrival_airport?.time ? new Date(leg.arrival_airport.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : 'N/A'}
+                                             </p>
+                                             <p className="text-sm font-bold text-slate-500">{leg.arrival_airport?.name}</p>
+                                          </div>
+                                       </div>
+                                       
+                                       <div className="mt-4 flex flex-wrap gap-2">
+                                          <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold">
+                                             Duration: {formatDuration(leg.duration)}
+                                          </span>
+                                          {leg.legroom && (
+                                             <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold">
+                                                Legroom: {leg.legroom}
+                                             </span>
+                                          )}
+                                          {leg.extensions?.map((ext, idx) => (
+                                             <span key={idx} className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold">
+                                                {ext}
+                                             </span>
+                                          ))}
+                                       </div>
+                                    </div>
+                                 ))}
+                              </div>
+
+                              {/* Layovers */}
+                              {flight.layovers && flight.layovers.length > 0 && (
+                                 <div className="bg-white p-6 rounded-xl border-2 border-slate-200 mb-6">
+                                    <h5 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Layovers</h5>
+                                    <div className="space-y-4">
+                                       {flight.layovers.map((layover, idx) => (
+                                          <div key={idx} className="flex items-center gap-4 p-4 bg-orange-50 rounded-lg border-2 border-orange-200">
+                                             <Calendar className="text-orange-500" size={20} />
+                                             <div>
+                                                <p className="font-bold text-slate-900">{layover.name}</p>
+                                                <p className="text-sm text-slate-500">Duration: {formatDuration(layover.duration)}</p>
+                                                {layover.overnight && (
+                                                   <span className="text-xs font-black text-orange-600">Overnight layover</span>
+                                                )}
+                                             </div>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 </div>
+                              )}
+
+                              {/* Carbon Emissions & Summary */}
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                 <div className="bg-white p-6 rounded-xl border-2 border-slate-200">
+                                    <p className="text-xs font-bold text-slate-400 mb-2">Flight Duration</p>
+                                    <p className="text-lg font-black text-slate-900">{duration}</p>
+                                 </div>
+                                 <div className="bg-white p-6 rounded-xl border-2 border-slate-200">
+                                    <p className="text-xs font-bold text-slate-400 mb-2">Price per Person</p>
+                                    <p className="text-lg font-black text-[var(--desert-gold)]">
+                                       {searchParams.currency === 'USD' ? '$' : searchParams.currency === 'EUR' ? '€' : searchParams.currency === 'PKR' ? '₨' : '﷼'}{price.toLocaleString()}
+                                    </p>
+                                 </div>
+                                 <div className="bg-white p-6 rounded-xl border-2 border-slate-200">
+                                    <p className="text-xs font-bold text-slate-400 mb-2">Carbon Emissions</p>
+                                    <p className="text-lg font-black text-slate-900">
+                                       {flight.carbon_emissions ? `${(flight.carbon_emissions.this_flight / 1000).toFixed(0)} kg` : 'N/A'}
+                                    </p>
+                                    {flight.carbon_emissions && (
+                                       <p className="text-xs font-bold text-green-600 mt-1">
+                                          {flight.carbon_emissions.difference_percent}% vs average
+                                       </p>
+                                    )}
+                                 </div>
+                              </div>
+                           </div>
+                        )}
+                     </div>
+                  );
+               })}
+            </div>
+         )}
+
+         {!isSearching && searchedFlights.length === 0 && (
+            <div className="text-center py-20 bg-white rounded-2xl border-2 border-slate-200">
+               <Plane className="mx-auto text-slate-300 mb-6" size={80} />
+               <p className="text-slate-400 font-bold text-lg mb-2">No flights searched yet</p>
+               <p className="text-slate-400 text-sm">Enter your travel details and click "Search" to find flights</p>
+            </div>
+         )}
       </div>
-     </>
    );
 };
 

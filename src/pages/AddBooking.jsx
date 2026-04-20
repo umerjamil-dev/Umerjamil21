@@ -119,7 +119,7 @@ const AddBooking = () => {
       return;
     }
     try {
-      console.log('Submission Payload (AddBooking):', formData);
+      // console.log('Submission Payload (AddBooking):', formData);
       const payload = {
         customer_id: formData.customerId,
         package_id: formData.packageId,

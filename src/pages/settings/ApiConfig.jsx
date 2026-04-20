@@ -76,7 +76,8 @@ const ApiConfig = () => {
                               >
                                  {api.name}
                               </h4>
-                           </div>
+                           </div>           
+                           
                            <div
                               className="inline-flex items-center px-4 py-2 rounded-lg w-fit"
                               style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8' }}

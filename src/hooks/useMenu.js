@@ -67,10 +67,9 @@ export const useFilteredMenu = () => {
           { title: 'Customers', path: '/customers', permission: 'VIEW_CUSTOMERS' },
           { title: 'Packages', path: '/packages', permission: 'VIEW_PACKAGES' },
           { title: 'Calculator', path: '/calculator', permission: 'USE_CALCULATOR' },
-          // { title: 'Live Booking (API)', path: '/live-booking', permission: 'VIEW_LIVE_BOOKING' }
         ]
       },
-
+      
       {
         title: 'Reservation',
         icon: Plane,
@@ -82,7 +81,9 @@ export const useFilteredMenu = () => {
           { title: 'Visa', path: '/reservations/visa', permission: 'VIEW_VISA' },
           { title: 'Hotels', path: '/reservations/hotels', permission: 'VIEW_HOTELS' },
           { title: 'Flights', path: '/reservations/flights', permission: 'VIEW_FLIGHTS' },
-          { title: 'Transport', path: '/reservations/transport', permission: 'VIEW_TRANSPORT' }
+          { title: 'Transport', path: '/reservations/transport', permission: 'VIEW_TRANSPORT' },
+          { title: 'Live Flight', path: '/live-booking', permission: 'VIEW_LIVE_FLIGHT' },
+          { title: 'Live Hotel', path: '/live-booking-Hotels', permission: 'VIEW_LIVE_HOTEL' }
         ]
       },
 
@@ -138,7 +139,7 @@ export const useFilteredMenu = () => {
         title: 'Settings',
         icon: Settings,
         path: '/settings',
-        permission: 'VIEW_SETTINGS',
+        permission: 'VIEW_SETTINGS', 
         submenu: [
           { title: 'Company Core', path: '/settings/company', permission: 'MANAGE_COMPANY' },
           { title: 'Roles', path: '/settings/roles', permission: 'MANAGE_ROLES' },

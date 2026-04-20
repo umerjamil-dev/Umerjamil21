@@ -16,7 +16,7 @@ const useSettingsStore = create((set) => ({
       const results = await Promise.allSettled([
         api.get('/settings/profile'),
         api.get('/settings/company'),
-        api.get('/settings/users'),
+        // api.get('/settings/users'),
         api.get('/settings/roles'),
         api.get('/settings/permissions')
       ]);
