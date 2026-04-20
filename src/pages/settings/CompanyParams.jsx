@@ -17,10 +17,11 @@ const CompanyParams = () => {
       if (settings?.company) {
          setFormData(settings.company || {});
          if (settings.company.logo) {
-            setLogoPreview(`http://192.168.5.111:8000/${settings.company.logo}`);
+            setLogoPreview(`https://hajjumrahbackend.processiqtech.com/${settings.company.logo}`);
          }
       }
    }, [settings]);
+ 
 
    const handleInputChange = (field, value) => {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -30,7 +31,8 @@ const CompanyParams = () => {
       const file = e.target.files[0];
       if (file) {
          setLogoFile(file);
-         const reader = new FileReader();
+         const reader = new FileReader(); 
+         console.log('file reader', reader) ;
          reader.onloadend = () => {
             setLogoPreview(reader.result);
          };

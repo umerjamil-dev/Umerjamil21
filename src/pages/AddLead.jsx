@@ -58,7 +58,6 @@ const AddLead = () => {
          toast.error('Identity name and primary contact are mandatory.');
          return;
       }
-
       const payload = new FormData();
       Object.keys(formData).forEach(key => {
          if (key === 'documents') {
@@ -371,16 +370,17 @@ const AddLead = () => {
                      <span className="w-5 h-5 rounded-md bg-purple-500/10 flex items-center justify-center">
                         <UserCheck size={12} strokeWidth={2.5} className="text-purple-500" />
                      </span>
-                     Delegation Protocol
+                     Delegation Protocol 
                   </h3>
-                  <div className="relative">
+                  <div className="relative">   
+
                      <select
                         className="w-full px-4 py-3 bg-[var(--surface-container-low)] rounded-xl text-[12px] font-semibold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer hover:border-[var(--primary)]/40 focus:border-[var(--primary)]/50 focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
                         value={formData.assigned_to_id}
                         onChange={(e) => setFormData({ ...formData, assigned_to_id: e.target.value })}
                      >
                         <option value="">— Select Staff Member —</option>
-                        {users.filter(u => u.is_admin === 0).map(u => (
+                        {users.filter(u => u.is_admin === 0 && u.role_name == 'Sales').map(u => (
                            <option key={u.id} value={u.id}>{u.name || u.email}</option>
                         ))}
                      </select>
@@ -443,7 +443,7 @@ const AddLead = () => {
                      Ensure all data points are verified against the customer's travel documentation before authorization.
                   </p>
                </div>
-
+              {/* protocol note banner ended here */}
             </div>
          </div>
       </div>

@@ -42,7 +42,7 @@ const StaffManagement = () => {
   const resolveImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('data:') || path.startsWith('blob:') || path.startsWith('http')) return path;
-    return `http://192.168.5.111:8000/storage/${path}`;
+    return `https://hajjumrahbackend.processiqtech.com/storage/${path}`;
   };
 
   return (

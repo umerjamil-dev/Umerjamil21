@@ -6,7 +6,7 @@ import {
   Calendar, Package
 } from 'lucide-react';
 
-const BASE_URL = 'http://192.168.5.111:8000/';
+const BASE_URL = 'https://hajjumrahbackend.processiqtech.com/';
 
 const Row = ({ icon: Icon, label, value, accent }) => (
   <div className="flex items-center justify-between py-4 border-b border-[var(--outline-variant)] last:border-0">

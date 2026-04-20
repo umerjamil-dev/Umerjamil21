@@ -3,7 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
     Mail, Inbox, Send, Trash2, X, Search, Star,
     MoreVertical, Reply, Paperclip, FileText,
-    Image as ImageIcon, ArrowLeft, Plus, ChevronDown, Download
+    Image as ImageIcon, ArrowLeft, Plus, ChevronDown, Download,
+    MailIcon,
+    InboxIcon,
+    MailsIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Quill from 'quill';
@@ -17,6 +20,7 @@ const EmailSystem = () => {
     const navigate = useNavigate();
     const { getLead } = useLeadStore();
     const { user } = useAuthStore();
+    const { deleteEmail } = useEmailStore();
     const { 
         sentEmails, inboxEmails, trashEmails, sourceEmails, 
         fetchSentEmails, fetchInboxEmails, fetchTrashEmails,
@@ -28,7 +32,7 @@ const EmailSystem = () => {
         if (!window.confirm('Are you sure you want to move this email to trash?')) return;
         
         try {
-            await moveToTrash([selectedEmail.id], activeFolder, id, user?.id);
+            await deleteEmail(selectedEmail.id);
             setSelectedEmail(null);
         } catch (err) {
             alert('Delete failed: ' + err.message);
@@ -344,7 +348,7 @@ const EmailSystem = () => {
                     <div className="flex-1 overflow-y-auto p-2">
                         {filtered.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 gap-2">
-                                <Inbox size={22} className="text-gray-300" />
+                                <InboxIcon size={22} className="text-gray-300" />
                                 <span className="text-[13px] text-gray-400">No messages</span>
                             </div>
                         ) : (
@@ -362,7 +366,7 @@ const EmailSystem = () => {
                                     >
                                         <div className="flex gap-2.5 items-start">
                                             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 ${email.avatarBg} ${email.avatarText}`}>
-                                                {email.initials}
+                                           <MailsIcon/>
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex justify-between items-center mb-0.5">
@@ -396,7 +400,7 @@ const EmailSystem = () => {
                                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/70">
                                     <div className="flex items-center gap-3">
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0 ${selectedEmail.avatarBg} ${selectedEmail.avatarText}`}>
-                                            {selectedEmail.initials}
+                                           <MailIcon/>
                                         </div>
                                         <div>
                                             <p className="text-[14px] font-semibold text-gray-900">{selectedEmail.sender}</p>
@@ -404,9 +408,7 @@ const EmailSystem = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
-                                            <Star size={15} className="text-gray-400" strokeWidth={2} />
-                                        </button>
+                                        
                                         <button
                                             onClick={() => { setSubject(`Re: ${selectedEmail.subject}`); setIsComposeOpen(true); }}
                                             className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors"
@@ -419,9 +421,7 @@ const EmailSystem = () => {
                                         >
                                             <Trash2 size={15} strokeWidth={2} />
                                         </button>
-                                        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
-                                            <MoreVertical size={15} className="text-gray-400" strokeWidth={2} />
-                                        </button>
+                                        
                                     </div>
                                 </div>
 
@@ -482,8 +482,7 @@ const EmailSystem = () => {
                     </AnimatePresence>
                 </div>
             </div>
-
-            {/* ── Compose Modal ── */}
+            {/* Compose Modal */}
             <AnimatePresence>
                 {isComposeOpen && (
                     <motion.div
@@ -688,6 +687,7 @@ const EmailSystem = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+            {/* {Compose Modal End Here} */}
         </>
     );
 };

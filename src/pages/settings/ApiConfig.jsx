@@ -9,6 +9,7 @@ const ApiConfig = () => {
    ];
 
    return (
+   <>
       <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
 
          {/* ── HEADER ── */}
@@ -18,6 +19,7 @@ const ApiConfig = () => {
                   className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.18em] text-white"
                   style={{ background: '#1a1916' }}
                >
+                  <span className="w-2 h-2 rounded-full" style={{ background: '#1a7a4a' }} />
                   <Cable size={10} strokeWidth={3} />
                   System Configuration
                </div>
@@ -117,6 +119,7 @@ const ApiConfig = () => {
             </div>
          </div>
       </div>
+   </>
    );
 };
 
