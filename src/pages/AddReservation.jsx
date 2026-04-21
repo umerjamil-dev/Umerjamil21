@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
    ArrowLeft, Plane, Hotel,
    MapPin, ShieldCheck, Clock,
@@ -7,6 +7,7 @@ import {
    ArrowRight, Plus
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../api/axios';
 import useBookingStore from '../store/useBookingStore';
 import useHotelStore from '../store/useHotelStore';
 import useVisaStore from '../store/useVisaStore';
@@ -65,6 +66,12 @@ const AddReservation = () => {
    const { addTransport } = useTransportStore();
    const { masterData, fetchMasterData } = useMasterTypeStore();
 
+   const [suggestions, setSuggestions] = useState([]);
+   const [loading, setLoading] = useState(false);
+   const [showSuggestions, setShowSuggestions] = useState(false);
+   const suggestionsRef = useRef(null);
+   const debounceTimer = useRef(null);
+
    const [formData, setFormData] = useState({
       type: 'Hotel',
       bookingId: '',
@@ -100,6 +107,64 @@ const AddReservation = () => {
    }, [fetchBookings, fetchMasterData]);
 
    const set = (key, val) => setFormData(p => ({ ...p, [key]: val }));
+
+   const fetchAirlineSuggestions = async (query) => {
+      if (!query || query.length < 2) {
+         setSuggestions([]);
+         setShowSuggestions(false);
+         return;
+      }
+
+      setLoading(true);
+      try {
+         const response = await api.get(`/flights/autocomplete?q=${encodeURIComponent(query)}`);
+         if (response.data.success) {
+            setSuggestions(response.data.data || []);
+            setShowSuggestions(true);
+         }
+      } catch (error) {
+         console.error('Error fetching airline suggestions:', error);
+         setSuggestions([]);
+      } finally {
+         setLoading(false);
+      }
+   };
+
+   const handleAirlineChange = (e) => {
+      const value = e.target.value;
+      set('airline', value);
+
+      // Debounce API calls
+      if (debounceTimer.current) {
+         clearTimeout(debounceTimer.current);
+      }
+
+      debounceTimer.current = setTimeout(() => {
+         fetchAirlineSuggestions(value);
+      }, 300);
+   };
+
+   const selectSuggestion = (suggestion) => {
+      const displayText = suggestion.iata_code 
+         ? `${suggestion.name} (${suggestion.iata_code})`
+         : suggestion.name;
+      set('airline', displayText);
+      setShowSuggestions(false);
+      setSuggestions([]);
+   };
+
+   // Close suggestions when clicking outside
+   useEffect(() => {
+      const handleClickOutside = (event) => {
+         if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+            setShowSuggestions(false);
+         }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+         document.removeEventListener('mousedown', handleClickOutside);
+      };
+   }, []);
 
    const handleSubmit = async () => {
       if (!formData.bookingId) {
@@ -367,8 +432,52 @@ const AddReservation = () => {
                   {formData.type === 'Flight' && (
                      <>
                         <Field label="Airline">
-                           <input type="text" placeholder="Saudi Airlines (SV-001)..." className={inputCls}
-                              value={formData.airline} onChange={e => set('airline', e.target.value)} />
+                           <div className="relative" ref={suggestionsRef}>
+                              <input 
+                                 type="text" 
+                                 placeholder="Search airline or city..." 
+                                 className={inputCls}
+                                 value={formData.airline} 
+                                 onChange={handleAirlineChange}
+                                 onFocus={() => {
+                                    if (suggestions.length > 0) setShowSuggestions(true);
+                                 }}
+                              />
+                              {loading && (
+                                 <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                                    <div className="w-4 h-4 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin"></div>
+                                 </div>
+                              )}
+                              {showSuggestions && suggestions.length > 0 && (
+                                 <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 max-h-60 overflow-auto">
+                                    {suggestions.map((suggestion, index) => {
+                                       const displayText = suggestion.iata_code 
+                                          ? `${suggestion.name} (${suggestion.iata_code})`
+                                          : suggestion.name;
+                                       return (
+                                          <button
+                                             key={index}
+                                             type="button"
+                                             className="w-full text-left px-4 py-2.5 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                                             onClick={() => selectSuggestion(suggestion)}
+                                          >
+                                             <div className="flex items-center justify-between">
+                                                <span className="text-sm text-slate-900">{displayText}</span>
+                                                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                                   {suggestion.type}
+                                                </span>
+                                             </div>
+                                          </button>
+                                       );
+                                    })}
+                                 </div>
+                              )}
+                              {showSuggestions && !loading && suggestions.length === 0 && formData.airline.length >= 2 && (
+                                 <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 px-4 py-3">
+                                    <p className="text-sm text-slate-500 text-center">No results found</p>
+                                 </div>
+                              )}
+                           </div>
                         </Field>
                         <Field label="Ticket Number">
                            <input type="text" placeholder="TKT-#029384756" className={inputCls}

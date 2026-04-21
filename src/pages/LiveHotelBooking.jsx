@@ -68,43 +68,26 @@ const LiveHotelBooking = () => {
 
          {/* Search Form */}
          <div className="bg-white rounded-2xl p-8 border-2 border-slate-200 shadow-lg space-y-8">
-            {/* Location */}
+            {/* Location & Dates */}
             <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Location</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Location & Dates</h3>
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Destination</label>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">City</label>
                      <input
                         type="text"
-                        value={searchParams.destination}
-                        onChange={(e) => updateSearchParams({ destination: e.target.value })}
+                        value={searchParams.city}
+                        onChange={(e) => updateSearchParams({ city: e.target.value })}
                         className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                        placeholder="Makkah, Saudi Arabia"
+                        placeholder="Makkah Hotels"
                      />
                   </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Distance from Haram (km)</label>
-                     <input
-                        type="number"
-                        value={searchParams.max_distance || ''}
-                        onChange={(e) => updateSearchParams({ max_distance: e.target.value ? parseFloat(e.target.value) : null })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                        placeholder="No limit"
-                     />
-                  </div>
-               </div>
-            </div>
-
-            {/* Dates */}
-            <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Check-in & Check-out</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Check-in Date</label>
                      <input
                         type="date"
-                        value={searchParams.check_in_date}
-                        onChange={(e) => updateSearchParams({ check_in_date: e.target.value })}
+                        value={searchParams.check_in}
+                        onChange={(e) => updateSearchParams({ check_in: e.target.value })}
                         className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
                      />
                   </div>
@@ -112,20 +95,20 @@ const LiveHotelBooking = () => {
                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Check-out Date</label>
                      <input
                         type="date"
-                        value={searchParams.check_out_date}
-                        onChange={(e) => updateSearchParams({ check_out_date: e.target.value })}
+                        value={searchParams.check_out}
+                        onChange={(e) => updateSearchParams({ check_out: e.target.value })}
                         className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
                      />
                   </div>
                </div>
             </div>
 
-            {/* Guests */}
+            {/* Guests & Currency */}
             <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Guests</h3>
+               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Guests & Currency</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Adults</label>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Peo ple</label>
                      <div className="flex items-center gap-4">
                         <button 
                            onClick={() => updateSearchParams({ adults: Math.max(1, searchParams.adults - 1) })}
@@ -148,7 +131,7 @@ const LiveHotelBooking = () => {
                         </button>
                      </div>
                   </div>
-                  <div>
+                  {/* <div>
                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Children</label>
                      <div className="flex items-center gap-4">
                         <button 
@@ -171,14 +154,7 @@ const LiveHotelBooking = () => {
                            +
                         </button>
                      </div>
-                  </div>
-               </div>
-            </div>
-
-            {/* Preferences */}
-            <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Preferences</h3>
-               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                  </div> */}
                   <div>
                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Currency</label>
                      <select
@@ -191,72 +167,6 @@ const LiveHotelBooking = () => {
                         <option value="EUR">EUR (€)</option>
                         <option value="SAR">SAR (﷼)</option>
                      </select>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Sort By</label>
-                     <select
-                        value={searchParams.sort}
-                        onChange={(e) => updateSearchParams({ sort: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                     >
-                        <option value="price">Price (Low to High)</option>
-                        <option value="rating">Rating (Highest)</option>
-                        <option value="distance">Distance (Nearest)</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Min Rating</label>
-                     <select
-                        value={searchParams.min_rating || 0}
-                        onChange={(e) => updateSearchParams({ min_rating: parseFloat(e.target.value) })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                     >
-                        <option value={0}>Any Rating</option>
-                        <option value={3}>3+ Stars</option>
-                        <option value={4}>4+ Stars</option>
-                        <option value={4.5}>4.5+ Stars</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Max Price</label>
-                     <input
-                        type="number"
-                        value={searchParams.max_price || ''}
-                        onChange={(e) => updateSearchParams({ max_price: e.target.value ? parseFloat(e.target.value) : null })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                        placeholder="No limit"
-                     />
-                  </div>
-               </div>
-
-               {/* Amenities */}
-               <div>
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 block">Amenities</label>
-                  <div className="flex flex-wrap gap-3">
-                     {[
-                        { id: 'Free Wi-Fi', icon: Wifi, label: 'Free Wi-Fi' },
-                        { id: 'Parking', icon: Car, label: 'Parking' },
-                        { id: 'Free breakfast', icon: Coffee, label: 'Breakfast' },
-                        { id: 'Airport shuttle', icon: Building2, label: 'Airport Shuttle' },
-                        { id: 'Fitness center', label: 'Fitness Center' },
-                        { id: 'Restaurant', label: 'Restaurant' },
-                        { id: 'Room service', label: 'Room Service' },
-                        { id: 'Spa', label: 'Spa' },
-                        { id: 'Air conditioning', label: 'AC' }
-                     ].map(({ id, icon: Icon, label }) => (
-                        <button
-                           key={id}
-                           onClick={() => handleAmenityToggle(id)}
-                           className={`px-4 py-3 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-                              (searchParams.amenities || []).includes(id)
-                                 ? 'bg-[var(--desert-gold)] text-black'
-                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                           }`}
-                        >
-                           {Icon && <Icon size={14} />}
-                           {label}
-                        </button>
-                     ))}
                   </div>
                </div>
             </div>

@@ -10,17 +10,12 @@ const useHotelStore = create((set, get) => ({
 
   // State for live hotel search
   searchParams: {
-    destination: 'Makkah, Saudi Arabia',
-    check_in_date: '2026-04-30',
-    check_out_date: '2026-05-05',
+    city: 'Makkah Hotels',
+    check_in: '2026-05-01',
+    check_out: '2026-05-05',
     adults: 2,
-    children: 0,
-    currency: 'PKR',
-    max_distance: null,
-    max_price: null,
-    min_rating: 0,
-    sort: 'price',
-    amenities: []
+    children: 1,
+    currency: 'PKR'
   },
   searchedHotels: [],
   isSearching: false,
@@ -40,62 +35,23 @@ const useHotelStore = create((set, get) => ({
     
     try {
       const requestBody = {
-        q: searchParams.destination,
-        check_in_date: searchParams.check_in_date,
-        check_out_date: searchParams.check_out_date,
+        city: searchParams.city,
+        check_in: searchParams.check_in,
+        check_out: searchParams.check_out,
         adults: searchParams.adults,
-        children: searchParams.children,
-        currency: searchParams.currency,
-        max_distance: searchParams.max_distance,
-        max_price: searchParams.max_price,
-        min_rating: searchParams.min_rating,
-        sort: searchParams.sort,
-        amenities: searchParams.amenities
+        currency: searchParams.currency
       };
 
       const response = await api.get('/hotels/search', { params: requestBody });
       const data = response.data;
       
-      const hotelsData = data.data || data;
+      const hotelsData = data.ads || data;
       
       if (hotelsData && Array.isArray(hotelsData)) {
-        let filteredHotels = hotelsData;
-        
-        // Filter based on max_price
-        if (searchParams.max_price) {
-          filteredHotels = filteredHotels.filter(h => (h.extracted_price || h.price || 0) <= searchParams.max_price);
-        }
-        
-        // Filter based on min_rating
-        if (searchParams.min_rating > 0) {
-          filteredHotels = filteredHotels.filter(h => (h.overall_rating || 0) >= searchParams.min_rating);
-        }
-        
-        // Filter based on amenities
-        if (searchParams.amenities && searchParams.amenities.length > 0) {
-          filteredHotels = filteredHotels.filter(h => {
-            const hotelAmenities = h.amenities || [];
-            return searchParams.amenities.every(amenity => hotelAmenities.includes(amenity));
-          });
-        }
-        
-        // Sort hotels
-        if (searchParams.sort === 'price') {
-          filteredHotels.sort((a, b) => (a.extracted_price || a.price || 0) - (b.extracted_price || b.price || 0));
-        } else if (searchParams.sort === 'rating') {
-          filteredHotels.sort((a, b) => (b.overall_rating || 0) - (a.overall_rating || 0));
-        } else if (searchParams.sort === 'distance') {
-          filteredHotels.sort((a, b) => {
-            const distA = a.distance_from_haram || 0;
-            const distB = b.distance_from_haram || 0;
-            return distA - distB;
-          });
-        }
-        
-        set({ searchedHotels: filteredHotels, isSearching: false });
-        toast.success(`Found ${filteredHotels.length} hotels!`);
+        set({ searchedHotels: hotelsData, isSearching: false });
+        toast.success(`Found ${hotelsData.length} hotels!`);
       } else {
-        toast.error('No hotels found. Try different dates or location.');
+        toast.error(data.error || 'No hotels found. Try different dates or location.');
         set({ searchedHotels: [], isSearching: false });
       }
     } catch (error) {
