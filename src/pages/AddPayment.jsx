@@ -37,8 +37,19 @@ const AddPayment = () => {
          return;
       }
 
+      // Validate amount
+      const amount = parseFloat(formData.amount);
+      if (amount < 0) {
+         toast.error('Payment amount cannot be negative.');
+         return;
+      }
+
+      if (amount === 0) {
+         toast.error('Payment amount must be greater than zero.');
+         return;
+      }
+
       try {
-         console.log('Submission Payload (AddPayment):', formData);
          await addPayment(formData);
          toast.success('Treasury entry officialized.');
          navigate('/payments');

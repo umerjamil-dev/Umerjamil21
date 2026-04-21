@@ -118,6 +118,26 @@ const AddBooking = () => {
       toast.error('Customer, Package aur Total Amount zaroori hain.');
       return;
     }
+
+    // Validate amounts
+    const totalAmount = parseFloat(formData.totalAmount);
+    const paidAmount = parseFloat(formData.paidAmount) || 0;
+
+    if (totalAmount < 0) {
+      toast.error('Total amount cannot be negative.');
+      return;
+    }
+
+    if (paidAmount < 0) {
+      toast.error('Paid amount cannot be negative.');
+      return;
+    }
+
+    if (paidAmount > totalAmount) {
+      toast.error('Paid amount cannot be greater than total amount.');
+      return;
+    }
+
     try {
       // console.log('Submission Payload (AddBooking):', formData);
       const payload = {

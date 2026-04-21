@@ -72,6 +72,12 @@ const AddReservation = () => {
    const suggestionsRef = useRef(null);
    const debounceTimer = useRef(null);
 
+   const [hotelSuggestions, setHotelSuggestions] = useState([]);
+   const [hotelLoading, setHotelLoading] = useState(false);
+   const [showHotelSuggestions, setShowHotelSuggestions] = useState(false);
+   const hotelSuggestionsRef = useRef(null);
+   const hotelDebounceTimer = useRef(null);
+
    const [formData, setFormData] = useState({
       type: 'Hotel',
       bookingId: '',
@@ -130,6 +136,28 @@ const AddReservation = () => {
       }
    };
 
+   const fetchHotelSuggestions = async (query) => {
+      if (!query || query.length < 2) {
+         setHotelSuggestions([]);
+         setShowHotelSuggestions(false);
+         return;
+      }
+
+      setHotelLoading(true);
+      try {
+         const response = await api.get(`/hotels/autocomplete?q=${encodeURIComponent(query)}`);
+         if (response.data.suggestions) {
+            setHotelSuggestions(response.data.suggestions || []);
+            setShowHotelSuggestions(true);
+         }
+      } catch (error) {
+         console.error('Error fetching hotel suggestions:', error);
+         setHotelSuggestions([]);
+      } finally {
+         setHotelLoading(false);
+      }
+   };
+
    const handleAirlineChange = (e) => {
       const value = e.target.value;
       set('airline', value);
@@ -144,6 +172,20 @@ const AddReservation = () => {
       }, 300);
    };
 
+   const handleHotelChange = (e) => {
+      const value = e.target.value;
+      set('hotelName', value);
+
+      // Debounce API calls
+      if (hotelDebounceTimer.current) {
+         clearTimeout(hotelDebounceTimer.current);
+      }
+
+      hotelDebounceTimer.current = setTimeout(() => {
+         fetchHotelSuggestions(value);
+      }, 300);
+   };
+
    const selectSuggestion = (suggestion) => {
       const displayText = suggestion.iata_code 
          ? `${suggestion.name} (${suggestion.iata_code})`
@@ -153,11 +195,20 @@ const AddReservation = () => {
       setSuggestions([]);
    };
 
+   const selectHotelSuggestion = (suggestion) => {
+      set('hotelName', suggestion.value);
+      setShowHotelSuggestions(false);
+      setHotelSuggestions([]);
+   };
+
    // Close suggestions when clicking outside
    useEffect(() => {
       const handleClickOutside = (event) => {
          if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
             setShowSuggestions(false);
+         }
+         if (hotelSuggestionsRef.current && !hotelSuggestionsRef.current.contains(event.target)) {
+            setShowHotelSuggestions(false);
          }
       };
       document.addEventListener('mousedown', handleClickOutside);
@@ -394,8 +445,44 @@ const AddReservation = () => {
                   {formData.type === 'Hotel' && (
                      <>
                         <Field label="Hotel Name">
-                           <input type="text" placeholder="Fairmont Makkah..." className={inputCls}
-                              value={formData.hotelName} onChange={e => set('hotelName', e.target.value)} />
+                           <div className="relative" ref={hotelSuggestionsRef}>
+                              <input 
+                                 type="text" 
+                                 placeholder="Search hotel..." 
+                                 className={inputCls}
+                                 value={formData.hotelName} 
+                                 onChange={handleHotelChange}
+                                 onFocus={() => {
+                                    if (hotelSuggestions.length > 0) setShowHotelSuggestions(true);
+                                 }}
+                              />
+                              {hotelLoading && (
+                                 <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                                    <div className="w-4 h-4 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin"></div>
+                                 </div>
+                              )}
+                              {showHotelSuggestions && hotelSuggestions.length > 0 && (
+                                 <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 max-h-60 overflow-auto">
+                                    {hotelSuggestions.map((suggestion, index) => (
+                                       <button
+                                          key={index}
+                                          type="button"
+                                          className="w-full text-left px-4 py-2.5 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                                          onClick={() => selectHotelSuggestion(suggestion)}
+                                       >
+                                          <div className="flex items-center gap-2">
+                                             <span className="text-sm text-slate-900">{suggestion.value}</span>
+                                          </div>
+                                       </button>
+                                    ))}
+                                 </div>
+                              )}  
+                              {showHotelSuggestions && !hotelLoading && hotelSuggestions.length === 0 && formData.hotelName.length >= 2 && (
+                                 <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 px-4 py-3">
+                                    <p className="text-sm text-slate-500 text-center">No results found</p>
+                                 </div>
+                              )}
+                           </div>
                         </Field>
                         <Field label="City">
                            <select className={selectCls} value={formData.city} onChange={e => set('city', e.target.value)}>
@@ -429,7 +516,7 @@ const AddReservation = () => {
                   )}
 
                   {/* ── FLIGHT ── */}
-                  {formData.type === 'Flight' && (
+                  {formData.type === 'Flight' && (    
                      <>
                         <Field label="Airline">
                            <div className="relative" ref={suggestionsRef}>

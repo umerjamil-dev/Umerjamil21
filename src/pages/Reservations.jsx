@@ -8,17 +8,26 @@ import {
   SlidersHorizontal, TrendingUp, Plus
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import useBookingStore from '../store/useBookingStore';
+import useVisaStore from '../store/useVisaStore';
+import useHotelStore from '../store/useHotelStore';
+import useFlightStore from '../store/useFlightStore';
+import useTransportStore from '../store/useTransportStore';
 import usePagination from '../hooks/usePagination';
 import Pagination from '../components/Pagination';
 
 const Reservations = () => {
-  const { bookings: reservations, fetchBookings, isLoading } = useBookingStore();
+  const { visas, fetchVisas, isLoading: visaLoading } = useVisaStore();
+  const { hotels, fetchHotels, isLoading: hotelLoading } = useHotelStore();
+  const { flights, fetchFlights, isLoading: flightLoading } = useFlightStore();
+  const { transports, fetchTransports, isLoading: transportLoading } = useTransportStore();
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchBookings();
-  }, [fetchBookings]);
+    fetchVisas();
+    fetchHotels();
+    fetchFlights();
+    fetchTransports();
+  }, [fetchVisas, fetchHotels, fetchFlights, fetchTransports]);
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -39,30 +48,46 @@ const Reservations = () => {
     }
   };
 
-  const getCustomerName = (c, name) => {
-    if (!c && !name) return 'Guest';
-    if (typeof c === 'string') return c;
-    if (c && typeof c === 'object') return c.firstName || c.first_name || c.name || `ID: ${c.id}`;
-    return name || 'Guest';
+  const getCustomerName = (reservation, type) => {
+    if (type === 'Visa') {
+      return reservation.booking?.customer_name || reservation.customer_name || 'Guest';
+    }
+    if (type === 'Hotel') {
+      return reservation.booking?.customer_name || reservation.customer_name || 'Guest';
+    }
+    if (type === 'Flight') {
+      return reservation.booking?.customer_name || reservation.customer_name || 'Guest';
+    }
+    if (type === 'Transport') {
+      return reservation.booking?.customer_name || reservation.customer_name || 'Guest';
+    }
+    return 'Guest';
   };
 
-  const getPackageName = (p) => {
-    if (!p) return 'Standard Package';
-    if (typeof p === 'string') return p;
-    return p.title || p.name || `ID: ${p.id}`;
+  const getPackageName = (reservation) => {
+    return reservation.booking?.package_name || reservation.package_name || 'Standard Package';
   };
 
-  const reservationsToShow = Array.isArray(reservations)
-    ? reservations
-    : Object.values(reservations || {});
+  // Combine all reservations into one array with type labels
+  const allReservations = [
+    ...(Array.isArray(visas) ? visas : []).map(v => ({ ...v, reservationType: 'Visa' })),
+    ...(Array.isArray(hotels) ? hotels : []).map(h => ({ ...h, reservationType: 'Hotel' })),
+    ...(Array.isArray(flights) ? flights : []).map(f => ({ ...f, reservationType: 'Flight' })),
+    ...(Array.isArray(transports) ? transports : []).map(t => ({ ...t, reservationType: 'Transport' })),
+  ];
+
+  const isLoading = visaLoading || hotelLoading || flightLoading || transportLoading;
+
+  const reservationsToShow = allReservations;
 
   const filtered = reservationsToShow.filter((r) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
       String(r.id).toLowerCase().includes(q) ||
-      getCustomerName(r.customer, r.customer_name).toLowerCase().includes(q) ||
-      getPackageName(r.package).toLowerCase().includes(q)
+      getCustomerName(r, r.reservationType).toLowerCase().includes(q) ||
+      getPackageName(r).toLowerCase().includes(q) ||
+      (r.reservationType && r.reservationType.toLowerCase().includes(q))
     );
   });
 
@@ -199,10 +224,21 @@ const Reservations = () => {
                   </td>
                 </tr>
               ) : paginatedData.map((res, idx) => {
-                const typeInfo = getTypeIcon(res.type || 'Visa');
+                const typeInfo = getTypeIcon(res.reservationType || 'Visa');
                 const statusStyle = getStatusStyle(res.status);
                 const TypeIcon = typeInfo.icon;
                 const isLast = idx === filtered.length - 1;
+
+                // Get the correct route based on reservation type
+                const getDetailRoute = () => {
+                  switch(res.reservationType) {
+                    case 'Visa': return `/reservations/visa/${res.id}`;
+                    case 'Hotel': return `/reservations/hotels/${res.id}`;
+                    case 'Flight': return `/reservations/flights/${res.id}`;
+                    case 'Transport': return `/reservations/transport/${res.id}`;
+                    default: return `/bookings/${res.booking_id || res.id}`;
+                  }
+                };
 
                 return (
                   <tr
@@ -277,7 +313,7 @@ travel_date || '—'}
                     {/* Actions */}
                     <td className="px-6 py-4 text-right">
                       <Link
-                        to={`/bookings/${res.booking_id || res.id}`}
+                        to={getDetailRoute()}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all  hover:bg-slate-100"
                         style={{
                           background: '#f8fafc',
