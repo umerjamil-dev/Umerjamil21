@@ -87,7 +87,7 @@ const TransportDetail = () => {
                 {transport.transaction_type_name || 'Registry Sync'}
               </span>
             </div>
-
+                
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
               <div className="space-y-8">
                 <div>

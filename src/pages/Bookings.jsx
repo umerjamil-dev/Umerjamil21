@@ -16,7 +16,7 @@ const Bookings = () => {
    const navigate = useNavigate();
    const { bookings, fetchBookings, deleteBooking, isLoading } = useBookingStore();
    const [searchTerm, setSearchTerm] = React.useState('');
-
+ // useEffect data will be here
    useEffect(() => {
       fetchBookings();
    }, [fetchBookings]);

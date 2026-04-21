@@ -72,6 +72,12 @@ const AddReservation = () => {
    const suggestionsRef = useRef(null);
    const debounceTimer = useRef(null);
 
+   const [flightSearchResults, setFlightSearchResults] = useState([]);
+   const [flightSearchLoading, setFlightSearchLoading] = useState(false);
+   const [showFlightResults, setShowFlightResults] = useState(false);
+   const [departureId, setDepartureId] = useState('');
+   const [arrivalId, setArrivalId] = useState('');
+
    const [hotelSuggestions, setHotelSuggestions] = useState([]);
    const [hotelLoading, setHotelLoading] = useState(false);
    const [showHotelSuggestions, setShowHotelSuggestions] = useState(false);
@@ -136,6 +142,53 @@ const AddReservation = () => {
       }
    };
 
+   const searchFlights = async (departure, arrival, date) => {
+      if (!departure || !arrival || !date) {
+         setFlightSearchResults([]);
+         setShowFlightResults(false);
+         return;
+      }
+
+      setFlightSearchLoading(true);
+      try {
+         const response = await api.get('/flights/search', {
+            params: {
+               departure_id: departure,
+               arrival_id: arrival,
+               outbound_date: date,
+               type: 2
+            }
+         });
+         
+         if (response.data.airports_info && response.data.airports_info.flights_by_airport) {
+            const allFlights = [];
+            const flightsByAirport = response.data.airports_info.flights_by_airport;
+            
+            // Flatten flights from all airports
+            Object.keys(flightsByAirport).forEach(airportCode => {
+               const airportData = flightsByAirport[airportCode];
+               if (airportData.flights && Array.isArray(airportData.flights)) {
+                  airportData.flights.forEach(flight => {
+                     allFlights.push({
+                        ...flight,
+                        departure_airport: airportCode,
+                        departure_airport_name: airportData.airport_name,
+                     });
+                  });
+               }
+            });
+            
+            setFlightSearchResults(allFlights);
+            setShowFlightResults(true);
+         }
+      } catch (error) {
+         console.error('Error searching flights:', error);
+         setFlightSearchResults([]);
+      } finally {
+         setFlightSearchLoading(false);
+      }
+   };
+
    const fetchHotelSuggestions = async (query) => {
       if (!query || query.length < 2) {
          setHotelSuggestions([]);
@@ -191,8 +244,25 @@ const AddReservation = () => {
          ? `${suggestion.name} (${suggestion.iata_code})`
          : suggestion.name;
       set('airline', displayText);
+      
+      // If it has an IATA code, set it as departure or arrival
+      if (suggestion.iata_code) {
+         if (!departureId) {
+            setDepartureId(suggestion.iata_code);
+         } else if (!arrivalId) {
+            setArrivalId(suggestion.iata_code);
+         }
+      }
+      
       setShowSuggestions(false);
       setSuggestions([]);
+   };
+
+   const selectFlight = (flight) => {
+      const displayText = `${flight.airline} - ${flight.departure_airport} to ${flight.destination} ($${flight.price})`;
+      set('airline', displayText);
+      setShowFlightResults(false);
+      setFlightSearchResults([]);
    };
 
    const selectHotelSuggestion = (suggestion) => {
@@ -518,11 +588,11 @@ const AddReservation = () => {
                   {/* ── FLIGHT ── */}
                   {formData.type === 'Flight' && (    
                      <>
-                        <Field label="Airline">
+                        <Field label="Airline / Route">
                            <div className="relative" ref={suggestionsRef}>
                               <input 
                                  type="text" 
-                                 placeholder="Search airline or city..." 
+                                 placeholder="Search departure city or airport..." 
                                  className={inputCls}
                                  value={formData.airline} 
                                  onChange={handleAirlineChange}
@@ -566,18 +636,93 @@ const AddReservation = () => {
                               )}
                            </div>
                         </Field>
+                        <Field label="Departure Code">
+                           <input 
+                              type="text" 
+                              placeholder="JFK" 
+                              className={inputCls}
+                              value={departureId} 
+                              onChange={e => {
+                                 setDepartureId(e.target.value);
+                                 if (e.target.value && arrivalId && formData.departureTime) {
+                                    searchFlights(e.target.value, arrivalId, formData.departureTime);
+                                 }
+                              }}
+                           />
+                        </Field>
+                        <Field label="Arrival Code">
+                           <input 
+                              type="text" 
+                              placeholder="ICN" 
+                              className={inputCls}
+                              value={arrivalId} 
+                              onChange={e => {
+                                 setArrivalId(e.target.value);
+                                 if (departureId && e.target.value && formData.departureTime) {
+                                    searchFlights(departureId, e.target.value, formData.departureTime);
+                                 }
+                              }}
+                           />
+                        </Field>
                         <Field label="Ticket Number">
                            <input type="text" placeholder="TKT-#029384756" className={inputCls}
                               value={formData.ticketNumber} onChange={e => set('ticketNumber', e.target.value)} />
                         </Field>
-                        <Field label="Departure Time">
-                           <input type="time" className={inputCls}
-                              value={formData.departureTime} onChange={e => set('departureTime', e.target.value)} />
+                        <Field label="Departure Date">
+                           <input type="date" className={inputCls}
+                              value={formData.departureTime} onChange={e => {
+                                 set('departureTime', e.target.value);
+                                 if (departureId && arrivalId && e.target.value) {
+                                    searchFlights(departureId, arrivalId, e.target.value);
+                                 }
+                              }} />
                         </Field>
-                        <Field label="Arrival Time">
-                           <input type="time" className={inputCls}
-                              value={formData.arrivalTime} onChange={e => set('arrivalTime', e.target.value)} />
-                        </Field>
+                        {showFlightResults && flightSearchResults.length > 0 && (
+                           <div className="md:col-span-2">
+                              <label
+                                 style={{
+                                    display: 'block',
+                                    fontSize: '11px',
+                                    fontWeight: 600,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.08em',
+                                    color: '#94a3b8',
+                                    marginBottom: '6px',
+                                 }}
+                              >
+                                 Available Flights ({flightSearchResults.length})
+                              </label>
+                              <div className="bg-slate-50 rounded-lg border border-slate-200 max-h-64 overflow-auto">
+                                 {flightSearchResults.map((flight, index) => (
+                                    <button
+                                       key={index}
+                                       type="button"
+                                       className="w-full text-left px-4 py-3 hover:bg-white transition-colors border-b border-slate-200 last:border-b-0"
+                                       onClick={() => selectFlight(flight)}
+                                    >
+                                       <div className="flex items-center justify-between">
+                                          <div>
+                                             <p className="text-sm font-semibold text-slate-900">{flight.airline}</p>
+                                             <p className="text-xs text-slate-500 mt-0.5">
+                                                {flight.departure_airport_name || flight.departure_airport} → {flight.destination}
+                                             </p>
+                                          </div>
+                                          <div className="text-right">
+                                             <p className="text-lg font-bold text-emerald-600">${flight.price}</p>
+                                             <p className="text-xs text-slate-400">Click to select</p>
+                                          </div>
+                                       </div>
+                                    </button>
+                                 ))}
+                              </div>
+                           </div>
+                        )}
+                        {flightSearchLoading && (
+                           <div className="md:col-span-2 flex items-center justify-center py-4">
+                              <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin"></div>
+                              <span className="ml-2 text-sm text-slate-500">Searching flights...</span>
+                           </div>
+                        )}
                         <Field label="Flight Status">
                            <select className={selectCls} value={formData.status || ''}
                               onChange={e => set('status', e.target.value)}>
@@ -596,8 +741,9 @@ const AddReservation = () => {
                         <Field label="Transport Type">
                            <select className={selectCls} value={formData.transportType} onChange={e => set('transportType', e.target.value)}>
                               <option value="">Select type...</option>
+                           
                               {(masterData?.transport_type?.length > 0
-                                 ? masterData.transport_type
+                              ? masterData.transport_type
                                  : [
                                       { id: 'Pickup (Airport)', name: 'Pickup (Airport)' },
                                       { id: 'Drop (Airport)',   name: 'Drop (Airport)' },

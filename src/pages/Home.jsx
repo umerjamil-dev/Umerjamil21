@@ -1,3 +1,4 @@
+// import statement will be here 
 import React, { useState, useEffect } from 'react';
 import { BarChart, PieChart } from '@mui/x-charts';
 import { motion } from 'framer-motion';
@@ -7,9 +8,10 @@ import {
     ShieldCheck, MapPin, Clock, CheckCircle2, AlertCircle, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+// useDashboardData will be there in the store
 import useDashboardStore from '../store/useDashboardStore';
 
-
+// home page will be here
 const Home = () => {
     const [timeFilter, setTimeFilter] = useState('Yearly');
 
@@ -437,5 +439,5 @@ const Home = () => {
         </motion.div>
     );
 };
-
+// home page export will be here 
 export default Home;
