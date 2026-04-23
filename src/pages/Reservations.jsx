@@ -65,7 +65,7 @@ const Reservations = () => {
   };
 
   const getPackageName = (reservation) => {
-    return reservation.booking?.package_name || reservation.package_name || 'Standard Package';
+    return  'Standard Package';
   };
 
   // Combine all reservations into one array with type labels

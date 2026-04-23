@@ -121,7 +121,7 @@ const Assignment = () => {
 
   return (
    <>
-    <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
+    <div className="min-h-screen bg-gray-100 px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
       
       {/* HEADER */}
       <div className="flex flex-wrap items-end gap-6 mb-14">
@@ -260,10 +260,10 @@ const Assignment = () => {
                   placeholder="Search by personnel..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  className="w-full bg-[#f5f4f0] border-[1.5px] border-[#e2e0d8] rounded-xl pl-12 pr-4 py-2.5 text-[12px] outline-none focus:border-[#1a1916] transition-all"
+                  className="w-full bg-gray-100 border-[1.5px] border-[#e2e0d8] rounded-xl pl-12 pr-4 py-2.5 text-[12px] outline-none focus:border-[#1a1916] transition-all"
                 />
               </div>
-              <div className="text-[10px] font-bold text-[#78776f] uppercase tracking-widest bg-[#f5f4f0] px-4 py-2 rounded-lg border border-[#e2e0d8]">
+              <div className="text-[10px] font-bold text-[#78776f] uppercase tracking-widest bg-gray-100 px-4 py-2 rounded-lg border border-[#e2e0d8]">
                 {filtered.length} active duties
               </div>
             </div>
@@ -299,7 +299,7 @@ const Assignment = () => {
                           </div>
                         </td>
                         <td className="px-8 py-6">
-                          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#f5f4f0] border border-[#e2e0d8]">
+                          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-gray-100 border border-[#e2e0d8]">
                             <Briefcase size={10} className="text-[#78776f]" />
                             <span className="text-[9px] font-bold uppercase tracking-wider text-[#1a1916]">{task.name}</span>
                           </div>
@@ -368,7 +368,7 @@ const Assignment = () => {
 const FormField = ({ label, icon, children }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#78776f] ml-1">{label}</label>
-    <div className="flex items-center gap-3 bg-[#f5f4f0] border-[1.5px] border-[#e2e0d8] rounded-xl px-4 py-3 focus-within:border-[#1a1916] focus-within:bg-white transition-all">
+    <div className="flex items-center gap-3 bg-gray-100 border-[1.5px] border-[#e2e0d8] rounded-xl px-4 py-3 focus-within:border-[#1a1916] focus-within:bg-white transition-all">
       <div className="text-[#b0aea5]">{icon}</div>
       {children}
     </div>

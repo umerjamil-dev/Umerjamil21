@@ -144,7 +144,7 @@ const Bookings = () => {
             </div>
 
             {/* Engagement Yield */}
-            <div className="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black rounded-xl p-10 text-white shadow-2xl relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-[var(--sidebar-bg)] via-[var(--primary)] to-[var(--sidebar-bg)] rounded-xl p-10 text-white shadow-2xl relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-bl-[8rem] translate-x-20 -translate-y-20 group-hover:translate-x-10 group-hover:-translate-y-10 transition-all duration-700"></div>
                <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Engagement Yield</p>
                <div className="flex items-center justify-between relative z-10">

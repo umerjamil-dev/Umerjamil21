@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://hajjumrahbackend.processiqtech.com/api',
+  baseURL: 'http://192.168.5.111:8000/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

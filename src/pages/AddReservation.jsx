@@ -467,9 +467,9 @@ const AddReservation = () => {
                         value={formData.bookingId}
                         onChange={(e) => set('bookingId', e.target.value)}
                      >
-                        <option value="" style={{ background: '#1e293b' }}>Select booking...</option>
+                        <option value="" style={{ background: '#1e293b', color: '#ffffff' }}>Select booking...</option>
                         {bookingsArr.map(b => (
-                           <option key={b.id} value={b.id} style={{ background: '#1e293b' }}>
+                           <option key={b.id} value={b.id} style={{ background: '#1e293b', color: '#ffffff' }}>
                               {b.customer_name || b.customer?.firstName || 'N/A'} — #{b.id}
                            </option>
                         ))}

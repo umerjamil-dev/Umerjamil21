@@ -187,7 +187,7 @@ const AddBooking = () => {
           className={`flex items-center gap-2.5 px-8 py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.25em] shadow-lg transition-all duration-200
             ${isBookingLoading
               ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              : 'bg-black text-white hover:bg-[#C9A84C] hover:text-black'
+              : 'bg-[var(--primary)] text-white hover:bg-[var(--tertiary)] hover:text-white'
             }`}
         >
           <Save size={15} strokeWidth={2.5} />
@@ -202,7 +202,7 @@ const AddBooking = () => {
         <div className="lg:col-span-4 flex flex-col gap-6">
 
           {/* Summary Card */}
-          <div className="bg-[#020617] rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
+          <div className="bg-[var(--sidebar-bg)] rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
             {/* Decorative blob */}
             <div className="absolute top-0 right-0 w-28 h-28 rounded-bl-[4rem] bg-white/5 pointer-events-none" />
 
@@ -224,7 +224,7 @@ const AddBooking = () => {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-white/35">
                   Residual Debt
                 </span>
-                <span className="text-xl font-black tracking-tight text-[#C9A84C]">
+                <span className="text-xl font-black tracking-tight text-[var(--desert-gold)]">
                   ${Math.max(0, remaining).toLocaleString()}
                 </span>
               </div>
@@ -232,8 +232,8 @@ const AddBooking = () => {
               <div className="h-px bg-white/10 my-2" />
 
               <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-[#C9A84C] flex-shrink-0">
-                  <Package size={20} strokeWidth={2} />
+                <div className="w-11 h-11 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-[var(--desert-gold)] flex-shrink-0">
+                  <Package size={20} strokeWidth={2}  className='text-white'/>
                 </div>
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-0.5">
@@ -273,7 +273,7 @@ const AddBooking = () => {
             <div className="absolute top-0 right-0 w-28 h-28 bg-slate-50 rounded-bl-[4rem] translate-x-10 -translate-y-10 pointer-events-none" />
 
             <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.35em] mb-9 flex items-center gap-2.5 relative z-10">
-              <User size={14} strokeWidth={3} className="text-[#C9A84C]" />
+              <User size={14} strokeWidth={3} className="text-[var(--desert-gold)]" />
               Link Pilgrim &amp; Segment
             </h3>
 
@@ -327,7 +327,7 @@ const AddBooking = () => {
             <div className="absolute top-0 right-0 w-28 h-28 bg-slate-50 rounded-bl-[4rem] translate-x-10 -translate-y-10 pointer-events-none" />
 
             <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.35em] mb-9 flex items-center gap-2.5 relative z-10">
-              <CreditCard size={14} strokeWidth={3} className="text-[#C9A84C]" />
+              <CreditCard size={14} strokeWidth={3} className="text-[var(--desert-gold)]" />
               Financial Settlement
             </h3>
 

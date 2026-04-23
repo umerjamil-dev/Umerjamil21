@@ -2,37 +2,37 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #111827;          
-  --secondary: #78777D;         
-  --tertiary: #777491;          
+  --primary: #0E3E81;          
+  --secondary: #0E3E81;         
+  --tertiary: #2E5892;          
   --neutral: #F9FAFB;           
-  --desert-gold: #CA9323;       
+  --desert-gold: #f8fafc;       
   --sacred-emerald: #10B981;    
 
   /* Surface Hierarchy */
   --surface: #F9FAFB;           
-  --surface-container-low: #F3F4F6;
-  --surface-container-lowest: #F5F4F0;
-  --surface-container-high: #E5E7EB;
+  --surface-container-low: #E8EEF7;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-high: #D4DCE8;
 
   /* Typography Contrast */
-  --on-surface: #111827;
-  --on-surface-variant: #4B5563;
-  --outline-variant: #E5E7EB;
+  --on-surface: #000000;
+  --on-surface-variant: #171818;
+  --outline-variant: #D4DCE8;
 
-  /* Sidebar Tokens (Corporate Light) */
-  --sidebar-bg: #071022;
-  --sidebar-on-surface: #d1d4db;
-  --sidebar-on-surface-variant: #6B7280;
-  --sidebar-outline: #F3F4F6;
+  /* Sidebar Tokens (Corporate Blue) */
+  --sidebar-bg: #0A2A5C;
+  --sidebar-on-surface: #C5D4E8;
+  --sidebar-on-surface-variant: #7A9BC5;
+  --sidebar-outline: #1A3A6C;
 
   /* Gradients */
-  --grad-primary: linear-gradient(135deg, #111827, #1F2937);
-  --grad-secondary: linear-gradient(135deg, #78777D, #4B5563);
-  --grad-tertiary: linear-gradient(135deg, #777491, #4B4961);
+  --grad-primary: linear-gradient(135deg, #0E3E81, #2E5892);
+  --grad-secondary: linear-gradient(135deg, #0E3E81, #1A4A8A);
+  --grad-tertiary: linear-gradient(135deg, #2E5892, #1A4A8A);
 
   /* Effects */
-  --premium-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --premium-shadow: 0 4px 6px -1px rgba(14, 62, 129, 0.08), 0 2px 4px -2px rgba(14, 62, 129, 0.05);
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-blur: blur(8px);
 }

@@ -81,8 +81,8 @@ const AddLead = () => {
    };
 
    const inputBase = `
-      w-full bg-transparent text-base font-semibold text-[var(--on-surface)] 
-      outline-none placeholder-[var(--on-surface-variant)]/40
+      w-full bg-transparent text-base font-semibold  
+      outline-none  text-black
    `;
 
    const fieldWrap = `
@@ -235,7 +235,7 @@ const AddLead = () => {
                   </h3>
                   <textarea
                      placeholder="Record the customer's spiritual requirements and package preferences..."
-                     className="w-full px-5 py-4 bg-[var(--surface-container-low)] rounded-xl text-[13px] font-medium text-[var(--on-surface)] outline-none focus:ring-2 focus:ring-[var(--primary)]/30 transition-all h-36 resize-none placeholder-[var(--on-surface-variant)]/50 border border-transparent focus:border-[var(--primary)]/20"
+                     className="w-full px-5 py-4 bg-[var(--surface-container-low)] rounded-xl text-[13px] font-medium text-[var(--on-surface)] outline-none focus:ring-2 focus:ring-[var(--primary)]/30 transition-all h-36 resize-none  border border-transparent focus:border-[var(--primary)]/20"
                      value={formData.message}
                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   />
@@ -251,7 +251,7 @@ const AddLead = () => {
                   </h3>
                   <textarea
                      placeholder="Add internal performance notes, staff comments, or special operational instructions..."
-                     className="w-full px-5 py-4 bg-[var(--surface-container-low)] rounded-xl text-[13px] font-medium text-[var(--on-surface)] outline-none focus:ring-2 focus:ring-[var(--primary)]/30 transition-all h-36 resize-none placeholder-[var(--on-surface-variant)]/50 border border-transparent focus:border-[var(--primary)]/20"
+                     className="w-full px-5 py-4 bg-[var(--surface-container-low)] rounded-xl text-[13px] font-medium text-[var(--on-surface)] outline-none focus:ring-2 focus:ring-[var(--primary)]/30 transition-all h-36 resize-none  border border-transparent focus:border-[var(--primary)]/20"
                      value={formData.comments}
                      onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
                   />

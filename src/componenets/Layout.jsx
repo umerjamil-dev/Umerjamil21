@@ -12,12 +12,12 @@ const Layout = ({ children }) => {
   }, [fetchSettings]);
 
   return (
-    <div className="min-h-screen bg-[#F5F4F0] flex font-inter overflow-hidden relative">
+    <div className="min-h-screen bg-gray-100 flex font-inter overflow-hidden relative">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       {/* Main Content Area */}
       <div className="flex-1 w-full lg:ml-[280px] relative flex flex-col min-h-screen transition-all duration-300 overflow-x-hidden">
         <Topbar onMenuClick={() => setSidebarOpen(true)} />
-        <main className="p-4 sm:p-6 lg:p-12 w-full max-w-[1600px] mx-auto min-h-screen flex-1 bg-[#F5F4F0]">
+        <main className="p-4 sm:p-6 lg:p-12 w-full max-w-[1600px] mx-auto min-h-screen flex-1 bg-gray-100">
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative">
             {children}
           </div>

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plane, Search, Loader2, Clock, ArrowRight, Calendar } from 'lucide-react';
 import useFlightStore from '../store/useFlightStore';
+import axios from '../api/axios';
 
 const LiveBooking = () => {
    const {
@@ -12,6 +13,78 @@ const LiveBooking = () => {
       searchFlights,
       selectFlight
    } = useFlightStore();
+
+   // Autocomplete states
+   const [fromSuggestions, setFromSuggestions] = useState([]);
+   const [toSuggestions, setToSuggestions] = useState([]);
+   const [showFromDropdown, setShowFromDropdown] = useState(false);
+   const [showToDropdown, setShowToDropdown] = useState(false);
+   const [fromInput, setFromInput] = useState('');
+   const [toInput, setToInput] = useState('');
+   const fromDropdownRef = useRef(null);
+   const toDropdownRef = useRef(null);
+
+   // Fetch autocomplete suggestions
+   const fetchSuggestions = async (query, type) => {
+      if (!query || query.length < 2) {
+         if (type === 'from') {
+            setFromSuggestions([]);
+            setShowFromDropdown(false);
+         } else {
+            setToSuggestions([]);
+            setShowToDropdown(false);
+         }
+         return;
+      }
+
+      try {
+         const response = await axios.get(`/flights/autocomplete?q=${encodeURIComponent(query)}`);
+         if (response.data.success) {
+            if (type === 'from') {
+               setFromSuggestions(response.data.data);
+               setShowFromDropdown(true);
+            } else {
+               setToSuggestions(response.data.data);
+               setShowToDropdown(true);
+            }
+         }
+      } catch (error) {
+         console.error('Autocomplete error:', error);
+      }
+   };
+
+   // Debounce autocomplete
+   useEffect(() => {
+      const timer = setTimeout(() => {
+         if (fromInput) {
+            fetchSuggestions(fromInput, 'from');
+         }
+      }, 300);
+      return () => clearTimeout(timer);
+   }, [fromInput]);
+
+   useEffect(() => {
+      const timer = setTimeout(() => {
+         if (toInput) {
+            fetchSuggestions(toInput, 'to');
+         }
+      }, 300);
+      return () => clearTimeout(timer);
+   }, [toInput]);
+
+   // Close dropdowns when clicking outside
+   useEffect(() => {
+      const handleClickOutside = (event) => {
+         if (fromDropdownRef.current && !fromDropdownRef.current.contains(event.target)) {
+            setShowFromDropdown(false);
+         }
+         if (toDropdownRef.current && !toDropdownRef.current.contains(event.target)) {
+            setShowToDropdown(false);
+         }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+   }, []);
 
    const handleAirportAdd = (airport) => {
       if (airport && !searchParams.from.includes(airport)) {
@@ -50,35 +123,58 @@ const LiveBooking = () => {
             <div>
                <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Route</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
+                  <div ref={fromDropdownRef}>
                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">From Airports</label>
-                     <div className="flex gap-2 mb-2">
+                     <div className="relative">
                         <input
-                           id="airport-input"
                            type="text"
-                           onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                 handleAirportAdd(e.target.value.toUpperCase());
-                                 e.target.value = '';
+                           value={fromInput}
+                           onChange={(e) => setFromInput(e.target.value)}
+                           onKeyDown={(e) => {
+                              if (e.key === 'Enter' && fromSuggestions.length > 0) {
+                                 const selected = fromSuggestions[0];
+                                 const airportCode = selected.airports?.[0]?.id || selected.name;
+                                 handleAirportAdd(airportCode);
+                                 setFromInput('');
+                                 setShowFromDropdown(false);
                               }
                            }}
-                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                           placeholder="Add airport (e.g., KHI)"
+                           className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                           placeholder="Search city or airport..."
                         />
-                        <button
-                           onClick={() => {
-                              const input = document.getElementById('airport-input');
-                              if (input && input.value) {
-                                 handleAirportAdd(input.value.toUpperCase());
-                                 input.value = '';
-                              }
-                           }}
-                           className="px-6 py-4 bg-[var(--desert-gold)] text-black font-black text-xs uppercase rounded-xl hover:bg-[var(--sacred-emerald)] hover:text-white transition-all"
-                        >
-                           Add
-                        </button>
+                        {showFromDropdown && fromSuggestions.length > 0 && (
+                           <div className="absolute z-50 mt-2 w-full bg-white border-2 border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                              {fromSuggestions.map((suggestion, idx) => (
+                                 <div
+                                    key={idx}
+                                    onMouseDown={(e) => {
+                                       e.preventDefault();
+                                       e.stopPropagation();
+                                       const airportCode = suggestion.airports?.[0]?.id || suggestion.name;
+                                       handleAirportAdd(airportCode);
+                                       setFromInput('');
+                                       setShowFromDropdown(false);
+                                    }}
+                                    className="p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-b-0 transition-colors"
+                                 >
+                                    <div className="flex items-center justify-between">
+                                       <div>
+                                          <p className="text-sm font-bold text-slate-900">{suggestion.name}</p>
+                                          <p className="text-xs text-slate-500">{suggestion.description}</p>
+                                       </div>
+                                       {suggestion.airports && suggestion.airports.length > 0 && (
+                                          <div className="text-right">
+                                             <p className="text-xs font-black text-[var(--desert-gold)]">{suggestion.airports[0].id}</p>
+                                             <p className="text-[10px] text-slate-400">{suggestion.airports[0].distance}</p>
+                                          </div>
+                                       )}
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
+                        )}
                      </div>
-                     <div className="flex flex-wrap gap-2">
+                     <div className="flex flex-wrap gap-2 mt-3">
                         {searchParams.from.map((airport, idx) => (
                            <span key={idx} className="px-4 py-2 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] rounded-lg text-xs font-bold flex items-center gap-2">
                               {airport}
@@ -92,15 +188,51 @@ const LiveBooking = () => {
                         ))}
                      </div>
                   </div>
-                  <div>
+                  <div ref={toDropdownRef}>
                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">To Airport</label>
-                     <input
-                        type="text"
-                        value={searchParams.to}
-                        onChange={(e) => updateSearchParams({ to: e.target.value.toUpperCase() })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                        placeholder="JED"
-                     />
+                     <div className="relative">
+                        <input
+                           type="text"
+                           value={toInput}
+                           onChange={(e) => {
+                              setToInput(e.target.value);
+                              updateSearchParams({ to: e.target.value.toUpperCase() });
+                           }}
+                           className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                           placeholder="Search city or airport..."
+                        />
+                        {showToDropdown && toSuggestions.length > 0 && (
+                           <div className="absolute z-50 mt-2 w-full bg-white border-2 border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                              {toSuggestions.map((suggestion, idx) => (
+                                 <div
+                                    key={idx}
+                                    onMouseDown={(e) => {
+                                       e.preventDefault();
+                                       e.stopPropagation();
+                                       const airportCode = suggestion.airports?.[0]?.id || suggestion.name;
+                                       updateSearchParams({ to: airportCode });
+                                       setToInput(airportCode);
+                                       setShowToDropdown(false);
+                                    }}
+                                    className="p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-b-0 transition-colors"
+                                 >
+                                    <div className="flex items-center justify-between">
+                                       <div>
+                                          <p className="text-sm font-bold text-slate-900">{suggestion.name}</p>
+                                          <p className="text-xs text-slate-500">{suggestion.description}</p>
+                                       </div>
+                                       {suggestion.airports && suggestion.airports.length > 0 && (
+                                          <div className="text-right">
+                                             <p className="text-xs font-black text-[var(--desert-gold)]">{suggestion.airports[0].id}</p>
+                                             <p className="text-[10px] text-slate-400">{suggestion.airports[0].distance}</p>
+                                          </div>
+                                       )}
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
+                        )}
+                     </div>
                   </div>
                </div>
             </div>
@@ -291,7 +423,7 @@ const LiveBooking = () => {
                <button
                   onClick={searchFlights}
                   disabled={isSearching}
-                  className="px-12 py-5 bg-[var(--desert-gold)] text-black font-black text-[12px] uppercase tracking-[0.2em] rounded-xl hover:bg-[var(--sacred-emerald)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg"
+                  className="px-12 py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.2em] rounded-xl hover:bg-[var(--sacred-emerald)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg"
                >
                   {isSearching ? (
                      <>

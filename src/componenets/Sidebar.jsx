@@ -89,17 +89,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   return (
     <div
       className={`
-        w-[280px] h-screen fixed left-0 top-0 bg-[#0B0F19] text-white flex flex-col z-50 
-        transition-transform duration-300 font-inter border-r border-white/5 shadow-2xl shadow-black/50
+        w-[280px] h-screen fixed left-0 top-0 bg-[var(--sidebar-bg)] text-white flex flex-col z-50 
+        transition-transform duration-300 font-inter border-r border-[var(--sidebar-outline)] shadow-2xl shadow-black/30
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}
     >
       {/* Brand Section - High-End Editorial */}
-      <div className="p-6 md:p-7 pb-8 flex flex-col relative border-b border-white/[0.05] bg-white/[0.01]">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[var(--primary)]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+      <div className="p-6 md:p-7 pb-8 flex flex-col relative border-b border-white/[0.08] bg-white/[0.02]">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[var(--primary)]/15 to-transparent rounded-bl-full pointer-events-none"></div>
         <div className="flex items-center justify-between relative z-10 w-full">
           <div className="flex items-center gap-4">
-            <div className="w-11 h-11 bg-gradient-to-br from-[#1E293B] to-[#0F172A] rounded-xl flex items-center justify-center text-white shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-white/10 shrink-0 group hover:scale-105 transition-transform">
+            <div className="w-11 h-11 bg-gradient-to-br from-[var(--tertiary)] to-[var(--primary)] rounded-xl flex items-center justify-center text-white shadow-[0_8px_30px_rgb(14,62,129,0.4)] border border-white/15 shrink-0 group hover:scale-105 transition-transform">
               <Plane size={22} strokeWidth={1.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
             </div>
             <div className="flex flex-col">
@@ -133,15 +133,15 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   className={`
                     w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group
                     ${isActive
-                      ? 'bg-[var(--desert-gold)]/10 border border-[var(--desert-gold)]/20 shadow-lg shadow-[var(--desert-gold)]/5'
-                      : 'hover:bg-white/5 border border-transparent'}
+                      ? 'bg-[var(--desert-gold)]/15 border border-[var(--desert-gold)]/25 shadow-lg shadow-[var(--desert-gold)]/10'
+                      : 'hover:bg-white/8 border border-transparent'}
                   `}
                 >
                   <div className="flex items-center gap-3.5">
-                    <span className={`transition-all duration-300 ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>
+                    <span className={`transition-all duration-300 ${isActive ? 'text-white' : 'text-white group-hover:text-white'}`}>
                       <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} />
                     </span>
-                    <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>{item.title}</span>
+                    <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-white' : 'text-white  group-hover:text-white'}`}>{item.title}</span>
                   </div>
                   <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-500 group-hover:text-gray-300'}`} />
                 </button>
@@ -150,16 +150,16 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   to={item.path}
                   end={item.path === '/'}
                   className={({ isActive: isExactActive }) => `
-                    flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group
+                    flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all ease-in-out duration-300 group
                     ${isExactActive
-                      ? 'bg-[var(--desert-gold)]/10 border border-[var(--desert-gold)]/20 shadow-lg shadow-[var(--desert-gold)]/5'
-                      : 'hover:bg-white/5 border border-transparent'}
+                      ? 'bg-[var(--desert-gold)]/15 border border-[var(--desert-gold)]/25 shadow-lg shadow-[var(--desert-gold)]/10'
+                      : 'hover:bg-white/8 border border-transparent'}
                   `}
                 >
-                  <span className={`transition-all duration-300 ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>
+                  <span className={`transition-all duration-300 ${isActive ? 'text-white' : 'text-white group-hover:text-white'}`}>
                     <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} />
                   </span>
-                  <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-[var(--desert-gold)]' : 'text-gray-400 group-hover:text-white'}`}>{item.title}</span>
+                  <span className={`font-semibold text-[11px] uppercase tracking-wider transition-all ${isActive ? 'text-white' : 'text-white group-hover:text-white'}`}>{item.title}</span>
                 </NavLink>
               )}
 
@@ -173,7 +173,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 >
                   <div className="flex flex-col gap-0.5 pl-[2.6rem] pr-2 relative">
                     {/* Subtle connecting line */}
-                    <div className="absolute left-[20px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-white/20 via-white/10 to-transparent"></div>
+                    <div className="absolute left-[20px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-white/25 via-white/15 to-transparent"></div>
 
                     {item.submenu.map((subItem, subIndex) => {
                       const isSubActive = isSubPathActive(subItem.path, item.submenu);
@@ -183,17 +183,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                           to={subItem.path}
                           end={subItem.path === item.path}
                           className={`
-                            relative flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group/sub
+                            relative flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300 group/sub
                             ${isSubActive
-                              ? 'bg-gradient-to-r from-white/5 to-transparent'
-                              : 'hover:bg-white/[0.03]'}
+                              ? 'bg-white/[0.05] text-white'
+                              : 'hover:bg-white/[0.05]'}
                           `}
                         >
                           {/* Active Indicator Dot overriding the line */}
-                          {isSubActive && <div className="absolute -left-[23.5px] w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)] z-10"></div>}
-                          {!isSubActive && <div className="absolute -left-[23px] w-1 h-1 rounded-full bg-gray-600 group-hover/sub:bg-[var(--desert-gold)] group-hover/sub:scale-150 transition-all z-10"></div>}
+                          {isSubActive && <div className="absolute -left-[23.5px] w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_12px_var(--desert-gold)] z-10"></div>}
+                          {!isSubActive && <div className="absolute -left-[23px] w-1 h-1 rounded-full bg-gray-500 group-hover/sub:bg-[var(--desert-gold)] group-hover/sub:scale-150 transition-all z-10"></div>}
 
-                          <span className={`font-medium text-[10px] uppercase tracking-[0.1em] transition-all ${isSubActive ? 'text-[var(--desert-gold)] translate-x-1' : 'text-gray-400 group-hover/sub:text-white group-hover/sub:translate-x-1'}`}>
+                          <span className={`font-medium text-[10px] uppercase tracking-[0.1em] transition-all ${isSubActive ? 'text-white translate-x-1' : 'text-gray-400 group-hover/sub:text-white group-hover/sub:translate-x-1'}`}>
                             {subItem.title}
                           </span>
                         </NavLink>
@@ -208,13 +208,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       </nav>
 
       {/* Profile & Support - Minimalist Footer */}
-      <div className="p-6 border-t border-white/5 relative overflow-hidden bg-white/[0.01]">
+      <div className="p-6 border-t border-white/8 relative overflow-hidden bg-white/[0.02]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1E293B] to-[#0F172A] border border-white/10 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-black/20 shrink-0">{userInitials}</div>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--tertiary)] to-[var(--primary)] border border-white/15 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-black/30 shrink-0">{userInitials}</div>
           <div className="flex-1 overflow-hidden">
             <p className="text-[11px] font-bold text-white uppercase tracking-wider truncate">{userName}</p>
             <div className="flex items-center gap-1.5 mt-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_10px_var(--desert-gold)] animate-pulse"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_12px_var(--desert-gold)] animate-pulse"></div>
               <p className="text-[8px] text-[var(--desert-gold)] uppercase tracking-widest truncate">Prime Controller</p>
             </div>
           </div>

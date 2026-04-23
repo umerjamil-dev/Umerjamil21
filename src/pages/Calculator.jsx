@@ -108,7 +108,7 @@ const Calculator = () => {
   useEffect(() => {
     calculate();
   }, [inputs]);
-  const baseUrl = "https://hajjumrahbackend.processiqtech.com/"
+  const baseUrl = "http://192.168.5.111:8000/"
 
   return (
     <>

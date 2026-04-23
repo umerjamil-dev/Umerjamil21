@@ -58,7 +58,7 @@ const CustomerDetail = () => {
     if (!customer) return null;
 
     const fullName = `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || customer.name || 'Unnamed Pilgrim';
-    const imgBaseUrl = 'https://hajjumrahbackend.processiqtech.com/'
+    const imgBaseUrl = 'http://192.168.5.111:8000/'
 
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 font-inter pb-20">

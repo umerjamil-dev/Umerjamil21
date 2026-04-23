@@ -45,7 +45,7 @@ const LogisticsFeed = () => {
   } = usePagination(filtered, 10);
 
   return (
-    <div className="min-h-screen bg-[#f5f4f0] px-6 py-12 lg:px-12" style={{ fontFamily: "'DM Mono', monospace" }}>
+    <div className="min-h-screen bg-gray-100 px-6 py-12 lg:px-12" style={{ fontFamily: "'DM Mono', monospace" }}>
       
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -102,7 +102,7 @@ const LogisticsFeed = () => {
                    <div className="text-[12px] font-bold text-[#1a1916]">#{item.assignment_id}</div>
                 </td>
                 <td className="px-6 py-5">
-                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#78776f] bg-[#f5f4f0] px-2 py-1 rounded border border-[#e2e0d8]">
+                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#78776f] bg-gray-100 px-2 py-1 rounded border border-[#e2e0d8]">
                      {item.task_type}
                    </span>
                 </td>

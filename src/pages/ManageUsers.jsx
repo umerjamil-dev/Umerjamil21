@@ -64,7 +64,7 @@ const ManageUsers = () => {
   const resolveImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('data:') || path.startsWith('blob:') || path.startsWith('http')) return path;
-    return `https://hajjumrahbackend.processiqtech.com/storage/${path}`;
+    return `http://192.168.5.111:8000/storage/${path}`;
 
   };
 
@@ -118,7 +118,7 @@ const ManageUsers = () => {
   const activeCount = users.filter(u => u.status_id === '1').length;
 
   return (
-    <div className="min-h-screen bg-[#f5f4f0] px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
+    <div className="min-h-screen bg-gray-100 px-8 py-14 lg:px-20" style={{ fontFamily: "'DM Mono', monospace" }}>
 
       {/* ── HEADER ── */}
       <motion.div

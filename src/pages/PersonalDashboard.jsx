@@ -66,21 +66,22 @@ const PersonalDashboard = () => {
       animate="visible"
       className="mx-auto max-w-[1600px] space-y-8 px-4 sm:px-6 pb-16 pt-6 font-inter"
     >
+      
       {/* Header */}
       <motion.div
         variants={itemVariants}
         className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
       >
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-[#D4AF37] text-[10px] font-extrabold uppercase tracking-[0.35em]">
+          <div className="flex items-center gap-2 text-[var(--desert-gold)] text-[10px] font-extrabold uppercase tracking-[0.35em]">
             <Sparkles size={14} strokeWidth={2.5} />
             Personal Nexus
           </div>
 
           <div>
-            <h1 className="text-4xl md:text-5xl font-manrope font-extrabold text-[#111827] tracking-tight leading-none">
+            <h1 className="text-4xl md:text-5xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight leading-none">
               Salam,{' '}
-              <span className="text-[#D4AF37]">
+              <span className="text-[var(--desert-gold)]">
                 {user?.name?.split(' ')[0] || 'Member'}
               </span>
             </h1>
@@ -92,14 +93,14 @@ const PersonalDashboard = () => {
         </div>
 
         <div className="inline-flex items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FFF8E1] text-[#D4AF37]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--desert-gold)]/10 text-[var(--desert-gold)]">
             <Award size={20} />
           </div>
           <div>
             <p className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-gray-400">
               Rank
             </p>
-            <p className="text-sm font-extrabold uppercase tracking-tight text-[#111827]">
+            <p className="text-sm font-extrabold uppercase tracking-tight text-[var(--on-surface)]">
               Gold Affiliate
             </p>
           </div>
@@ -109,10 +110,10 @@ const PersonalDashboard = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: 'My Leads', val: personalStats.totalLeads, icon: Target, color: '#111827', sub: '+5 this week' },
+          { label: 'My Leads', val: personalStats.totalLeads, icon: Target, color: '#0E3E81', sub: '+5 this week' },
           { label: 'Win Rate', val: personalStats.conversionRate, icon: TrendingUp, color: '#10B981', sub: 'Top 5% of Team' },
-          { label: 'Queue', val: personalStats.activeTasks, icon: Briefcase, color: '#D4AF37', sub: 'Next: Verification' },
-          { label: 'Pulse', val: personalStats.achievements, icon: Zap, color: '#3B82F6', sub: 'Streak: 12 Days' },
+          { label: 'Queue', val: personalStats.activeTasks, icon: Briefcase, color: '#0E3E81', sub: 'Next: Verification' },
+          { label: 'Pulse', val: personalStats.achievements, icon: Zap, color: '#2E5892', sub: 'Streak: 12 Days' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -156,8 +157,8 @@ const PersonalDashboard = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-[10px] font-extrabold uppercase tracking-widest text-[#111827]">
-              <Activity size={14} className="text-[#D4AF37]" />
+            <div className="flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface)]">
+              <Activity size={14} className="text-[var(--desert-gold)]" />
               Live Track
             </div>
           </div>
@@ -180,7 +181,7 @@ const PersonalDashboard = () => {
                 {
                   data: momentumData.map((d) => d.velocity),
                   area: true,
-                  color: '#D4AF37',
+                  color: '#0E3E81',
                   showMark: true,
                 },
               ]}
@@ -305,10 +306,10 @@ const PersonalDashboard = () => {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-extrabold text-[#D4AF37] uppercase tracking-[0.2em] mb-1">
+                  <p className="text-[10px] font-extrabold text-[var(--desert-gold)] uppercase tracking-[0.2em] mb-1">
                     {act.time}
                   </p>
-                  <h4 className="text-sm font-extrabold text-[#111827] tracking-tight truncate">
+                  <h4 className="text-sm font-extrabold text-[var(--on-surface)] tracking-tight truncate">
                     {act.action}
                   </h4>
                   <p className="text-xs text-gray-500 font-medium truncate">
@@ -328,10 +329,10 @@ const PersonalDashboard = () => {
           className="grid grid-cols-2 gap-4"
         >
           {[
-            { title: 'My Profile', icon: User, color: '#111827', path: '/settings/profile' },
-            { title: 'Lead Target', icon: Target, color: '#D4AF37', path: '/leads' },
+            { title: 'My Profile', icon: User, color: '#0E3E81', path: '/settings/profile' },
+            { title: 'Lead Target', icon: Target, color: '#0E3E81', path: '/leads' },
             { title: 'Task Queue', icon: Briefcase, color: '#10B981', path: '/operations' },
-            { title: 'System Feed', icon: Activity, color: '#3B82F6', path: '/reports' },
+            { title: 'System Feed', icon: Activity, color: '#2E5892', path: '/reports' },
           ].map((item, idx) => (
             <div
               key={idx}

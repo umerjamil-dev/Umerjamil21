@@ -17,7 +17,7 @@ const CompanyParams = () => {
       if (settings?.company) {
          setFormData(settings.company || {});
          if (settings.company.logo) {
-            setLogoPreview(`https://hajjumrahbackend.processiqtech.com/${settings.company.logo}`);
+            setLogoPreview(`http://192.168.5.111:8000/${settings.company.logo}`);
          }
       }
    }, [settings]);
@@ -75,11 +75,11 @@ const CompanyParams = () => {
          {/* Architectural Header */}
          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-12 border-b border-gray-200 mt-8">
             <div className="space-y-5 px-6 md:px-0">
-               <div className="flex items-center gap-3 text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-black">
+               <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[10px] font-black">
                   <Building2 size={14} strokeWidth={2.5} />
                   System Configuration
                </div>
-               <h1 className="text-5xl md:text-6xl font-manrope font-extrabold tracking-tighter leading-tight text-[#111827]">
+               <h1 className="text-5xl md:text-6xl font-manrope font-extrabold tracking-tighter leading-tight text-[var(--on-surface)]">
                   Company Core
                </h1>
                <p className="text-gray-500 text-sm md:text-base font-medium max-w-xl leading-relaxed">

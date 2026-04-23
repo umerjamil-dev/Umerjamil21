@@ -91,7 +91,7 @@ const Leads = () => {
           <input
             type="text"
             placeholder="Identity, contact or source..."
-            className="w-full pl-9 pr-4 py-3 bg-transparent border-b border-[var(--outline-variant)] rounded-none text-sm outline-none focus:border-[var(--primary)] text-[var(--on-surface)] transition-all font-medium placeholder-[var(--on-surface-variant)]"
+            className="w-full pl-9 pr-4 py-3  text-black bg-transparent border-b border-[var(--outline-variant)] rounded-none text-sm outline-none focus:border-[var(--primary)]  transition-all font-medium "
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -118,7 +118,7 @@ const Leads = () => {
                 <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Inquiry Identification</th>
                 <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Source</th>
                 <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Status</th>
-                <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">User</th>
+                {/* <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">User</th> */}
                 <th className="px-10 py-6 text-[10px] font-manrope font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] text-right">Contact</th>
               </tr>
             </thead>
@@ -155,14 +155,13 @@ const Leads = () => {
                       {lead.status_name || 'N/A'}
                     </span>
                   </td>
-                  <td className="px-10 py-6">
+                  {/* <td className="px-10 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-gray-100 text-[#111827] border border-gray-200 flex items-center justify-center text-[10px] font-bold">
                         {lead.assigned_to_name}
                       </div>
-                      {/* <span className="text-xs font-bold text-gray-700">{getMasterLabel(lead.assigned_to_id, masterData.assigned_to) || 'Unassigned'}</span> */}
                     </div>
-                  </td>
+                  </td> */}
                   <td className="px-10 py-6 text-right">
                     <div className="flex items-center justify-end gap-3">
                       {/* Communication Suite */}
