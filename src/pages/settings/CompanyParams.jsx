@@ -21,7 +21,7 @@ const CompanyParams = () => {
          }
       }
    }, [settings]);
- 
+
 
    const handleInputChange = (field, value) => {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -31,8 +31,8 @@ const CompanyParams = () => {
       const file = e.target.files[0];
       if (file) {
          setLogoFile(file);
-         const reader = new FileReader(); 
-         console.log('file reader', reader) ;
+         const reader = new FileReader();
+         console.log('file reader', reader);
          reader.onloadend = () => {
             setLogoPreview(reader.result);
          };

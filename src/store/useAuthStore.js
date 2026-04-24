@@ -32,6 +32,7 @@ const useAuthStore = create((set, get) => ({
       const { user, access_token } = data;
 
       const userData = user || data;
+      console.log(userData);
       const tokenData = access_token || (user && user.access_token) || data.token;
 
       if (!tokenData) throw new Error("No access token received from server.");

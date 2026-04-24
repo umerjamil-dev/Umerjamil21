@@ -10,8 +10,8 @@ const useFlightStore = create((set, get) => ({
   
   // State for live flight search
   searchParams: {
-    from: ['LHE'],
-    to: 'JED',
+    from: [],
+    to: '',
     departure_date: '2026-05-01',
     return_date: '2026-05-15',
     trip_type: 'round',
@@ -28,14 +28,11 @@ const useFlightStore = create((set, get) => ({
   isSearching: false,
   selectedFlight: null,
 
-  // Update search params
   updateSearchParams: (params) => {
     set((state) => ({
       searchParams: { ...state.searchParams, ...params }
     }));
   },
-
-  // Search live flights
   searchFlights: async () => {
     const { searchParams } = get();
     set({ isSearching: true, searchedFlights: [] });
@@ -52,22 +49,54 @@ const useFlightStore = create((set, get) => ({
         infants: searchParams.infants,
         cabin_class: searchParams.cabin_class,
         currency: searchParams.currency,
-        non_stop: searchParams.non_stop,
-        max_price: searchParams.max_price,
-        sort: searchParams.sort
+        // non_stop: searchParams.non_stop,
+        // max_price: searchParams.max_price,
+        // sort: searchParams.sort
       };
-
+      
+      console.log('Sending flights search request to backend with payload:', requestBody);
       const response = await api.get('/flights/search', { params: requestBody });
       const data = response.data;
       
       const flightsData = data.data || data;
       
-      if (flightsData.best_flights || flightsData.other_flights) {
-        const allFlights = [
+      let allFlights = [];
+
+      // Handle custom local API format (airports_info)
+      if (flightsData.airports_info && flightsData.airports_info.flights_by_airport) {
+        const flightsByAirport = flightsData.airports_info.flights_by_airport;
+        Object.keys(flightsByAirport).forEach(fromAirportCode => {
+          const airportData = flightsByAirport[fromAirportCode];
+          const airportName = airportData.airport_name;
+          const flightsArray = airportData.flights || [];
+          
+          flightsArray.forEach(f => {
+            allFlights.push({
+              price: parseFloat(f.price) || 0,
+              total_duration: 0, 
+              flights: [
+                {
+                  airline: f.airline || "Unknown",
+                  departure_airport: { id: fromAirportCode, name: airportName },
+                  arrival_airport: { id: f.destination, name: f.destination },
+                  travel_class: searchParams.cabin_class,
+                  flight_number: f.flight_number || "",
+                  duration: 0
+                }
+              ]
+            });
+          });
+        });
+      } 
+      // Handle Google Flights API format
+      else if (flightsData.best_flights || flightsData.other_flights) {
+        allFlights = [
           ...(flightsData.best_flights || []),
           ...(flightsData.other_flights || [])
         ];
-        
+      }
+
+      if (allFlights.length > 0) {
         // Filter based on non_stop preference
         let filteredFlights = searchParams.non_stop 
           ? allFlights.filter(f => !f.layovers || f.layovers.length === 0)
@@ -75,12 +104,12 @@ const useFlightStore = create((set, get) => ({
         
         // Filter based on max_price
         if (searchParams.max_price) {
-          filteredFlights = filteredFlights.filter(f => f.price <= searchParams.max_price);
+          filteredFlights = filteredFlights.filter(f => (f.price || 0) <= searchParams.max_price);
         }
         
         // Sort flights
         if (searchParams.sort === 'price') {
-          filteredFlights.sort((a, b) => a.price - b.price);
+          filteredFlights.sort((a, b) => (a.price || 0) - (b.price || 0));
         } else if (searchParams.sort === 'duration') {
           filteredFlights.sort((a, b) => (a.total_duration || 0) - (b.total_duration || 0));
         }

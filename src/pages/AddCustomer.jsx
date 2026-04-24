@@ -263,7 +263,7 @@ const AddCustomer = () => {
                         </span>
                         <input
                            type="file"
-                           multiple
+                           multiple  
                            className="hidden"
                            onChange={(e) => {
                               const newFiles = Array.from(e.target.files);

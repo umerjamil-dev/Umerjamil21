@@ -10,9 +10,9 @@ const useHotelStore = create((set, get) => ({
 
   // State for live hotel search
   searchParams: {
-    city: 'Makkah Hotels',
-    check_in: '2026-05-01',
-    check_out: '2026-05-05',
+    city: '',
+    check_in: '',
+    check_out: '',
     adults: 2,
     children: 1,
     currency: 'PKR'

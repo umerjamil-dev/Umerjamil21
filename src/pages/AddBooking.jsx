@@ -139,7 +139,7 @@ const AddBooking = () => {
     }
 
     try {
-      // console.log('Submission Payload (AddBooking):', formData);
+      console.log('Submission Payload (AddBooking):', formData);
       const payload = {
         customer_id: formData.customerId,
         package_id: formData.packageId,
@@ -175,10 +175,10 @@ const AddBooking = () => {
 
         <div className="text-center">
           <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
-         Customer   Booking {' '}
-            
+            Customer   Booking {' '}
+
           </h1>
-         
+
         </div>
 
         <button
@@ -233,7 +233,7 @@ const AddBooking = () => {
 
               <div className="flex items-center gap-4">
                 <div className="w-11 h-11 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-[var(--desert-gold)] flex-shrink-0">
-                  <Package size={20} strokeWidth={2}  className='text-white'/>
+                  <Package size={20} strokeWidth={2} className='text-white' />
                 </div>
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-0.5">
@@ -403,7 +403,7 @@ const AddBooking = () => {
                 iconColor="#1a7a52"
               />
             </div>
-         
+
             {/* Remaining Amount Display */}
             {(formData.totalAmount || formData.paidAmount) && (
               <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between relative z-10">
@@ -411,9 +411,8 @@ const AddBooking = () => {
                   Remaining Balance
                 </span>
                 <span
-                  className={`text-2xl font-black tracking-tight ${
-                    remaining > 0 ? 'text-amber-500' : 'text-emerald-600'
-                  }`}
+                  className={`text-2xl font-black tracking-tight ${remaining > 0 ? 'text-amber-500' : 'text-emerald-600'
+                    }`}
                 >
                   ${Math.max(0, remaining).toLocaleString()}
                   {remaining <= 0 && (
@@ -427,6 +426,6 @@ const AddBooking = () => {
       </div>
     </div>
   );
-};
-
-export default AddBooking;
+}; 
+ export default AddBooking ;
+ 

@@ -85,7 +85,7 @@ const AssignPermissions = () => {
             className="bg-white rounded-2xl overflow-hidden"
             style={{ border: '1.5px solid #e2e0d8' }}
          >
-            <div className="p-8 md:p-10 flex flex-col gap-10 max-w-7xl mx-auto">
+            <div className="p-8 md:p-10 flex flex-col gap-10 ">
 
                {/* ── ROLE SELECTOR ── */}
                <div className="flex flex-col gap-2.5">

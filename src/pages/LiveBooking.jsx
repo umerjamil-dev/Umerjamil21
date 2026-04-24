@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Plane, Search, Loader2, Clock, ArrowRight, Calendar } from 'lucide-react';
 import useFlightStore from '../store/useFlightStore';
 import axios from '../api/axios';
+import toast from 'react-hot-toast';
 
 const LiveBooking = () => {
    const {
@@ -14,6 +15,10 @@ const LiveBooking = () => {
       selectFlight
    } = useFlightStore();
 
+   // Safely get arrays (in case store has old string format)
+   const fromAirports = Array.isArray(searchParams.from) ? searchParams.from : [];
+   const toAirports = Array.isArray(searchParams.to) ? searchParams.to : [];
+
    // Autocomplete states
    const [fromSuggestions, setFromSuggestions] = useState([]);
    const [toSuggestions, setToSuggestions] = useState([]);
@@ -23,6 +28,28 @@ const LiveBooking = () => {
    const [toInput, setToInput] = useState('');
    const fromDropdownRef = useRef(null);
    const toDropdownRef = useRef(null);
+   const skipFetchFrom = useRef(false);
+   const skipFetchTo = useRef(false);
+
+   // Helper: flatten API response into an array of airports
+   const flattenAirports = (apiData) => {
+      const airports = [];
+      const seenIds = new Set();
+      for (const item of apiData) {
+         if (item.airports && Array.isArray(item.airports)) {
+            for (const airport of item.airports) {
+               if (!seenIds.has(airport.id)) {
+                  seenIds.add(airport.id);
+                  airports.push({
+                     id: airport.id,
+                     name: airport.name,
+                  });
+               }
+            }
+         }
+      }
+      return airports;
+   };
 
    // Fetch autocomplete suggestions
    const fetchSuggestions = async (query, type) => {
@@ -39,13 +66,14 @@ const LiveBooking = () => {
 
       try {
          const response = await axios.get(`/flights/autocomplete?q=${encodeURIComponent(query)}`);
-         if (response.data.success) {
+         if (response.data.success && Array.isArray(response.data.data)) {
+            const airports = flattenAirports(response.data.data);
             if (type === 'from') {
-               setFromSuggestions(response.data.data);
-               setShowFromDropdown(true);
+               setFromSuggestions(airports);
+               setShowFromDropdown(airports.length > 0);
             } else {
-               setToSuggestions(response.data.data);
-               setShowToDropdown(true);
+               setToSuggestions(airports);
+               setShowToDropdown(airports.length > 0);
             }
          }
       } catch (error) {
@@ -57,7 +85,14 @@ const LiveBooking = () => {
    useEffect(() => {
       const timer = setTimeout(() => {
          if (fromInput) {
+            if (skipFetchFrom.current) {
+               skipFetchFrom.current = false;
+               return;
+            }
             fetchSuggestions(fromInput, 'from');
+         } else {
+            setFromSuggestions([]);
+            setShowFromDropdown(false);
          }
       }, 300);
       return () => clearTimeout(timer);
@@ -66,7 +101,14 @@ const LiveBooking = () => {
    useEffect(() => {
       const timer = setTimeout(() => {
          if (toInput) {
+            if (skipFetchTo.current) {
+               skipFetchTo.current = false;
+               return;
+            }
             fetchSuggestions(toInput, 'to');
+         } else {
+            setToSuggestions([]);
+            setShowToDropdown(false);
          }
       }, 300);
       return () => clearTimeout(timer);
@@ -86,15 +128,38 @@ const LiveBooking = () => {
       return () => document.removeEventListener('mousedown', handleClickOutside);
    }, []);
 
-   const handleAirportAdd = (airport) => {
-      if (airport && !searchParams.from.includes(airport)) {
-         updateSearchParams({ from: [...searchParams.from, airport] });
+   // Handle adding airport to "from" list
+   const handleFromAirportAdd = (airportId, airportName) => {
+      if (!airportId) return;
+      if (fromAirports.includes(airportId)) {
+         toast.info(`${airportId} is already added to departure airports`);
+         return;
       }
+      const newFrom = [...fromAirports, airportId];
+      updateSearchParams({ from: newFrom });
+      toast.success(`Added ${airportName} (${airportId}) to departure`);
    };
 
-   const handleAirportRemove = (index) => {
-      const updatedFrom = searchParams.from.filter((_, i) => i !== index);
+   const handleFromAirportRemove = (index) => {
+      const updatedFrom = fromAirports.filter((_, i) => i !== index);
       updateSearchParams({ from: updatedFrom });
+   };
+
+   // Handle adding airport to "to" list (multiple)
+   const handleToAirportAdd = (airportId, airportName) => {
+      if (!airportId) return;
+      if (toAirports.includes(airportId)) {
+         toast.info(`${airportId} is already added to destination airports`);
+         return;
+      }
+      const newTo = [...toAirports, airportId];
+      updateSearchParams({ to: newTo });
+      toast.success(`Added ${airportName} (${airportId}) to destination`);
+   };
+
+   const handleToAirportRemove = (index) => {
+      const updatedTo = toAirports.filter((_, i) => i !== index);
+      updateSearchParams({ to: updatedTo });
    };
 
    const formatDuration = (minutes) => {
@@ -110,7 +175,7 @@ const LiveBooking = () => {
          <div className="flex items-center justify-between pb-6 border-b-2 border-slate-200">
             <div>
                <h1 className="text-4xl font-black text-slate-900 tracking-tight flex items-center gap-4">
-                  <Plane className="text-[var(--desert-gold)]" size={40} />
+                  <Plane className="text-black" size={40} />
                   Live Flight Search
                </h1>
                <p className="text-slate-500 text-sm font-medium mt-2">Search and compare real-time flight prices</p>
@@ -118,321 +183,262 @@ const LiveBooking = () => {
          </div>
 
          {/* Search Form */}
-         <div className="bg-white rounded-2xl p-8 border-2 border-slate-200 shadow-lg space-y-8">
-            {/* From/To Section */}
-            <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Route</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div ref={fromDropdownRef}>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">From Airports</label>
-                     <div className="relative">
-                        <input
-                           type="text"
-                           value={fromInput}
-                           onChange={(e) => setFromInput(e.target.value)}
-                           onKeyDown={(e) => {
-                              if (e.key === 'Enter' && fromSuggestions.length > 0) {
-                                 const selected = fromSuggestions[0];
-                                 const airportCode = selected.airports?.[0]?.id || selected.name;
-                                 handleAirportAdd(airportCode);
-                                 setFromInput('');
-                                 setShowFromDropdown(false);
-                              }
-                           }}
-                           className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                           placeholder="Search city or airport..."
-                        />
-                        {showFromDropdown && fromSuggestions.length > 0 && (
-                           <div className="absolute z-50 mt-2 w-full bg-white border-2 border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                              {fromSuggestions.map((suggestion, idx) => (
-                                 <div
-                                    key={idx}
-                                    onMouseDown={(e) => {
-                                       e.preventDefault();
-                                       e.stopPropagation();
-                                       const airportCode = suggestion.airports?.[0]?.id || suggestion.name;
-                                       handleAirportAdd(airportCode);
-                                       setFromInput('');
-                                       setShowFromDropdown(false);
-                                    }}
-                                    className="p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-b-0 transition-colors"
-                                 >
-                                    <div className="flex items-center justify-between">
-                                       <div>
-                                          <p className="text-sm font-bold text-slate-900">{suggestion.name}</p>
-                                          <p className="text-xs text-slate-500">{suggestion.description}</p>
-                                       </div>
-                                       {suggestion.airports && suggestion.airports.length > 0 && (
-                                          <div className="text-right">
-                                             <p className="text-xs font-black text-[var(--desert-gold)]">{suggestion.airports[0].id}</p>
-                                             <p className="text-[10px] text-slate-400">{suggestion.airports[0].distance}</p>
-                                          </div>
-                                       )}
-                                    </div>
-                                 </div>
-                              ))}
-                           </div>
-                        )}
-                     </div>
-                     <div className="flex flex-wrap gap-2 mt-3">
-                        {searchParams.from.map((airport, idx) => (
-                           <span key={idx} className="px-4 py-2 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] rounded-lg text-xs font-bold flex items-center gap-2">
-                              {airport}
-                              <button 
-                                 onClick={() => handleAirportRemove(idx)}
-                                 className="hover:text-red-500"
+         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-md space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+               {/* FROM (multiple airports) */}
+               <div ref={fromDropdownRef}>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">From Airports</label>
+                  <div className="relative">
+                     <input
+                        type="text"
+                        value={fromInput}
+                        onChange={(e) => setFromInput(e.target.value)}
+                        onFocus={() => setFromInput('')}
+                        onKeyDown={(e) => {
+                           if (e.key === 'Enter' && fromSuggestions.length > 0) {
+                              const selected = fromSuggestions[0];
+                              handleFromAirportAdd(selected.id, selected.name);
+                              skipFetchFrom.current = true;
+                              setFromInput(selected.name);
+                              setShowFromDropdown(false);
+                           }
+                        }}
+                        className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900 outline-none focus:border-black h-11"
+                        placeholder="Search airport..."
+                     />
+                     {showFromDropdown && fromSuggestions.length > 0 && (
+                        <div
+                           className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+                           onClick={(e) => e.stopPropagation()}
+                        >
+                           {fromSuggestions.map((airport, idx) => (
+                              <div
+                                 key={idx}
+                                 onClick={() => {
+                                    handleFromAirportAdd(airport.id, airport.name);
+                                    skipFetchFrom.current = true;
+                                    setFromInput(airport.name);
+                                    setShowFromDropdown(false);
+                                 }}
+                                 className="p-2 hover:bg-slate-50 cursor-pointer border-b border-slate-100 text-sm"
                               >
-                                 ×
-                              </button>
-                           </span>
-                        ))}
-                     </div>
-                  </div>
-                  <div ref={toDropdownRef}>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">To Airport</label>
-                     <div className="relative">
-                        <input
-                           type="text"
-                           value={toInput}
-                           onChange={(e) => {
-                              setToInput(e.target.value);
-                              updateSearchParams({ to: e.target.value.toUpperCase() });
-                           }}
-                           className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                           placeholder="Search city or airport..."
-                        />
-                        {showToDropdown && toSuggestions.length > 0 && (
-                           <div className="absolute z-50 mt-2 w-full bg-white border-2 border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                              {toSuggestions.map((suggestion, idx) => (
-                                 <div
-                                    key={idx}
-                                    onMouseDown={(e) => {
-                                       e.preventDefault();
-                                       e.stopPropagation();
-                                       const airportCode = suggestion.airports?.[0]?.id || suggestion.name;
-                                       updateSearchParams({ to: airportCode });
-                                       setToInput(airportCode);
-                                       setShowToDropdown(false);
-                                    }}
-                                    className="p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-b-0 transition-colors"
-                                 >
-                                    <div className="flex items-center justify-between">
-                                       <div>
-                                          <p className="text-sm font-bold text-slate-900">{suggestion.name}</p>
-                                          <p className="text-xs text-slate-500">{suggestion.description}</p>
-                                       </div>
-                                       {suggestion.airports && suggestion.airports.length > 0 && (
-                                          <div className="text-right">
-                                             <p className="text-xs font-black text-[var(--desert-gold)]">{suggestion.airports[0].id}</p>
-                                             <p className="text-[10px] text-slate-400">{suggestion.airports[0].distance}</p>
-                                          </div>
-                                       )}
-                                    </div>
+                                 <div className="flex justify-between">
+                                    <span className="font-bold">{airport.name}</span>
+                                    <span className="text-black text-xs">{airport.id}</span>
                                  </div>
-                              ))}
-                           </div>
-                        )}
-                     </div>
+                              </div>
+                           ))}
+                        </div>
+                     )}
+                  </div>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                     {fromAirports.map((airportId, idx) => (
+                        <span key={idx} className="px-2 py-1 bg-black/10 text-black rounded text-xs font-bold flex items-center gap-1">
+                           {airportId}
+                           <button onClick={() => handleFromAirportRemove(idx)} className="hover:text-red-500">×</button>
+                        </span>
+                     ))}
                   </div>
                </div>
-            </div>
 
-            {/* Dates & Trip Type */}
-            <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Dates & Trip Type</h3>
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Trip Type</label>
-                     <select
-                        value={searchParams.trip_type}
-                        onChange={(e) => updateSearchParams({ trip_type: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                     >
-                        <option value="round">Round Trip</option>
-                        <option value="one">One Way</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Departure Date</label>
+               {/* TO (multiple airports) */}
+               <div ref={toDropdownRef}>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">To Airports</label>
+                  <div className="relative">
                      <input
-                        type="date"
-                        value={searchParams.departure_date}
-                        onChange={(e) => updateSearchParams({ departure_date: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
+                        type="text"
+                        value={toInput}
+                        onChange={(e) => setToInput(e.target.value)}
+                        onFocus={() => setToInput('')}
+                        onKeyDown={(e) => {
+                           if (e.key === 'Enter' && toSuggestions.length > 0) {
+                              const selected = toSuggestions[0];
+                              handleToAirportAdd(selected.id, selected.name);
+                              skipFetchTo.current = true;
+                              setToInput(selected.name);
+                              setShowToDropdown(false);
+                           }
+                        }}
+                        className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900 outline-none focus:border-black h-11"
+                        placeholder="Search airport..."
                      />
+                     {showToDropdown && toSuggestions.length > 0 && (
+                        <div
+                           className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+                           onClick={(e) => e.stopPropagation()}
+                        >
+                           {toSuggestions.map((airport, idx) => (
+                              <div
+                                 key={idx}
+                                 onClick={() => {
+                                    handleToAirportAdd(airport.id, airport.name);
+                                    skipFetchTo.current = true;
+                                    setToInput(airport.name);
+                                    setShowToDropdown(false);
+                                 }}
+                                 className="p-2 hover:bg-slate-50 cursor-pointer border-b border-slate-100 text-sm"
+                              >
+                                 <div className="flex justify-between">
+                                    <span className="font-bold">{airport.name}</span>
+                                    <span className="text-black text-xs">{airport.id}</span>
+                                 </div>
+                              </div>
+                           ))}
+                        </div>
+                     )}
                   </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Return Date</label>
-                     <input
-                        type="date"
-                        value={searchParams.return_date}
-                        onChange={(e) => updateSearchParams({ return_date: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                        disabled={searchParams.trip_type === 'one'}
-                     />
+                  <div className="flex flex-wrap gap-1 mt-2">
+                     {toAirports.map((airportId, idx) => (
+                        <span key={idx} className="px-2 py-1 bg-[var(--sacred-emerald)]/10 text-[var(--sacred-emerald)] rounded text-xs font-bold flex items-center gap-1">
+                           {airportId}
+                           <button onClick={() => handleToAirportRemove(idx)} className="hover:text-red-500">×</button>
+                        </span>
+                     ))}
                   </div>
                </div>
-            </div>
 
-            {/* Passengers */}
-            <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Passengers</h3>
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Adults</label>
-                     <div className="flex items-center gap-4">
-                        <button 
-                           onClick={() => updateSearchParams({ adults: Math.max(1, searchParams.adults - 1) })}
-                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+               <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">Departure Date</label>
+                  <input
+                     type="date"
+                     value={searchParams.departure_date}
+                     onChange={(e) => updateSearchParams({ departure_date: e.target.value })}
+                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold h-11 outline-none focus:border-black"
+                  />
+               </div>
+
+               <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">Return Date</label>
+                  <input
+                     type="date"
+                     value={searchParams.return_date}
+                     onChange={(e) => updateSearchParams({ return_date: e.target.value })}
+                     disabled={searchParams.trip_type === 'one'}
+                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold h-11 outline-none focus:border-black disabled:opacity-50"
+                  />
+               </div>
+
+               <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">Trip Type</label>
+                  <select
+                     value={searchParams.trip_type}
+                     onChange={(e) => updateSearchParams({ trip_type: e.target.value })}
+                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold h-11 outline-none focus:border-black"
+                  >
+                     <option value="round">Round Trip</option>
+                     <option value="one">One Way</option>
+                  </select>
+               </div>
+
+               {[
+                  { label: 'Adults', key: 'adults', min: 1 },
+                  { label: 'Children', key: 'children', min: 0 },
+                  { label: 'Infants', key: 'infants', min: 0 },
+               ].map(({ label, key, min }) => (
+                  <div key={key}>
+                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">{label}</label>
+                     <div className="flex items-center gap-2">
+                        <button
+                           onClick={() => updateSearchParams({ [key]: Math.max(min, searchParams[key] - 1) })}
+                           className="w-10 h-11 rounded-lg bg-slate-100 hover:bg-black hover:text-white font-black text-lg transition-all flex items-center justify-center pb-1"
                         >
                            -
                         </button>
                         <input
                            type="number"
-                           value={searchParams.adults}
-                           onChange={(e) => updateSearchParams({ adults: parseInt(e.target.value) || 1 })}
-                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all text-center"
-                           min="1"
+                           value={searchParams[key]}
+                           onChange={(e) => updateSearchParams({ [key]: parseInt(e.target.value) || min })}
+                           className="flex-1 p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold outline-none focus:border-black text-center h-11"
+                           min={min}
                         />
-                        <button 
-                           onClick={() => updateSearchParams({ adults: searchParams.adults + 1 })}
-                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
+                        <button
+                           onClick={() => updateSearchParams({ [key]: searchParams[key] + 1 })}
+                           className="w-10 h-11 rounded-lg bg-slate-100 hover:bg-black hover:text-white font-black text-lg transition-all flex items-center justify-center pb-1"
                         >
                            +
                         </button>
                      </div>
                   </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Children</label>
-                     <div className="flex items-center gap-4">
-                        <button 
-                           onClick={() => updateSearchParams({ children: Math.max(0, searchParams.children - 1) })}
-                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
-                        >
-                           -
-                        </button>
-                        <input
-                           type="number"
-                           value={searchParams.children}
-                           onChange={(e) => updateSearchParams({ children: parseInt(e.target.value) || 0 })}
-                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all text-center"
-                           min="0"
-                        />
-                        <button 
-                           onClick={() => updateSearchParams({ children: searchParams.children + 1 })}
-                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
-                        >
-                           +
-                        </button>
-                     </div>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Infants</label>
-                     <div className="flex items-center gap-4">
-                        <button 
-                           onClick={() => updateSearchParams({ infants: Math.max(0, searchParams.infants - 1) })}
-                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
-                        >
-                           -
-                        </button>
-                        <input
-                           type="number"
-                           value={searchParams.infants}
-                           onChange={(e) => updateSearchParams({ infants: parseInt(e.target.value) || 0 })}
-                           className="flex-1 p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all text-center"
-                           min="0"
-                        />
-                        <button 
-                           onClick={() => updateSearchParams({ infants: searchParams.infants + 1 })}
-                           className="w-12 h-12 rounded-xl bg-slate-100 hover:bg-[var(--desert-gold)] hover:text-white font-black text-xl transition-all"
-                        >
-                           +
-                        </button>
-                     </div>
-                  </div>
+               ))}
+
+               <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">Cabin Class</label>
+                  <select
+                     value={searchParams.cabin_class}
+                     onChange={(e) => updateSearchParams({ cabin_class: e.target.value })}
+                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold h-11 outline-none focus:border-black"
+                  >
+                     <option value="economy">Economy</option>
+                     <option value="premium_economy">Premium Economy</option>
+                     <option value="business">Business</option>
+                     <option value="first">First Class</option>
+                  </select>
+               </div>
+
+               <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">Currency</label>
+                  <select
+                     value={searchParams.currency}
+                     onChange={(e) => updateSearchParams({ currency: e.target.value })}
+                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold h-11 outline-none focus:border-black"
+                  >
+                     <option value="PKR">PKR (₨)</option>
+                     <option value="USD">USD ($)</option>
+                     <option value="EUR">EUR (€)</option>
+                     <option value="SAR">SAR (﷼)</option>
+                  </select>
+               </div>
+
+               <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">Sort By</label>
+                  <select
+                     value={searchParams.sort}
+                     onChange={(e) => updateSearchParams({ sort: e.target.value })}
+                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold h-11 outline-none focus:border-black"
+                  >
+                     <option value="price">Price (Low)</option>
+                     <option value="duration">Duration (Shortest)</option>
+                  </select>
+               </div>
+
+               <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wide block mb-1">Max Price</label>
+                  <input
+                     type="number"
+                     value={searchParams.max_price || ''}
+                     onChange={(e) => updateSearchParams({ max_price: e.target.value ? parseFloat(e.target.value) : null })}
+                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold outline-none focus:border-black h-11"
+                     placeholder="No limit"
+                  />
                </div>
             </div>
 
-            {/* Preferences */}
-            <div>
-               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Preferences</h3>
-               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Cabin Class</label>
-                     <select
-                        value={searchParams.cabin_class}
-                        onChange={(e) => updateSearchParams({ cabin_class: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                     >
-                        <option value="economy">Economy</option>
-                        <option value="premium_economy">Premium Economy</option>
-                        <option value="business">Business</option>
-                        <option value="first">First Class</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Currency</label>
-                     <select
-                        value={searchParams.currency}
-                        onChange={(e) => updateSearchParams({ currency: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                     >
-                        <option value="PKR">PKR (₨)</option>
-                        <option value="USD">USD ($)</option>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="SAR">SAR (﷼)</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Sort By</label>
-                     <select
-                        value={searchParams.sort}
-                        onChange={(e) => updateSearchParams({ sort: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                     >
-                        <option value="price">Price (Low to High)</option>
-                        <option value="duration">Duration (Shortest)</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 block">Max Price</label>
-                     <input
-                        type="number"
-                        value={searchParams.max_price || ''}
-                        onChange={(e) => updateSearchParams({ max_price: e.target.value ? parseFloat(e.target.value) : null })}
-                        className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-[var(--desert-gold)] transition-all"
-                        placeholder="No limit"
-                     />
-                  </div>
-               </div>
-               <div className="mt-6">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                     <input
-                        type="checkbox"
-                        checked={searchParams.non_stop}
-                        onChange={(e) => updateSearchParams({ non_stop: e.target.checked })}
-                        className="w-6 h-6 rounded border-2 border-slate-300 text-[var(--desert-gold)] focus:ring-[var(--desert-gold)]"
-                     />
-                     <span className="text-sm font-black text-slate-900">Non-stop flights only</span>
-                  </label>
-               </div>
-            </div>
+            {/* Bottom Actions */}
+            <div className="flex flex-col sm:flex-row justify-between items-center pt-2 gap-4">
+               <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                     type="checkbox"
+                     checked={searchParams.non_stop}
+                     onChange={(e) => updateSearchParams({ non_stop: e.target.checked })}
+                     className="w-5 h-5 rounded border-2 border-slate-300 text-black focus:ring-black"
+                  />
+                  <span className="text-sm font-black text-slate-900">Non-stop flights only</span>
+               </label>
 
-            {/* Search Button */}
-            <div className="flex justify-end">
                <button
                   onClick={searchFlights}
                   disabled={isSearching}
-                  className="px-12 py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.2em] rounded-xl hover:bg-[var(--sacred-emerald)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg"
+                  className="px-8 py-3 bg-black text-white font-bold text-[12px] uppercase tracking-wide rounded-lg hover:bg-[var(--sacred-emerald)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg"
                >
                   {isSearching ? (
                      <>
-                        <Loader2 size={20} className="animate-spin" />
-                        Searching Flights...
+                        <Loader2 size={16} className="animate-spin" />
+                        Searching...
                      </>
                   ) : (
                      <>
-                        <Search size={20} />
+                        <Search size={16} />
                         Search Flights
                      </>
                   )}
@@ -440,14 +446,15 @@ const LiveBooking = () => {
             </div>
          </div>
 
-         {/* Flight Results */}
+         {/* Loading State */}
          {isSearching && (
             <div className="text-center py-20">
-               <Loader2 size={64} className="mx-auto text-[var(--desert-gold)] animate-spin mb-6" />
+               <Loader2 size={64} className="mx-auto text-black animate-spin mb-6" />
                <p className="text-slate-500 font-bold text-lg">Searching for the best flights...</p>
             </div>
          )}
 
+         {/* Flight Results - unchanged except using safe arrays */}
          {!isSearching && searchedFlights.length > 0 && (
             <div className="space-y-6">
                <div className="flex items-center justify-between">
@@ -458,7 +465,7 @@ const LiveBooking = () => {
                   const price = flight.price || 0;
                   const firstFlight = flight.flights?.[0] || {};
                   const lastFlight = flight.flights?.[flight.flights.length - 1] || {};
-                  
+
                   const airline = firstFlight.airline || 'Unknown';
                   const airlineLogo = firstFlight.airline_logo || flight.airline_logo || '';
                   const departure = firstFlight.departure_airport?.id || '';
@@ -469,16 +476,20 @@ const LiveBooking = () => {
                   const stops = flight.layovers?.length || 0;
                   const travelClass = firstFlight.travel_class || '';
                   const flightNumber = firstFlight.flight_number || '';
-                  const airplane = firstFlight.airplane || '';
-                  
+
+                  const currencySymbol =
+                     searchParams.currency === 'USD' ? '$' :
+                     searchParams.currency === 'EUR' ? '€' :
+                     searchParams.currency === 'PKR' ? '₨' : '﷼';
+
                   return (
                      <div
                         key={index}
                         onClick={() => selectFlight(flight)}
                         className={`bg-white rounded-2xl border-2 transition-all cursor-pointer shadow-lg hover:shadow-2xl ${
-                           selectedFlight === flight 
-                              ? 'border-[var(--desert-gold)] ring-4 ring-[var(--desert-gold)]/20' 
-                              : 'border-slate-200 hover:border-[var(--desert-gold)]'
+                           selectedFlight === flight
+                              ? 'border-black ring-4 ring-black/20'
+                              : 'border-slate-200 hover:border-black'
                         }`}
                      >
                         <div className="p-8">
@@ -488,24 +499,20 @@ const LiveBooking = () => {
                                  {airlineLogo ? (
                                     <img src={airlineLogo} alt={airline} className="w-24 h-24 rounded-xl object-contain bg-white border-2 border-slate-100 shadow-lg" />
                                  ) : (
-                                    <div className="w-24 h-24 rounded-xl bg-gradient-to-br from-[var(--desert-gold)] to-[var(--sacred-emerald)] flex items-center justify-center shadow-lg">
+                                    <div className="w-24 h-24 rounded-xl bg-gradient-to-br from-black to-[var(--sacred-emerald)] flex items-center justify-center shadow-lg">
                                        <Plane className="text-white" size={40} />
                                     </div>
                                  )}
                                  <div className="space-y-2">
                                     <h3 className="text-xl font-black text-slate-900">{airline}</h3>
-                                    <p className="text-sm font-bold text-slate-500">
-                                       {departure} → {arrival}
-                                    </p>
+                                    <p className="text-sm font-bold text-slate-500">{departure} → {arrival}</p>
                                     <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
                                        <span className="flex items-center gap-2">
                                           <Clock size={14} />
                                           {duration}
                                        </span>
                                        {flightNumber && (
-                                          <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">
-                                             {flightNumber}
-                                          </span>
+                                          <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">{flightNumber}</span>
                                        )}
                                        {stops > 0 && (
                                           <span className="px-3 py-1 bg-orange-100 text-orange-600 rounded-lg">
@@ -524,9 +531,9 @@ const LiveBooking = () => {
                                     </p>
                                     <p className="text-xs font-bold text-slate-400">{departure}</p>
                                  </div>
-                                 
+
                                  <div className="flex flex-col items-center">
-                                    <ArrowRight className="text-[var(--desert-gold)]" size={32} />
+                                    <ArrowRight className="text-black" size={32} />
                                     <p className="text-xs font-bold text-slate-400 mt-1">{duration}</p>
                                  </div>
 
@@ -539,22 +546,19 @@ const LiveBooking = () => {
 
                                  <div className="text-right pl-8 border-l-2 border-slate-200">
                                     <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">Total Price</p>
-                                    <p className="text-3xl font-black text-[var(--desert-gold)]">
-                                       {searchParams.currency === 'USD' ? '$' : searchParams.currency === 'EUR' ? '€' : searchParams.currency === 'PKR' ? '₨' : '﷼'}{price.toLocaleString()}
+                                    <p className="text-3xl font-black text-black">
+                                       {currencySymbol}{price.toLocaleString()}
                                     </p>
                                     <p className="text-xs font-bold text-slate-400 mt-1">{travelClass}</p>
                                  </div>
                               </div>
                            </div>
-                        </div>   
-                        
+                        </div>
 
                         {/* Expanded Details */}
                         {selectedFlight === flight && (
                            <div className="border-t-2 border-slate-200 p-8 bg-slate-50">
                               <h4 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-6">Flight Details</h4>
-                              
-                              {/* Flight Legs */}
                               <div className="space-y-6 mb-8">
                                  {flight.flights.map((leg, legIdx) => (
                                     <div key={legIdx} className="bg-white p-6 rounded-xl border-2 border-slate-200">
@@ -568,11 +572,10 @@ const LiveBooking = () => {
                                                 <p className="text-xs font-bold text-slate-500">{leg.flight_number} • {leg.airplane}</p>
                                              </div>
                                           </div>
-                                          <span className="px-4 py-2 bg-[var(--desert-gold)]/10 text-[var(--desert-gold)] rounded-lg text-xs font-black">
+                                          <span className="px-4 py-2 bg-black/10 text-black rounded-lg text-xs font-black">
                                              {leg.travel_class}
                                           </span>
                                        </div>
-                                       
                                        <div className="grid grid-cols-2 gap-4">
                                           <div>
                                              <p className="text-xs font-bold text-slate-400 mb-1">Departure</p>
@@ -589,7 +592,6 @@ const LiveBooking = () => {
                                              <p className="text-sm font-bold text-slate-500">{leg.arrival_airport?.name}</p>
                                           </div>
                                        </div>
-                                       
                                        <div className="mt-4 flex flex-wrap gap-2">
                                           <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold">
                                              Duration: {formatDuration(leg.duration)}
@@ -599,8 +601,8 @@ const LiveBooking = () => {
                                                 Legroom: {leg.legroom}
                                              </span>
                                           )}
-                                          {leg.extensions?.map((ext, idx) => (
-                                             <span key={idx} className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold">
+                                          {leg.extensions?.map((ext, extIdx) => (
+                                             <span key={extIdx} className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold">
                                                 {ext}
                                              </span>
                                           ))}
@@ -608,8 +610,6 @@ const LiveBooking = () => {
                                     </div>
                                  ))}
                               </div>
-
-                              {/* Layovers */}
                               {flight.layovers && flight.layovers.length > 0 && (
                                  <div className="bg-white p-6 rounded-xl border-2 border-slate-200 mb-6">
                                     <h5 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Layovers</h5>
@@ -629,8 +629,6 @@ const LiveBooking = () => {
                                     </div>
                                  </div>
                               )}
-
-                              {/* Carbon Emissions & Summary */}
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                  <div className="bg-white p-6 rounded-xl border-2 border-slate-200">
                                     <p className="text-xs font-bold text-slate-400 mb-2">Flight Duration</p>
@@ -638,8 +636,8 @@ const LiveBooking = () => {
                                  </div>
                                  <div className="bg-white p-6 rounded-xl border-2 border-slate-200">
                                     <p className="text-xs font-bold text-slate-400 mb-2">Price per Person</p>
-                                    <p className="text-lg font-black text-[var(--desert-gold)]">
-                                       {searchParams.currency === 'USD' ? '$' : searchParams.currency === 'EUR' ? '€' : searchParams.currency === 'PKR' ? '₨' : '﷼'}{price.toLocaleString()}
+                                    <p className="text-lg font-black text-black">
+                                       {currencySymbol}{price.toLocaleString()}
                                     </p>
                                  </div>
                                  <div className="bg-white p-6 rounded-xl border-2 border-slate-200">
@@ -662,7 +660,7 @@ const LiveBooking = () => {
             </div>
          )}
 
-.
+         {/* Empty State */}
          {!isSearching && searchedFlights.length === 0 && (
             <div className="text-center py-20 bg-white rounded-2xl border-2 border-slate-200">
                <Plane className="mx-auto text-slate-300 mb-6" size={80} />

@@ -103,8 +103,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               <Plane size={22} strokeWidth={1.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-manrope font-black tracking-tighter text-white uppercase leading-none">
-                Al Bayan
+              <h1 className="text-lg font-manrope font-black  text-white uppercase leading-none">
+               Process Iq Tech
               </h1>
               <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-[var(--desert-gold)] mt-1.5 opacity-90">Premium</span>
             </div>
