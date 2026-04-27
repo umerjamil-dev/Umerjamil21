@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import AIChat from './AIChat';
 import useSettingsStore from '../store/useSettingsStore';
 
 const Layout = ({ children }) => {
@@ -23,6 +24,8 @@ const Layout = ({ children }) => {
           </div>
         </main>
       </div>
+
+      <AIChat />
 
       {/* Mobile Overlay */}
       {sidebarOpen && (

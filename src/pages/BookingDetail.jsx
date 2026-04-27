@@ -34,7 +34,6 @@ const ErrorState = ({ message, onRetry }) => (
   </div>
  </>
 );
-
 // ─── Empty Field Fallback ────────────────────────────────────────────────────
 const EmptyNode = ({ label }) => (
   <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic py-4 text-center border-2 border-dashed border-slate-50 rounded-xl">

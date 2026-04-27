@@ -45,7 +45,7 @@ const useHotelStore = create((set, get) => ({
       const response = await api.get('/hotels/search', { params: requestBody });
       const data = response.data;
       
-      const hotelsData = data.ads || data;
+      const hotelsData = data.ads || data.data;
       
       if (hotelsData && Array.isArray(hotelsData)) {
         set({ searchedHotels: hotelsData, isSearching: false });

@@ -45,7 +45,7 @@ const useAuthStore = create((set, get) => ({
       // Fetch dynamic permissions - non-blocking for login flow
       try {
         await get().fetchUserPermissions();
-      } catch (pErr) {
+      } catch (pErr) {    
         console.error("Permission fetch failed but continuing login:", pErr);
       }
       

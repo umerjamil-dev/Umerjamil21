@@ -13,7 +13,7 @@ const UpdateCustomer = () => {
    const { id } = useParams();
    const navigate = useNavigate();
    const { getCustomer, updateCustomer, isLoading } = useCustomerStore();
-   const imgBaseUrl = 'http://192.168.5.111:8000/';
+   const imgBaseUrl = 'http://localhost:8000/';
 
    const [formData, setFormData] = useState({
       firstName: '',

@@ -17,7 +17,7 @@ const CompanyParams = () => {
       if (settings?.company) {
          setFormData(settings.company || {});
          if (settings.company.logo) {
-            setLogoPreview(`http://192.168.5.111:8000/${settings.company.logo}`);
+            setLogoPreview(`http://localhost:8000/${settings.company.logo}`);
          }
       }
    }, [settings]);

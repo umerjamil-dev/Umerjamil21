@@ -108,7 +108,7 @@ const Calculator = () => {
   useEffect(() => {
     calculate();
   }, [inputs]);
-  const baseUrl = "http://192.168.5.111:8000/"
+  const baseUrl = "http://localhost:8000/"
 
   return (
     <>

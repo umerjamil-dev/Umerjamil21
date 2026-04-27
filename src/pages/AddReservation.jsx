@@ -131,7 +131,15 @@ const AddReservation = () => {
       try {
          const response = await api.get(`/flights/autocomplete?q=${encodeURIComponent(query)}`);
          if (response.data.success) {
-            setSuggestions(response.data.data || []);
+            const airportsList = [];
+            if (Array.isArray(response.data.data)) {
+               response.data.data.forEach(item => {
+                  if (item.airports && Array.isArray(item.airports)) {
+                     airportsList.push(...item.airports);
+                  }
+               });
+            }
+            setSuggestions(airportsList);
             setShowSuggestions(true);
          }
       } catch (error) {
@@ -199,8 +207,8 @@ const AddReservation = () => {
       setHotelLoading(true);
       try {
          const response = await api.get(`/hotels/autocomplete?q=${encodeURIComponent(query)}`);
-         if (response.data.suggestions) {
-            setHotelSuggestions(response.data.suggestions || []);
+         if (response.data.success) {
+            setHotelSuggestions(response.data.data || []);
             setShowHotelSuggestions(true);
          }
       } catch (error) {
@@ -240,17 +248,17 @@ const AddReservation = () => {
    };
 
    const selectSuggestion = (suggestion) => {
-      const displayText = suggestion.iata_code 
-         ? `${suggestion.name} (${suggestion.iata_code})`
+      const displayText = suggestion.id 
+         ? `${suggestion.name} (${suggestion.id})`
          : suggestion.name;
       set('airline', displayText);
       
       // If it has an IATA code, set it as departure or arrival
-      if (suggestion.iata_code) {
+      if (suggestion.id) {
          if (!departureId) {
-            setDepartureId(suggestion.iata_code);
+            setDepartureId(suggestion.id);
          } else if (!arrivalId) {
-            setArrivalId(suggestion.iata_code);
+            setArrivalId(suggestion.id);
          }
       }
       
@@ -266,7 +274,7 @@ const AddReservation = () => {
    };
 
    const selectHotelSuggestion = (suggestion) => {
-      set('hotelName', suggestion.value);
+      set('hotelName', suggestion.name || suggestion.value);
       setShowHotelSuggestions(false);
       setHotelSuggestions([]);
    };
@@ -340,7 +348,7 @@ const AddReservation = () => {
          toast.error('Error: ' + err.message);
       }
    };
-
+ 
    const bookingsArr = Array.isArray(bookings) ? bookings : Object.values(bookings || {});
    const activeType = types.find(t => t.id === formData.type);
 
@@ -540,8 +548,9 @@ const AddReservation = () => {
                                           className="w-full text-left px-4 py-2.5 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
                                           onClick={() => selectHotelSuggestion(suggestion)}
                                        >
-                                          <div className="flex items-center gap-2">
-                                             <span className="text-sm text-slate-900">{suggestion.value}</span>
+                                          <div className="flex flex-col">
+                                             <span className="text-sm text-slate-900 font-semibold">{suggestion.name}</span>
+                                             {/* {suggestion.location && <span className="text-xs text-slate-500 mt-0.5">{suggestion.location}</span>} */}
                                           </div>
                                        </button>
                                     ))}
@@ -608,8 +617,8 @@ const AddReservation = () => {
                               {showSuggestions && suggestions.length > 0 && (
                                  <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 max-h-60 overflow-auto">
                                     {suggestions.map((suggestion, index) => {
-                                       const displayText = suggestion.iata_code 
-                                          ? `${suggestion.name} (${suggestion.iata_code})`
+                                       const displayText = suggestion.id 
+                                          ? `${suggestion.name} (${suggestion.id})`
                                           : suggestion.name;
                                        return (
                                           <button
@@ -621,7 +630,7 @@ const AddReservation = () => {
                                              <div className="flex items-center justify-between">
                                                 <span className="text-sm text-slate-900">{displayText}</span>
                                                 <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
-                                                   {suggestion.type}
+                                                   Airport
                                                 </span>
                                              </div>
                                           </button>
