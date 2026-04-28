@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  CreditCard, Calendar, User, Download, 
+import {
+  CreditCard, Calendar, User, Download,
   RefreshCw
 } from 'lucide-react';
 import useReportStore from '../../store/useReportStore';
@@ -52,20 +52,20 @@ const PaymentReports = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-[var(--sacred-emerald)] uppercase tracking-[0.3em] text-[10px] font-black mb-2">
+          <div className="flex items-center gap-2 text-[var(--sacred-emerald)] uppercase tracking-[0.3em] text-[10px] font-medium mb-2">
             <CreditCard size={14} /> Treasury Intelligence
           </div>
-          <h1 className="text-4xl font-manrope font-black text-slate-900 tracking-tight">Payment Reports</h1>
+          <h1 className="text-4xl font-manrope font-medium text-slate-900 tracking-tight">Payment Reports</h1>
           <p className="text-slate-500 text-sm mt-1">Consolidated ledger of all financial inflows and settlements.</p>
         </div>
         <div className="flex items-center gap-3">
           <button className="p-4 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-black transition-all">
             <Download size={20} />
           </button>
-          <button 
+          <button
             onClick={applyFilters}
             disabled={isLoading}
-            className="px-8 py-4 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--sacred-emerald)] hover:text-white transition-all shadow-xl disabled:opacity-50"
+            className="px-8 py-4 bg-black text-white rounded-xl text-[10px] font-medium uppercase tracking-widest hover:bg-[var(--sacred-emerald)] hover:text-white transition-all shadow-xl disabled:opacity-50"
           >
             {isLoading ? 'Generating...' : 'Fetch Ledger'}
           </button>
@@ -76,38 +76,38 @@ const PaymentReports = () => {
       <div className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-3">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest flex items-center gap-2">
               <Calendar size={12} /> From Date
             </label>
-            <input 
+            <input
               type="date"
               name="from_date"
               value={filters.from_date}
               onChange={handleFilterChange}
-              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-black transition-all"
+              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-black transition-all"
             />
           </div>
           <div className="space-y-3">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest flex items-center gap-2">
               <Calendar size={12} /> To Date
             </label>
-            <input 
+            <input
               type="date"
               name="to_date"
               value={filters.to_date}
               onChange={handleFilterChange}
-              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-black transition-all"
+              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-black transition-all"
             />
           </div>
           <div className="space-y-3">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest flex items-center gap-2">
               <User size={12} /> Client Entity
             </label>
-            <select 
+            <select
               name="customer_id"
               value={filters.customer_id}
               onChange={handleFilterChange}
-              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-black transition-all"
+              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-black transition-all"
             >
               <option value="">Global Filter</option>
               {customers.map(c => (
@@ -118,9 +118,9 @@ const PaymentReports = () => {
         </div>
 
         <div className="flex justify-end pt-4 border-t border-slate-50">
-          <button 
+          <button
             onClick={resetFilters}
-            className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black transition-all"
+            className="flex items-center gap-2 text-[10px] font-medium text-slate-400 uppercase tracking-widest hover:text-black transition-all"
           >
             <RefreshCw size={14} /> Clear Parameters
           </button>
@@ -133,7 +133,7 @@ const PaymentReports = () => {
           <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
               <RefreshCw className="animate-spin text-[var(--sacred-emerald)]" size={40} />
-              <span className="text-[10px] font-black text-white uppercase tracking-widest">Compiling Treasury PDF...</span>
+              <span className="text-[10px] font-medium text-white uppercase tracking-widest">Compiling Treasury PDF...</span>
             </div>
           </div>
         )}
@@ -146,26 +146,26 @@ const PaymentReports = () => {
                 <div className="w-3 h-3 rounded-full bg-amber-500"></div>
                 <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
               </div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Treasury Report Viewer v1.0</span>
+              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">Treasury Report Viewer v1.0</span>
             </div>
-            <a 
-              href={pdfUrl} 
+            <a
+              href={pdfUrl}
               download="payment-report.pdf"
-              className="flex items-center gap-2 text-[10px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest transition-all"
+              className="flex items-center gap-2 text-[10px] font-medium text-emerald-400 hover:text-emerald-300 uppercase tracking-widest transition-all"
             >
               <Download size={14} /> Download PDF
             </a>
           </div>
           {pdfUrl ? (
-            <iframe 
-              src={pdfUrl} 
+            <iframe
+              src={pdfUrl}
               className="w-full h-full bg-white border-none"
               title="Payment Report PDF"
             />
           ) : (
-             <div className="flex-1 flex items-center justify-center text-slate-500 italic text-sm">
-                Establishing financial parameters...
-              </div>
+            <div className="flex-1 flex items-center justify-center text-slate-500 italic text-sm">
+              Establishing financial parameters...
+            </div>
           )}
         </div>
       </div>

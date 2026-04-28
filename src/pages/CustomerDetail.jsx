@@ -49,7 +49,7 @@ const CustomerDetail = () => {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-[var(--outline-variant)] border-t-[var(--on-surface)] rounded-full animate-spin"></div>
-                    <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface-variant)]">Querying Sacred Registry...</p>
+                    <p className="text-[10px] font-medium uppercase tracking-widest text-[var(--on-surface-variant)]">Querying Sacred Registry...</p>
                 </div>
             </div>
         );
@@ -70,25 +70,25 @@ const CustomerDetail = () => {
                     </Link>
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <span className="px-3 py-1 text-black bg-[var(--grad-black)]  text-[10px] font-black uppercase tracking-widest rounded-lg">Verified Pilgrim</span>
-                            <span className="text-[10px] font-bold text-[var(--on-surface-variant)] opacity-40">/</span>
-                            <span className="text-[10px] font-bold text-[var(--on-surface-variant)]">{customer.id}</span>
+                            <span className="px-3 py-1 text-black bg-[var(--grad-black)]  text-[10px] font-medium uppercase tracking-widest rounded-lg">Verified Pilgrim</span>
+                            <span className="text-[10px] font-medium text-[var(--on-surface-variant)] opacity-40">/</span>
+                            <span className="text-[10px] font-medium text-[var(--on-surface-variant)]">{customer.id}</span>
                         </div>
-                        <h1 className="text-4xl font-manrope font-black text-[var(--on-surface)] tracking-tighter">{fullName}</h1>
+                        <h1 className="text-4xl font-manrope font-medium text-[var(--on-surface)] tracking-tighter">{fullName}</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate(`/customers/${id}/edit`)}
-                        className="flex items-center gap-2 px-6 py-4 bg-[var(--surface-container-low)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all"
+                        className="flex items-center gap-2 px-6 py-4 bg-[var(--surface-container-low)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-medium uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all"
                     >
                         <Edit3 size={14} />
                         Refine Profile
                     </button>
                     <button
                         onClick={handleDelete}
-                        className="flex items-center gap-2 px-6 py-4 bg-red-50 border border-red-100 rounded-xl text-[10px] font-extrabold uppercase tracking-widest text-red-600 hover:bg-red-100 transition-all"
+                        className="flex items-center gap-2 px-6 py-4 bg-red-50 border border-red-100 rounded-xl text-[10px] font-medium uppercase tracking-widest text-red-600 hover:bg-red-100 transition-all"
                     >
                         <Trash2 size={14} />
                         Purge Record
@@ -115,8 +115,8 @@ const CustomerDetail = () => {
                                     )}
                                 </div>
                             </div>
-                            <h3 className="text-xl font-manrope font-extrabold text-[var(--on-surface)] text-center">{fullName}</h3>
-                            <p className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mt-2">{customer.city}, {customer.nationality || 'Pakistani'}</p>
+                            <h3 className="text-xl font-manrope font-medium text-[var(--on-surface)] text-center">{fullName}</h3>
+                            <p className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mt-2">{customer.city}, {customer.nationality || 'Pakistani'}</p>
                         </div>
 
                         <div className="space-y-4 relative z-10">
@@ -132,8 +132,8 @@ const CustomerDetail = () => {
                                             <item.icon size={14} />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[8px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest">{item.label}</span>
-                                            <span className="text-[11px] font-extrabold text-[var(--on-surface)]">{item.value || 'Not Disclosed'}</span>
+                                            <span className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest">{item.label}</span>
+                                            <span className="text-[11px] font-medium text-[var(--on-surface)]">{item.value || 'Not Disclosed'}</span>
                                         </div>
                                     </div>
                                     <ChevronRight size={12} className="text-[var(--on-surface-variant)] opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover/item:translate-x-0 transition-all" />
@@ -145,15 +145,15 @@ const CustomerDetail = () => {
                     <div className="bg-[#111827] rounded-3xl p-10 text-black relative overflow-hidden group">
                         <div className="absolute bottom-0 right-0 w-40 h-40 rounded-tl-[6rem] group-hover:scale-110 transition-transform"></div>
                         <ShieldCheck className="text-[var(--sacred-emerald)] mb-8" size={32} strokeWidth={2.5} />
-                        <h4 className="text-xs font-extrabold uppercase text-white tracking-widest mb-4">Compliance Status</h4>
+                        <h4 className="text-xs font-medium uppercase text-white tracking-widest mb-4">Compliance Status</h4>
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
-                                <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">Visa Eligibility</span>
-                                <span className="px-2 py-1 bg-[var(--sacred-emerald)]/20 text-[var(--sacred-emerald)] text-[8px] font-black uppercase rounded">Authorized</span>
+                                <span className="text-[9px] font-medium text-white/40 uppercase tracking-widest">Visa Eligibility</span>
+                                <span className="px-2 py-1 bg-[var(--sacred-emerald)]/20 text-[var(--sacred-emerald)] text-[8px] font-medium uppercase rounded">Authorized</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">Passport Validity</span>
-                                <span className="text-[10px] text-white font-extrabold">Active</span>
+                                <span className="text-[9px] font-medium text-white/40 uppercase tracking-widest">Passport Validity</span>
+                                <span className="text-[10px] text-white font-medium">Active</span>
                             </div>
                             <div className="pt-4 border-t border-white/10">
                                 <p className="text-[9px] text-white/40 leading-relaxed italic">External biometric verification last synced 12 minutes ago.</p>
@@ -176,7 +176,7 @@ const CustomerDetail = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all ${activeTab === tab.id
+                                className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all ${activeTab === tab.id
                                     ? 'bg-white text-[var(--on-surface)] shadow-lg'
                                     : 'text-[var(--on-surface-variant)] hover:bg-white/50'
                                     }`}
@@ -192,7 +192,7 @@ const CustomerDetail = () => {
                         {activeTab === 'profile' && (
                             <div className="space-y-12 animate-in fade-in duration-500">
                                 <section>
-                                    <h4 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+                                    <h4 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
                                         <Fingerprint size={16} /> Identity Registry
                                     </h4>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -203,23 +203,23 @@ const CustomerDetail = () => {
                                             { label: 'Biometric Reference', value: customer.passportNo },
                                         ].map((item, i) => (
                                             <div key={i} className="group">
-                                                <p className="text-[9px] font-bold text-[var(--on-surface-variant)] tracking-widest uppercase mb-2 opacity-50 group-hover:opacity-100 transition-opacity">{item.label}</p>
-                                                <p className="text-lg font-manrope font-extrabold text-[var(--on-surface)] border-b-2 border-transparent group-hover:border-[var(--outline-variant)] transition-all pb-2 truncate">{item.value || 'Unregistered'}</p>
+                                                <p className="text-[9px] font-medium text-[var(--on-surface-variant)] tracking-widest uppercase mb-2 opacity-50 group-hover:opacity-100 transition-opacity">{item.label}</p>
+                                                <p className="text-lg font-manrope font-medium text-[var(--on-surface)] border-b-2 border-transparent group-hover:border-[var(--outline-variant)] transition-all pb-2 truncate">{item.value || 'Unregistered'}</p>
                                             </div>
                                         ))}
                                     </div>
                                 </section>
 
                                 <section>
-                                    <h4 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+                                    <h4 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
                                         <MapPin size={16} /> Geographical Residency
                                     </h4>
                                     <div className="p-8 bg-[var(--surface)] rounded-2xl border border-[var(--outline-variant)] group hover:bg-white transition-all">
-                                        <p className="text-[9px] font-bold text-[var(--on-surface-variant)] tracking-widest uppercase mb-3 opacity-50">Permanent Address File</p>
-                                        <p className="text-lg font-manrope font-extrabold text-[var(--on-surface)] leading-relaxed">
+                                        <p className="text-[9px] font-medium text-[var(--on-surface-variant)] tracking-widest uppercase mb-3 opacity-50">Permanent Address File</p>
+                                        <p className="text-lg font-manrope font-medium text-[var(--on-surface)] leading-relaxed">
                                             {customer.address || 'No detailed address in registry.'}
                                         </p>
-                                        <p className="mt-4 text-xs font-bold text-[var(--on-surface-variant)] flex items-center gap-2">
+                                        <p className="mt-4 text-xs font-medium text-[var(--on-surface-variant)] flex items-center gap-2">
                                             <Globe size={14} /> {customer.city}, {customer.nationality || 'Pakistan'}
                                         </p>
                                     </div>
@@ -230,7 +230,7 @@ const CustomerDetail = () => {
                         {activeTab === 'timeline' && (
                             <div className="space-y-10 animate-in fade-in duration-500">
                                 <div className="space-y-6">
-                                    <h4 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] flex items-center gap-3">
+                                    <h4 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em] flex items-center gap-3">
                                         <History size={16} /> Registry Timeline
                                     </h4>
                                     <div className="relative pl-8 border-l border-[var(--outline-variant)] space-y-12 py-4">
@@ -241,8 +241,8 @@ const CustomerDetail = () => {
                                         ].map((item, i) => (
                                             <div key={i} className="relative group">
                                                 <div className="absolute -left-[41px] top-0 w-4 h-4 bg-white border-2 border-[var(--on-surface)] rounded-full group-hover:scale-125 transition-transform"></div>
-                                                <span className="text-[8px] font-black uppercase text-[var(--on-surface-variant)] tracking-widest opacity-40">{item.date}</span>
-                                                <h5 className="text-sm font-manrope font-extrabold text-[var(--on-surface)] mt-1">{item.title}</h5>
+                                                <span className="text-[8px] font-medium uppercase text-[var(--on-surface-variant)] tracking-widest opacity-40">{item.date}</span>
+                                                <h5 className="text-sm font-manrope font-medium text-[var(--on-surface)] mt-1">{item.title}</h5>
                                                 <p className="text-[11px] text-[var(--on-surface-variant)] mt-2 leading-relaxed">{item.desc}</p>
                                             </div>
                                         ))}
@@ -250,14 +250,14 @@ const CustomerDetail = () => {
                                 </div>
 
                                 <div className="pt-10 border-t border-[var(--outline-variant)]">
-                                    <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block">Official Internal Comment</label>
+                                    <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block">Official Internal Comment</label>
                                     <div className="relative bg-[var(--surface)] border border-[var(--outline-variant)] rounded-2xl p-6 focus-within:border-[var(--on-surface)] transition-all">
                                         <textarea
                                             placeholder="Append internal intelligence..."
                                             className="w-full bg-transparent text-sm font-medium outline-none h-24 resize-none placeholder-[var(--on-surface-variant)]/30"
                                         ></textarea>
                                         <div className="flex justify-end mt-4">
-                                            <button className="px-6 py-2 bg-[var(--on-surface)] text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-all">
+                                            <button className="px-6 py-2 bg-[var(--on-surface)] text-white text-[9px] font-medium uppercase tracking-widest rounded-xl hover:scale-105 transition-all">
                                                 Commit Note
                                             </button>
                                         </div>
@@ -274,11 +274,11 @@ const CustomerDetail = () => {
                                             <div className="p-3 bg-white rounded-2xl shadow-sm text-blue-600 group-hover:scale-110 transition-transform">
                                                 <Plane size={24} />
                                             </div>
-                                            <span className="px-3 py-1 bg-white/50 text-[8px] font-black uppercase rounded-lg border border-[var(--outline-variant)]">Aviation Intelligence</span>
+                                            <span className="px-3 py-1 bg-white/50 text-[8px] font-medium uppercase rounded-lg border border-[var(--outline-variant)]">Aviation Intelligence</span>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Departure Vector</p>
-                                            <h4 className="text-2xl font-manrope font-black text-[var(--on-surface)] tracking-tighter">Querying GDS...</h4>
+                                            <p className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Departure Vector</p>
+                                            <h4 className="text-2xl font-manrope font-medium text-[var(--on-surface)] tracking-tighter">Querying GDS...</h4>
                                         </div>
                                     </div>
 
@@ -287,17 +287,17 @@ const CustomerDetail = () => {
                                             <div className="p-3 bg-white rounded-2xl shadow-sm text-amber-600 group-hover:scale-110 transition-transform">
                                                 <Hotel size={24} />
                                             </div>
-                                            <span className="px-3 py-1 bg-white/50 text-[8px] font-black uppercase rounded-lg border border-[var(--outline-variant)]">Hospitality Index</span>
+                                            <span className="px-3 py-1 bg-white/50 text-[8px] font-medium uppercase rounded-lg border border-[var(--outline-variant)]">Hospitality Index</span>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Stay Duration</p>
-                                            <h4 className="text-2xl font-manrope font-black text-[var(--on-surface)] tracking-tighter">15 Days (Umrah)</h4>
+                                            <p className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Stay Duration</p>
+                                            <h4 className="text-2xl font-manrope font-medium text-[var(--on-surface)] tracking-tighter">15 Days (Umrah)</h4>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="bg-[var(--surface)] rounded-3xl p-10 border border-[var(--outline-variant)]">
-                                    <h5 className="text-[10px] font-black uppercase tracking-widest text-[var(--on-surface-variant)] mb-8 flex items-center gap-3">
+                                    <h5 className="text-[10px] font-medium uppercase tracking-widest text-[var(--on-surface-variant)] mb-8 flex items-center gap-3">
                                         <Activity size={16} /> Operational Progress
                                     </h5>
                                     <div className="relative pt-2">
@@ -308,7 +308,7 @@ const CustomerDetail = () => {
                                             {['Enrollment', 'Visa Issued', 'Hotels Locked', 'Flight Ready'].map((step, i) => (
                                                 <div key={i} className="flex flex-col items-center gap-2">
                                                     <div className={`w-3 h-3 rounded-full border-2 border-white ${i <= 2 ? 'bg-[var(--sacred-emerald)]' : 'bg-gray-300'}`}></div>
-                                                    <span className="text-[9px] font-black uppercase tracking-tighter opacity-60">{step}</span>
+                                                    <span className="text-[9px] font-medium uppercase tracking-tighter opacity-60">{step}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -330,15 +330,15 @@ const CustomerDetail = () => {
                                             <div className="w-12 h-12 bg-[var(--surface-container-low)] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                                 <FileText size={20} className="text-[var(--on-surface-variant)]" />
                                             </div>
-                                            <h6 className="text-[10px] font-black uppercase tracking-tighter mb-1 truncate">{doc.name}</h6>
-                                            <p className="text-[8px] font-bold text-[var(--on-surface-variant)] uppercase">{doc.type} • {doc.size}</p>
+                                            <h6 className="text-[10px] font-medium uppercase tracking-tighter mb-1 truncate">{doc.name}</h6>
+                                            <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase">{doc.type} • {doc.size}</p>
                                         </div>
                                     ))}
                                     <button className="p-6 bg-transparent border-2 border-dashed border-[var(--outline-variant)] rounded-2xl flex flex-col items-center justify-center gap-4 text-[var(--on-surface-variant)] hover:border-[var(--on-surface)] transition-all group">
                                         <div className="w-10 h-10 rounded-full bg-[var(--surface)] flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <Save size={16} />
                                         </div>
-                                        <span className="text-[9px] font-black uppercase">Import Doc</span>
+                                        <span className="text-[9px] font-medium uppercase">Import Doc</span>
                                     </button>
                                 </div>
                             </div>

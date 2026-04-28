@@ -7,6 +7,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
+  timeout: 180000,
 });
 
 // Interceptor to inject the memory-only token
@@ -14,7 +15,6 @@ api.interceptors.request.use(async (config) => {
   // Dynamically import to avoid circular dependency with useAuthStore
   const { default: useAuthStore } = await import('../store/useAuthStore');
   const token = useAuthStore.getState().token;
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
     // console.log(`[Axios] Attaching token to request: ${config.url}`);

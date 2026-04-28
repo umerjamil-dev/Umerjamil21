@@ -13,6 +13,7 @@ const Layout = ({ children }) => {
   }, [fetchSettings]);
 
   return (
+    <>
     <div className="min-h-screen bg-gray-100 flex font-inter overflow-hidden relative">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       {/* Main Content Area */}
@@ -35,6 +36,7 @@ const Layout = ({ children }) => {
         />
       )}
     </div>
+    </>
   );
 };
 

@@ -129,14 +129,14 @@ const ManageUsers = () => {
       >
         <div className="flex-1 min-w-[220px] space-y-3">
           <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.18em] text-white"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-medium uppercase tracking-[0.18em] text-white"
             style={{ background: '#1a1916' }}
           >
             <Zap size={10} strokeWidth={3} />
             Personnel Management
           </div>
           <h1
-            className="text-5xl lg:text-6xl font-extrabold text-[#1a1916] leading-none"
+            className="text-5xl lg:text-6xl font-medium text-[#1a1916] leading-none"
             style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.03em' }}
           >
             Users
@@ -158,8 +158,8 @@ const ManageUsers = () => {
               style={{ background: '#ffffff', border: '1.5px solid #e2e0d8' }}
             >
               <Icon size={13} style={{ color: '#78776f' }} />
-              <span className="text-[15px] font-bold text-[#1a1916]">{val}</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#b0aea5]">{label}</span>
+              <span className="text-[15px] font-medium text-[#1a1916]">{val}</span>
+              <span className="text-[9px] font-medium uppercase tracking-[0.12em] text-[#b0aea5]">{label}</span>
             </div>
           ))}
         </div>
@@ -169,7 +169,7 @@ const ManageUsers = () => {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => { if (isEditing || isAdding) handleReset(); else setIsAdding(true); }}
-          className="h-12 px-8 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer flex-shrink-0"
+          className="h-12 px-8 rounded-lg text-[10px] font-medium uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer flex-shrink-0"
           style={
             isAdding || isEditing
               ? { background: '#ffffff', color: '#78776f', border: '1.5px solid #c5c2b8' }
@@ -196,11 +196,11 @@ const ManageUsers = () => {
           >
             <div className="px-8 pt-8 pb-6 flex items-center justify-between" style={{ borderBottom: '1.5px solid #e2e0d8' }}>
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#78776f] mb-1">
+                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#78776f] mb-1">
                   {isEditing ? 'Edit Personnel' : 'New Personnel'}
                 </p>
                 <h2
-                  className="text-xl font-extrabold text-[#1a1916]"
+                  className="text-xl font-medium text-[#1a1916]"
                   style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.02em' }}
                 >
                   {isEditing ? 'Modify Personnel Details' : 'Enroll New Identity'}
@@ -230,7 +230,7 @@ const ManageUsers = () => {
 
               {FORM_FIELDS.map(({ label, key, type, placeholder, Icon }) => (
                 <div key={key} className="flex flex-col gap-1.5 group">
-                  <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">{label}</label>
+                  <label className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">{label}</label>
                   <div
                     className="flex items-center gap-3 rounded-lg px-4 py-3 transition-all"
                     style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8' }}
@@ -267,7 +267,7 @@ const ManageUsers = () => {
 
               {/* Passport / Visa Info */}
               <div className="md:col-span-2 lg:col-span-3 flex flex-col gap-1.5 group">
-                <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">Passport / Visa Info</label>
+                <label className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">Passport / Visa Info</label>
                 <div
                   className="flex items-start gap-3 rounded-lg px-4 py-3 transition-all"
                   style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8' }}
@@ -299,7 +299,7 @@ const ManageUsers = () => {
                   disabled={isLoading}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="h-12 px-10 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-all disabled:opacity-50 cursor-pointer"
+                  className="h-12 px-10 rounded-lg text-[10px] font-medium uppercase tracking-[0.15em] text-white transition-all disabled:opacity-50 cursor-pointer"
                   style={{ background: '#1a1916' }}
                 >
                   {isLoading
@@ -341,7 +341,7 @@ const ManageUsers = () => {
                 />
               </div>
               <button
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-[0.12em] transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[10px] font-medium uppercase tracking-[0.12em] transition-all cursor-pointer"
                 style={{ background: '#ffffff', border: '1.5px solid #e2e0d8', color: '#78776f' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = '#1a1916'; e.currentTarget.style.color = '#1a1916'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = '#e2e0d8'; e.currentTarget.style.color = '#78776f'; }}
@@ -350,7 +350,7 @@ const ManageUsers = () => {
                 Filter
               </button>
               <div
-                className="ml-auto px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-[0.12em]"
+                className="ml-auto px-3 py-1.5 rounded text-[9px] font-medium uppercase tracking-[0.12em]"
                 style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8', color: '#78776f' }}
               >
                 {filtered.length} users
@@ -404,7 +404,7 @@ const ManageUsers = () => {
                                 </div>
                               ) : (
                                 <div
-                                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-medium"
                                   style={{ background: '#1a1916' }}
                                 >
                                   {u.name?.charAt(0).toUpperCase()}
@@ -416,7 +416,7 @@ const ManageUsers = () => {
                               />
                             </div>
                             <div>
-                              <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
+                              <div className="text-[12px] font-medium text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
                                 {u.name || 'Incognito User'}
                               </div>
                               <div className="text-[10px] text-[#b0aea5] mt-0.5">{u.email || '—'}</div>
@@ -429,7 +429,7 @@ const ManageUsers = () => {
                           <div className="flex flex-col gap-1">
                             <span className="text-[11px] font-medium text-[#78776f]">{u.phone || '—'}</span>
                             {u.emergency_contact && (
-                              <span className="text-[9px] font-bold text-[#b0aea5] flex items-center gap-1">
+                              <span className="text-[9px] font-medium text-[#b0aea5] flex items-center gap-1">
                                 <PhoneCall size={10} /> {u.emergency_contact}
                               </span>
                             )}
@@ -439,7 +439,7 @@ const ManageUsers = () => {
                         {/* Role */}
                         <td className="px-7 py-4">
                           <span
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-[0.08em]"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[9px] font-medium uppercase tracking-[0.08em]"
                             style={
                               u.is_admin
                                 ? { background: '#1a1916', color: '#ffffff', border: '1.5px solid #1a1916' }
@@ -454,7 +454,7 @@ const ManageUsers = () => {
                         {/* Status */}
                         <td className="px-7 py-4">
                           <span
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-[0.08em]"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[9px] font-medium uppercase tracking-[0.08em]"
                             style={{ background: status.bg, color: status.text, border: `1.5px solid ${status.border}` }}
                           >
                             <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: status.dot }} />
@@ -485,7 +485,7 @@ const ManageUsers = () => {
                       <td colSpan={6} className="py-24 text-center">
                         <div className="flex flex-col items-center gap-3">
                           <ShieldAlert size={36} style={{ color: '#e2e0d8' }} strokeWidth={1.2} />
-                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c5c2b8]">No users found</p>
+                          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#c5c2b8]">No users found</p>
                         </div>
                       </td>
                     </tr>
@@ -503,7 +503,7 @@ const ManageUsers = () => {
 /* ─── Select Field ───────────────────────────────────────────────────── */
 const SelectField = ({ label, icon, value, onChange, children, required }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">{label}</label>
+    <label className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">{label}</label>
     <div
       className="flex items-center gap-3 rounded-lg px-4 py-3 transition-all"
       style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8' }}

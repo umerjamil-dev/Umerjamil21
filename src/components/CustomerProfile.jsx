@@ -14,11 +14,11 @@ const Row = ({ icon: Icon, label, value, accent }) => (
       <div className="w-8 h-8 rounded-lg bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center shrink-0">
         <Icon size={14} className="text-[var(--on-surface-variant)]" strokeWidth={2} />
       </div>
-      <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[var(--on-surface-variant)]">
+      <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-[var(--on-surface-variant)]">
         {label}
       </span>
     </div>
-    <span className={`text-sm font-manrope font-extrabold ${accent ? 'text-[var(--sacred-emerald,#10b981)]' : 'text-[var(--on-surface)]'}`}>
+    <span className={`text-sm font-manrope font-medium ${accent ? 'text-[var(--sacred-emerald,#10b981)]' : 'text-[var(--on-surface)]'}`}>
       {value ?? '—'}
     </span>
   </div>
@@ -80,7 +80,7 @@ const CustomerProfile = ({ open, onClose, onConfirm, customer, inputs, results }
           {/* Header banner */}
           <div className="bg-[#0f172a] rounded-xl p-8 mb-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-[5rem]" />
-            <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] mb-5">
+            <p className="text-[9px] font-medium text-white/30 uppercase tracking-[0.4em] mb-5">
               Customer Profile
             </p>
 
@@ -98,7 +98,7 @@ const CustomerProfile = ({ open, onClose, onConfirm, customer, inputs, results }
                 )}
               </div>
               <div>
-                <h2 className="text-2xl font-manrope font-extrabold text-white tracking-tight leading-tight">
+                <h2 className="text-2xl font-manrope font-medium text-white tracking-tight leading-tight">
                   {customer?.firstName ?? ''} {customer?.lastName ?? ''}
                 </h2>
                 <div className="flex flex-wrap items-center gap-4 mt-2">
@@ -121,7 +121,7 @@ const CustomerProfile = ({ open, onClose, onConfirm, customer, inputs, results }
 
           {/* Package Details */}
           <div>
-            <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.35em] mb-5 flex items-center gap-2">
+            <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.35em] mb-5 flex items-center gap-2">
               <Package size={14} strokeWidth={2.5} />
               Package Details
             </h3>
@@ -149,7 +149,7 @@ const CustomerProfile = ({ open, onClose, onConfirm, customer, inputs, results }
           {/* Download PDF */}
           <button
             onClick={handleDownload}
-            className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-[var(--on-surface)] hover:shadow-md hover:-translate-y-0.5 transition-all"
+            className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-[var(--surface)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-medium uppercase tracking-[0.25em] text-[var(--on-surface)] hover:shadow-md hover:-translate-y-0.5 transition-all"
           >
             <Download size={16} strokeWidth={2.5} />
             Download PDF
@@ -158,7 +158,7 @@ const CustomerProfile = ({ open, onClose, onConfirm, customer, inputs, results }
           {/* Cancel */}
           <button
             onClick={onClose}
-            className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-red-50 border border-red-200 rounded-xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all"
+            className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-red-50 border border-red-200 rounded-xl text-[10px] font-medium uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all"
           >
             <XCircle size={16} strokeWidth={2.5} />
             Cancel
@@ -167,7 +167,7 @@ const CustomerProfile = ({ open, onClose, onConfirm, customer, inputs, results }
           {/* Confirm */}
           <button
             onClick={onConfirm}
-            className="flex-1 flex items-center justify-center gap-2.5 py-4 btn-primary rounded-xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20"
+            className="flex-1 flex items-center justify-center gap-2.5 py-4 btn-primary rounded-xl text-[10px] font-medium uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20"
           >
             <CheckCircle2 size={16} strokeWidth={2.5} />
             Confirm

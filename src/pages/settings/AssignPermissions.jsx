@@ -51,14 +51,14 @@ const AssignPermissions = () => {
          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-14">
             <div className="space-y-3">
                <div
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.18em] text-white"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-medium uppercase tracking-[0.18em] text-white"
                   style={{ background: '#1a1916' }}
                >
                   <Sliders size={10} strokeWidth={3} />
                   System Configuration
                </div>
                <h1
-                  className="text-5xl lg:text-6xl font-extrabold text-[#1a1916] leading-none"
+                  className="text-5xl lg:text-6xl font-medium text-[#1a1916] leading-none"
                   style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.03em' }}
                >
                   Protocol Mapping
@@ -70,7 +70,7 @@ const AssignPermissions = () => {
 
             <button
                onClick={handleSynchronize}
-               className="h-12 px-8 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer shrink-0"
+               className="h-12 px-8 rounded-lg text-[10px] font-medium uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer shrink-0"
                style={{ background: '#1a1916', color: '#ffffff', border: '1.5px solid #1a1916' }}
                onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
@@ -89,7 +89,7 @@ const AssignPermissions = () => {
 
                {/* ── ROLE SELECTOR ── */}
                <div className="flex flex-col gap-2.5">
-                  <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                  <label className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">
                      Select Role
                   </label>
                   <div className="relative">
@@ -121,12 +121,12 @@ const AssignPermissions = () => {
                {/* ── PERMISSIONS GRID ── */}
                <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between">
-                     <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                     <label className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">
                         Configurable Endpoints
                      </label>
                      {selectedRoleId && !isLoading && (
                         <span
-                           className="text-[9px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded"
+                           className="text-[9px] font-medium uppercase tracking-[0.12em] px-2.5 py-1 rounded"
                            style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8', color: '#78776f' }}
                         >
                            {selectedRolePermissions.length} / {permissions.length} selected
@@ -135,12 +135,12 @@ const AssignPermissions = () => {
                   </div>
 
                   {isLoading ? (
-                     <div className="py-24 text-center text-[9px] font-bold uppercase tracking-[0.2em] text-[#c5c2b8]">
+                     <div className="py-24 text-center text-[9px] font-medium uppercase tracking-[0.2em] text-[#c5c2b8]">
                         Synchronizing Authorization Map…
                      </div>
                   ) : !selectedRoleId ? (
                      <div
-                        className="py-24 text-center text-[9px] font-bold uppercase tracking-[0.2em] text-[#c5c2b8] rounded-xl"
+                        className="py-24 text-center text-[9px] font-medium uppercase tracking-[0.2em] text-[#c5c2b8] rounded-xl"
                         style={{ background: '#f5f4f0', border: '1.5px dashed #e2e0d8' }}
                      >
                         Select a role to load capabilities
@@ -179,7 +179,7 @@ const AssignPermissions = () => {
                                  </div>
 
                                  <span
-                                    className="text-[10px] font-bold uppercase tracking-[0.08em] leading-tight"
+                                    className="text-[10px] font-medium uppercase tracking-[0.08em] leading-tight"
                                     style={{ color: isChecked ? '#ffffff' : '#78776f' }}
                                  >
                                     {p.name.replace(/_/g, ' ')}

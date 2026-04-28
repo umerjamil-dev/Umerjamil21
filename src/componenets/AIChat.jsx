@@ -10,6 +10,7 @@ const AIChat = () => {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -34,9 +35,9 @@ const AIChat = () => {
     try {
       // Pass the entire history to the backend for context
       const history = [...messages, userMessage].map(m => ({ role: m.role, content: m.content }));
-      
+
       const response = await axios.post('/ai/chat', { messages: history });
-      
+
       if (response.data && response.data.reply) {
         setMessages(prev => [...prev, { role: 'assistant', content: response.data.reply }]);
       } else {
@@ -58,16 +59,14 @@ const AIChat = () => {
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300 transform hover:scale-105 ${
-            isOpen 
-              ? 'bg-red-500 hover:bg-red-600 rotate-90' 
+          className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300 transform hover:scale-105 ${isOpen
+              ? 'bg-red-500 hover:bg-red-600 rotate-90'
               : 'bg-gradient-to-r from-[var(--primary)] to-[var(--tertiary)] hover:from-[var(--tertiary)] hover:to-[var(--primary)]'
-          }`}
+            }`}
         >
           {isOpen ? <X size={24} /> : <div className="relative"><MessageSquare size={24} /><div className="absolute -top-1 -right-1 w-3 h-3 bg-[var(--desert-gold)] rounded-full animate-pulse border-2 border-transparent"></div></div>}
         </button>
       </div>
-
       {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-[360px] md:w-[420px] h-[550px] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 border border-[var(--primary)]/10 animate-in slide-in-from-bottom-5 fade-in duration-300">
@@ -78,7 +77,7 @@ const AIChat = () => {
                 <Sparkles size={20} />
               </div>
               <div>
-                <h3 className="text-white font-bold text-sm leading-tight text-left">CRM Assistant</h3>
+                <h3 className="text-white font-medium text-sm leading-tight text-left">CRM Assistant</h3>
                 <p className="text-white/70 text-[11px] font-medium text-left">Powered by Ling-2.6</p>
               </div>
             </div>
@@ -92,28 +91,26 @@ const AIChat = () => {
             {messages.map((msg, index) => (
               <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} w-full`}>
                 <div className={`flex gap-2 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  
+
                   {/* Avatar */}
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-auto shadow-sm ${
-                    msg.role === 'user' 
-                      ? 'bg-[var(--desert-gold)] text-white' 
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-auto shadow-sm ${msg.role === 'user'
+                      ? 'bg-[var(--desert-gold)] text-white'
                       : 'bg-white border border-[var(--primary)]/10 text-[var(--primary)]'
-                  }`}>
+                    }`}>
                     {msg.role === 'user' ? <User size={14} /> : <Bot size={16} />}
                   </div>
 
                   {/* Bubble */}
-                  <div className={`px-4 py-2.5 rounded-[20px] text-[13px] leading-relaxed relative ${
-                    msg.role === 'user'
+                  <div className={`px-4 py-2.5 rounded-[20px] text-[13px] leading-relaxed relative ${msg.role === 'user'
                       ? 'bg-gradient-to-br from-[var(--primary)] to-[var(--tertiary)] text-white rounded-br-sm shadow-md shadow-[var(--primary)]/20'
                       : 'bg-white text-gray-700 rounded-bl-sm border border-gray-100 shadow-sm'
-                  }`}>
+                    }`}>
                     <p className="whitespace-pre-wrap">{msg.content}</p>
                   </div>
                 </div>
               </div>
             ))}
-            
+
             {loading && (
               <div className="flex justify-start w-full">
                 <div className="flex gap-2 max-w-[85%]">
@@ -147,8 +144,8 @@ const AIChat = () => {
                   }
                 }}
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={!input.trim() || loading}
                 className="w-9 h-9 shrink-0 flex items-center justify-center rounded-full bg-[var(--primary)] text-white hover:bg-[var(--tertiary)] disabled:bg-gray-300 disabled:text-gray-500 transition-colors m-0.5"
               >

@@ -21,16 +21,16 @@ const EmailSystem = () => {
     const { getLead } = useLeadStore();
     const { user } = useAuthStore();
     const { deleteEmail } = useEmailStore();
-    const { 
-        sentEmails, inboxEmails, trashEmails, sourceEmails, 
+    const {
+        sentEmails, inboxEmails, trashEmails, sourceEmails,
         fetchSentEmails, fetchInboxEmails, fetchTrashEmails,
-        sendEmail, sourceEmailFetch, moveToTrash, isLoading: isEmailLoading 
+        sendEmail, sourceEmailFetch, moveToTrash, isLoading: isEmailLoading
     } = useEmailStore();
 
     const handleDelete = async () => {
         if (!selectedEmail) return;
         if (!window.confirm('Are you sure you want to move this email to trash?')) return;
-        
+
         try {
             await deleteEmail(selectedEmail.id);
             setSelectedEmail(null);
@@ -113,7 +113,7 @@ const EmailSystem = () => {
                             ['clean'],
                         ],
                         handlers: {
-                            attachment: function() {
+                            attachment: function () {
                                 document.getElementById('composer-file-input').click();
                             }
                         }
@@ -131,7 +131,7 @@ const EmailSystem = () => {
 
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
-        
+
         const filePromises = files.map(file => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -141,7 +141,7 @@ const EmailSystem = () => {
                         name: file.name,
                         size: (file.size / 1024).toFixed(1) + ' KB',
                         type: file.type,
-                        base64: reader.result.split(',')[1],  
+                        base64: reader.result.split(',')[1],
                     });
                 };
                 reader.readAsDataURL(file);
@@ -203,10 +203,10 @@ const EmailSystem = () => {
         trash: [],
     };
 
-    const emails = activeFolder === 'sent' 
-        ? sentEmails 
-        : activeFolder === 'inbox' 
-            ? inboxEmails 
+    const emails = activeFolder === 'sent'
+        ? sentEmails
+        : activeFolder === 'inbox'
+            ? inboxEmails
             : activeFolder === 'trash'
                 ? trashEmails
                 : (dummyEmails[activeFolder] || []);
@@ -274,11 +274,10 @@ const EmailSystem = () => {
                                 <button
                                     key={f.id}
                                     onClick={() => handleFolderChange(f.id)}
-                                    className={`flex items-center justify-between px-3 py-2 rounded-lg w-full text-left transition-all ${
-                                        active
-                                            ? 'bg-blue-600/20 border border-blue-600/30'
-                                            : 'border border-transparent hover:bg-white/5'
-                                    }`}
+                                    className={`flex items-center justify-between px-3 py-2 rounded-lg w-full text-left transition-all ${active
+                                        ? 'bg-blue-600/20 border border-blue-600/30'
+                                        : 'border border-transparent hover:bg-white/5'
+                                        }`}
                                 >
                                     <div className="flex items-center gap-2.5">
                                         <f.icon
@@ -358,15 +357,14 @@ const EmailSystem = () => {
                                     <div
                                         key={email.id}
                                         onClick={() => setSelectedEmail(email)}
-                                        className={`p-3 rounded-xl cursor-pointer border mb-1 transition-all ${
-                                            isSelected
-                                                ? 'bg-blue-50 border-blue-100'
-                                                : 'border-transparent hover:bg-gray-50'
-                                        }`}
+                                        className={`p-3 rounded-xl cursor-pointer border mb-1 transition-all ${isSelected
+                                            ? 'bg-blue-50 border-blue-100'
+                                            : 'border-transparent hover:bg-gray-50'
+                                            }`}
                                     >
                                         <div className="flex gap-2.5 items-start">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 ${email.avatarBg} ${email.avatarText}`}>
-                                           <MailsIcon/>
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium flex-shrink-0 ${email.avatarBg} ${email.avatarText}`}>
+                                                <MailsIcon />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex justify-between items-center mb-0.5">
@@ -399,8 +397,8 @@ const EmailSystem = () => {
                                 {/* Detail Header */}
                                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/70">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0 ${selectedEmail.avatarBg} ${selectedEmail.avatarText}`}>
-                                           <MailIcon/>
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-medium flex-shrink-0 ${selectedEmail.avatarBg} ${selectedEmail.avatarText}`}>
+                                            <MailIcon />
                                         </div>
                                         <div>
                                             <p className="text-[14px] font-semibold text-gray-900">{selectedEmail.sender}</p>
@@ -408,20 +406,20 @@ const EmailSystem = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        
+
                                         <button
                                             onClick={() => { setSubject(`Re: ${selectedEmail.subject}`); setIsComposeOpen(true); }}
                                             className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors"
                                         >
                                             <Reply size={15} className="text-blue-600" strokeWidth={2} />
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={handleDelete}
                                             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                                         >
                                             <Trash2 size={15} strokeWidth={2} />
                                         </button>
-                                        
+
                                     </div>
                                 </div>
 
@@ -507,7 +505,7 @@ const EmailSystem = () => {
                                         <Mail size={16} color="#fff" strokeWidth={2.5} />
                                     </div>
                                     <div>
-                                        <h3 className="text-[15px] font-bold text-gray-900 leading-none">New Message</h3>
+                                        <h3 className="text-[15px] font-medium text-gray-900 leading-none">New Message</h3>
                                         <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest mt-1">Compose Draft</p>
                                     </div>
                                 </div>
@@ -524,11 +522,11 @@ const EmailSystem = () => {
                                 <div className="p-6 pb-2 space-y-4">
                                     {/* From Selector */}
                                     <div className="flex flex-col gap-1.5">
-                                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">From</label>
+                                        <label className="text-[9px] font-medium text-gray-400 uppercase tracking-widest ml-1">From</label>
                                         <div className="relative">
                                             <select
                                                 value={fromEmail}
-                                                onChange={(e) => setFromEmail(e.target.value) }
+                                                onChange={(e) => setFromEmail(e.target.value)}
                                                 className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-[13px] text-gray-800 outline-none focus:border-blue-400 focus:bg-white transition-all cursor-pointer font-medium"
                                             >
                                                 {sourceEmails.length > 0
@@ -547,7 +545,7 @@ const EmailSystem = () => {
                                     {/* To / CC / BCC */}
                                     <div className="space-y-4">
                                         <div className="relative flex flex-col gap-1.5">
-                                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Recipient</label>
+                                            <label className="text-[9px] font-medium text-gray-400 uppercase tracking-widest ml-1">Recipient</label>
                                             <div className="relative">
                                                 <input
                                                     type="email"
@@ -556,9 +554,9 @@ const EmailSystem = () => {
                                                     placeholder="To"
                                                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pr-20 text-[13px] font-semibold text-gray-800 outline-none focus:border-blue-400 focus:bg-white transition-all placeholder:text-gray-300"
                                                 />
-                                                <button 
+                                                <button
                                                     onClick={() => setShowCcBcc(!showCcBcc)}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-black text-blue-500 hover:text-blue-600 uppercase tracking-widest px-2 py-1 rounded-md bg-blue-50/50 transition-all border border-blue-100/50"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-medium text-blue-500 hover:text-blue-600 uppercase tracking-widest px-2 py-1 rounded-md bg-blue-50/50 transition-all border border-blue-100/50"
                                                 >
                                                     {showCcBcc ? 'Hide' : 'CC/BCC'}
                                                 </button>
@@ -589,7 +587,7 @@ const EmailSystem = () => {
                                         )}
 
                                         <div className="flex flex-col gap-1.5">
-                                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Topic</label>
+                                            <label className="text-[9px] font-medium text-gray-400 uppercase tracking-widest ml-1">Topic</label>
                                             <input
                                                 type="text"
                                                 value={subject}
@@ -612,10 +610,10 @@ const EmailSystem = () => {
                                                 <div key={file.id} className="flex items-center gap-2 bg-blue-50/30 border border-blue-100/50 px-3 py-1.5 rounded-xl group hover:bg-white hover:border-blue-200 transition-all">
                                                     <FileText size={12} className="text-blue-500" />
                                                     <div className="flex flex-col">
-                                                        <span className="text-[11px] font-bold text-gray-700 truncate max-w-[120px]">{file.name}</span>
+                                                        <span className="text-[11px] font-medium text-gray-700 truncate max-w-[120px]">{file.name}</span>
                                                         <span className="text-[9px] text-gray-400 font-medium uppercase tracking-tighter">{file.size}</span>
                                                     </div>
-                                                    <button 
+                                                    <button
                                                         onClick={() => removeAttachment(file.id)}
                                                         className="p-1 text-gray-300 hover:text-red-500 rounded-full hover:bg-red-50 transition-all"
                                                     >
@@ -625,14 +623,14 @@ const EmailSystem = () => {
                                             ))}
                                         </div>
                                     )}
-                                    
+
                                     {/* Hidden File Input */}
-                                    <input 
+                                    <input
                                         id="composer-file-input"
-                                        type="file" 
+                                        type="file"
                                         multiple
                                         accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
-                                        className="hidden" 
+                                        className="hidden"
                                         onChange={handleFileChange}
                                     />
                                 </div>
@@ -641,12 +639,12 @@ const EmailSystem = () => {
                             {/* Modal Footer */}
                             <div className="flex items-center justify-between px-6 py-4 border-t border-gray-50 bg-gray-50/30">
                                 <div className="flex gap-1">
-                                    
+
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setIsComposeOpen(false)}
-                                        className="px-4 py-2 text-[12px] font-bold text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest text-[10px]"
+                                        className="px-4 py-2 text-[12px] font-medium text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest text-[10px]"
                                     >
                                         Discard
                                     </button>
@@ -662,7 +660,7 @@ const EmailSystem = () => {
                                                     account_id: fromEmail,
                                                     lead_id: id,
                                                     user_id: user?.id,
-                                                    subject : subject,
+                                                    subject: subject,
                                                     body: editorContent,
                                                     attachments: attachments.map(a => ({
                                                         name: a.name,
@@ -676,7 +674,7 @@ const EmailSystem = () => {
                                                 alert('Send failed: ' + (err.response?.data?.message || err.message));
                                             }
                                         }}
-                                        className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-bold rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+                                        className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-medium rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
                                     >
                                         {isEmailLoading ? 'Sending...' : 'Send Message'}
                                         <Send size={14} strokeWidth={2.5} />

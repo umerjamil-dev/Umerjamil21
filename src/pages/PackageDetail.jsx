@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { 
-    ArrowLeft, Edit3, Trash2, Package, 
+import {
+    ArrowLeft, Edit3, Trash2, Package,
     Hotel, Calendar, DollarSign, ShieldCheck,
     MapPin, Star, Info, ChevronRight,
     TrendingUp, Workflow, Award, Clock
@@ -43,7 +43,7 @@ const PackageDetail = () => {
         return (
             <div className="h-[60vh] flex flex-col items-center justify-center space-y-6">
                 <div className="w-16 h-16 border-4 border-[var(--outline-variant)] border-t-[var(--primary)] rounded-full animate-spin"></div>
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--on-surface-variant)] animate-pulse">Decrypting Package Manifest...</p>
+                <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-[var(--on-surface-variant)] animate-pulse">Decrypting Package Manifest...</p>
             </div>
         );
     }
@@ -55,23 +55,22 @@ const PackageDetail = () => {
                 <div className="space-y-2">
                     <Link to="/packages" className="flex items-center gap-2 text-[var(--on-surface-variant)] hover:text-[var(--primary)] transition-colors group mb-4">
                         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-[10px] font-black uppercase tracking-widest">Back to Inventory</span>
+                        <span className="text-[10px] font-medium uppercase tracking-widest">Back to Inventory</span>
                     </Link>
                     <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-2xl bg-[var(--surface-container-high)] flex items-center justify-center border border-[var(--outline-variant)] shadow-inner">
                             <Package size={28} className="text-[var(--primary)]" strokeWidth={1.5} />
                         </div>
                         <div>
-                            <h1 className="text-4xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tighter">
+                            <h1 className="text-4xl font-manrope font-medium text-[var(--on-surface)] tracking-tighter">
                                 {pkg.title}
                             </h1>
                             <div className="flex items-center gap-3 mt-3">
-                                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                                    pkg.active_status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-500'
-                                }`}>
+                                <span className={`px-3 py-1 rounded-full text-[9px] font-medium uppercase tracking-widest ${pkg.active_status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-500'
+                                    }`}>
                                     {pkg.active_status === 'Active' ? 'Active' : 'Inactive'}
                                 </span>
-                                <span className="text-[10px] font-bold text-[var(--on-surface-variant)] opacity-40 uppercase tracking-widest">
+                                <span className="text-[10px] font-medium text-[var(--on-surface-variant)] opacity-40 uppercase tracking-widest">
                                     ID: {pkg.id}
                                 </span>
                             </div>
@@ -80,15 +79,15 @@ const PackageDetail = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button 
+                    <button
                         onClick={handleDelete}
                         className="p-4 bg-[var(--surface-container-lowest)] border border-red-100/50 rounded-xl text-red-500 hover:bg-red-50 transition-all shadow-sm group"
                     >
                         <Trash2 size={20} strokeWidth={2} />
                     </button>
-                    <Link 
+                    <Link
                         to={`/packages/${id}/edit`}
-                        className="btn-primary px-8 py-4 rounded-xl text-white text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl flex items-center gap-3 active:scale-95 transition-all"
+                        className="btn-primary px-8 py-4 rounded-xl text-white text-[10px] font-medium uppercase tracking-[0.3em] shadow-2xl flex items-center gap-3 active:scale-95 transition-all"
                     >
                         <Edit3 size={18} strokeWidth={2.5} />
                         Refine Configuration
@@ -103,8 +102,8 @@ const PackageDetail = () => {
                     {/* Stay Distribution */}
                     <div className="bg-[var(--surface-container-lowest)] rounded-3xl p-10 border border-[var(--outline-variant)] shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--surface)] rounded-bl-[8rem] translate-x-32 -translate-y-32 transition-transform group-hover:translate-x-16 group-hover:-translate-y-16"></div>
-                        
-                        <h3 className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.4em] mb-12 flex items-center gap-3 relative z-10">
+
+                        <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.4em] mb-12 flex items-center gap-3 relative z-10">
                             <Workflow size={18} strokeWidth={2.5} className="text-[var(--on-surface)]" />
                             Lodging Protocol
                         </h3>
@@ -116,12 +115,12 @@ const PackageDetail = () => {
                                         <Hotel size={24} className="text-[var(--primary)]" strokeWidth={1.5} />
                                     </div>
                                     <div className="text-right">
-                                        <span className="text-4xl font-manrope font-black text-[var(--on-surface)]">{pkg.nights_makkah}</span>
-                                        <p className="text-[8px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest">Nights</p>
+                                        <span className="text-4xl font-manrope font-medium text-[var(--on-surface)]">{pkg.nights_makkah}</span>
+                                        <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest">Nights</p>
                                     </div>
                                 </div>
-                                <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-2 opacity-50">Makkah Residency</p>
-                                <h4 className="text-lg font-manrope font-extrabold text-[var(--on-surface)] group-hover/card:text-[var(--primary)] transition-colors lowercase first-letter:uppercase">
+                                <p className="text-[9px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-2 opacity-50">Makkah Residency</p>
+                                <h4 className="text-lg font-manrope font-medium text-[var(--on-surface)] group-hover/card:text-[var(--primary)] transition-colors lowercase first-letter:uppercase">
                                     {pkg.makkah_hotel || 'Standard Makkah Hospitality'}
                                 </h4>
                             </div>
@@ -132,12 +131,12 @@ const PackageDetail = () => {
                                         <Hotel size={24} className="text-[var(--primary)]" strokeWidth={1.5} />
                                     </div>
                                     <div className="text-right">
-                                        <span className="text-4xl font-manrope font-black text-[var(--on-surface)]">{pkg.nights_madinah}</span>
-                                        <p className="text-[8px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest">Nights</p>
+                                        <span className="text-4xl font-manrope font-medium text-[var(--on-surface)]">{pkg.nights_madinah}</span>
+                                        <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest">Nights</p>
                                     </div>
                                 </div>
-                                <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-2 opacity-50">Madinah Residency</p>
-                                <h4 className="text-lg font-manrope font-extrabold text-[var(--on-surface)] group-hover/card:text-[var(--primary)] transition-colors lowercase first-letter:uppercase">
+                                <p className="text-[9px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-2 opacity-50">Madinah Residency</p>
+                                <h4 className="text-lg font-manrope font-medium text-[var(--on-surface)] group-hover/card:text-[var(--primary)] transition-colors lowercase first-letter:uppercase">
                                     {pkg.madinah_hotel || 'Standard Madinah Hospitality'}
                                 </h4>
                             </div>
@@ -146,28 +145,28 @@ const PackageDetail = () => {
 
                     {/* Commercial Valuation */}
                     <div className="bg-[var(--surface-container-lowest)] rounded-3xl p-10 border border-[var(--outline-variant)] shadow-sm">
-                        <h3 className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.4em] mb-12 flex items-center gap-3">
+                        <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.4em] mb-12 flex items-center gap-3">
                             <DollarSign size={18} strokeWidth={2.5} className="text-[var(--on-surface)]" />
                             Financial Appraisal
                         </h3>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="p-8 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Base Valuation (USD)</p>
+                                <p className="text-[9px] font-medium text-slate-400 uppercase tracking-widest mb-4">Base Valuation (USD)</p>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-2xl font-manrope font-black text-slate-900">${Number(pkg.base_price)?.toLocaleString()}</span>
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase">Per Unit</span>
+                                    <span className="text-2xl font-manrope font-medium text-slate-900">${Number(pkg.base_price)?.toLocaleString()}</span>
+                                    <span className="text-[10px] font-medium text-slate-400 uppercase">Per Unit</span>
                                 </div>
                             </div>
-                            
+
                             <div className="md:col-span-2 p-8 bg-[var(--surface)] rounded-xl border border-[var(--outline-variant)] flex items-center gap-8">
                                 <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
                                     <TrendingUp size={28} className="text-emerald-500" strokeWidth={1.5} />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-manrope font-extrabold text-[var(--on-surface)] mb-2">Market Positioning</h4>
+                                    <h4 className="text-sm font-manrope font-medium text-[var(--on-surface)] mb-2">Market Positioning</h4>
                                     <p className="text-[11px] text-[var(--on-surface-variant)] font-medium leading-relaxed max-w-sm">
-                                        This package is strategically priced for the <span className="font-bold text-[var(--on-surface)]">{pkg.category_name || '—'}</span> segment, offering optimized margins with verified hospitality nodes.
+                                        This package is strategically priced for the <span className="font-medium text-[var(--on-surface)]">{pkg.category_name || '—'}</span> segment, offering optimized margins with verified hospitality nodes.
                                     </p>
                                 </div>
                             </div>
@@ -179,8 +178,8 @@ const PackageDetail = () => {
                 <div className="lg:col-span-4 space-y-8">
                     <div className="bg-[#0f172a] rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[4rem] group-hover:scale-110 transition-transform duration-700"></div>
-                        
-                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-12 flex items-center gap-3">
+
+                        <h4 className="text-[10px] font-medium text-slate-500 uppercase tracking-[0.4em] mb-12 flex items-center gap-3">
                             <Award size={18} strokeWidth={2.5} className="text-[var(--desert-gold)]" />
                             Elite Verification
                         </h4>
@@ -196,8 +195,8 @@ const PackageDetail = () => {
                                         <item.icon size={18} className={item.label === 'Auth Status' ? (pkg.active_status === 'Active' ? 'text-emerald-400' : 'text-red-400') : 'text-white/40'} />
                                     </div>
                                     <div>
-                                        <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.2em] mb-1">{item.label}</p>
-                                        <p className={`text-[12px] font-manrope font-bold ${item.label === 'Auth Status' ? (pkg.active_status === 'Active' ? 'text-emerald-400' : 'text-red-400') : 'text-white/80'}`}>{pkg.active_status}</p>
+                                        <p className="text-[8px] font-medium text-white/20 uppercase tracking-[0.2em] mb-1">{item.label}</p>
+                                        <p className={`text-[12px] font-manrope font-medium ${item.label === 'Auth Status' ? (pkg.active_status === 'Active' ? 'text-emerald-400' : 'text-red-400') : 'text-white/80'}`}>{pkg.active_status}</p>
                                     </div>
                                 </div>
                             ))}
@@ -216,12 +215,12 @@ const PackageDetail = () => {
                                 <Package size={22} className="text-[var(--on-surface-variant)]" />
                             </div>
                             <div>
-                                <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Module</p>
-                                <p className="text-sm font-manrope font-black text-[var(--on-surface)] tracking-tight uppercase tracking-widest">Inventory Arch</p>
+                                <p className="text-[9px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em]">Module</p>
+                                <p className="text-sm font-manrope font-medium text-[var(--on-surface)] tracking-tight uppercase tracking-widest">Inventory Arch</p>
                             </div>
                         </div>
-                        <button 
-                            className="w-full py-4 bg-[var(--surface)] text-[var(--on-surface-variant)] rounded-xl border border-[var(--outline-variant)] text-[9px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-[var(--on-surface)] hover:border-[var(--on-surface)] transition-all flex items-center justify-center gap-3"
+                        <button
+                            className="w-full py-4 bg-[var(--surface)] text-[var(--on-surface-variant)] rounded-xl border border-[var(--outline-variant)] text-[9px] font-medium uppercase tracking-[0.2em] hover:bg-white hover:text-[var(--on-surface)] hover:border-[var(--on-surface)] transition-all flex items-center justify-center gap-3"
                         >
                             <Info size={14} />
                             Audit History

@@ -17,7 +17,7 @@ import toast from 'react-hot-toast';
    ───────────────────────────────────────────── */
 const UnderlineSelect = ({ label, value, onChange, children, accentColor = 'black' }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 pl-0.5">
+    <label className="text-[9px] font-medium uppercase tracking-[0.2em] text-slate-400 pl-0.5">
       {label}
     </label>
     <div
@@ -27,7 +27,7 @@ const UnderlineSelect = ({ label, value, onChange, children, accentColor = 'blac
       <select
         value={value}
         onChange={onChange}
-        className="w-full bg-transparent text-base font-bold text-slate-900 outline-none appearance-none cursor-pointer pr-7 leading-snug"
+        className="w-full bg-transparent text-base font-medium text-slate-900 outline-none appearance-none cursor-pointer pr-7 leading-snug"
         style={{ fontFamily: 'inherit' }}
         onFocus={e => e.currentTarget.closest('.relative').style.borderBottomColor = accentColor}
         onBlur={e => e.currentTarget.closest('.relative').style.borderBottomColor = '#f1f5f9'}
@@ -51,7 +51,7 @@ const UnderlineInput = ({
   icon: Icon, large = false, accentColor = 'black', iconColor = '#cbd5e1'
 }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 pl-0.5">
+    <label className="text-[9px] font-medium uppercase tracking-[0.2em] text-slate-400 pl-0.5">
       {label}
     </label>
     <div
@@ -64,7 +64,7 @@ const UnderlineInput = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={`w-full bg-transparent outline-none font-black text-slate-900 placeholder-slate-200 tracking-tight leading-none pr-7`}
+        className={`w-full bg-transparent outline-none font-medium text-slate-900 placeholder-slate-200 tracking-tight leading-none pr-7`}
         style={{
           fontSize: large ? '26px' : '15px',
           color: accentColor === 'black' ? undefined : accentColor,
@@ -170,11 +170,11 @@ const AddBooking = () => {
           <div className="w-10 h-10 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center group-hover:shadow-md group-hover:bg-white transition-all">
             <ArrowLeft size={16} strokeWidth={2.5} />
           </div>
-          <span className="text-[9px] font-black uppercase tracking-[0.25em]">Audit Registry</span>
+          <span className="text-[9px] font-medium uppercase tracking-[0.25em]">Audit Registry</span>
         </Link>
 
         <div className="text-center">
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
+          <h1 className="text-2xl font-medium text-slate-900 tracking-tight uppercase">
             Customer   Booking {' '}
 
           </h1>
@@ -184,7 +184,7 @@ const AddBooking = () => {
         <button
           onClick={handleSubmit}
           disabled={isBookingLoading}
-          className={`flex items-center gap-2.5 px-8 py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.25em] shadow-lg transition-all duration-200
+          className={`flex items-center gap-2.5 px-8 py-4 rounded-xl text-[9px] font-medium uppercase tracking-[0.25em] shadow-lg transition-all duration-200
             ${isBookingLoading
               ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
               : 'bg-[var(--primary)] text-white hover:bg-[var(--tertiary)] hover:text-white'
@@ -206,25 +206,25 @@ const AddBooking = () => {
             {/* Decorative blob */}
             <div className="absolute top-0 right-0 w-28 h-28 rounded-bl-[4rem] bg-white/5 pointer-events-none" />
 
-            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/25 mb-8 relative z-10">
+            <p className="text-[9px] font-medium uppercase tracking-[0.3em] text-white/25 mb-8 relative z-10">
               Synthesis
             </p>
 
             <div className="space-y-5 relative z-10">
               <div className="flex items-end justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/35">
+                <span className="text-[10px] font-medium uppercase tracking-widest text-white/35">
                   Total Amount
                 </span>
-                <span className="text-xl font-black tracking-tight">
+                <span className="text-xl font-medium tracking-tight">
                   ${(parseFloat(formData.totalAmount) || 0).toLocaleString()}
                 </span>
               </div>
 
               <div className="flex items-end justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/35">
+                <span className="text-[10px] font-medium uppercase tracking-widest text-white/35">
                   Residual Debt
                 </span>
-                <span className="text-xl font-black tracking-tight text-[var(--desert-gold)]">
+                <span className="text-xl font-medium tracking-tight text-[var(--desert-gold)]">
                   ${Math.max(0, remaining).toLocaleString()}
                 </span>
               </div>
@@ -236,10 +236,10 @@ const AddBooking = () => {
                   <Package size={20} strokeWidth={2} className='text-white' />
                 </div>
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-0.5">
+                  <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25 mb-0.5">
                     Assigned Protocol
                   </p>
-                  <p className="text-sm font-black text-white leading-snug">
+                  <p className="text-sm font-medium text-white leading-snug">
                     {selectedPackage ? (selectedPackage.title || selectedPackage.name) : '—'}
                   </p>
                 </div>
@@ -252,14 +252,14 @@ const AddBooking = () => {
             <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-6">
               <ShieldCheck size={22} strokeWidth={2} className="text-slate-700" />
             </div>
-            <h4 className="text-[9px] font-black text-slate-900 mb-3 uppercase tracking-[0.25em]">
+            <h4 className="text-[9px] font-medium text-slate-900 mb-3 uppercase tracking-[0.25em]">
               Mandate Protocol
             </h4>
             <p className="text-xs text-slate-400 leading-relaxed mb-6">
               Bookings are operationalized upon initial deposit verification.
               VIP rules apply to all segments.
             </p>
-            <button className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-900 border-b-2 border-slate-100 hover:border-black transition-all pb-0.5">
+            <button className="text-[9px] font-medium uppercase tracking-[0.25em] text-slate-900 border-b-2 border-slate-100 hover:border-black transition-all pb-0.5">
               Review Mandate Terms
             </button>
           </div>
@@ -272,7 +272,7 @@ const AddBooking = () => {
           <div className="bg-white rounded-2xl p-10 border border-slate-100 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 w-28 h-28 bg-slate-50 rounded-bl-[4rem] translate-x-10 -translate-y-10 pointer-events-none" />
 
-            <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.35em] mb-9 flex items-center gap-2.5 relative z-10">
+            <h3 className="text-[9px] font-medium text-slate-400 uppercase tracking-[0.35em] mb-9 flex items-center gap-2.5 relative z-10">
               <User size={14} strokeWidth={3} className="text-[var(--desert-gold)]" />
               Link Pilgrim &amp; Segment
             </h3>
@@ -326,7 +326,7 @@ const AddBooking = () => {
           <div className="bg-white rounded-2xl p-10 border border-slate-100 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 w-28 h-28 bg-slate-50 rounded-bl-[4rem] translate-x-10 -translate-y-10 pointer-events-none" />
 
-            <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.35em] mb-9 flex items-center gap-2.5 relative z-10">
+            <h3 className="text-[9px] font-medium text-slate-400 uppercase tracking-[0.35em] mb-9 flex items-center gap-2.5 relative z-10">
               <CreditCard size={14} strokeWidth={3} className="text-[var(--desert-gold)]" />
               Financial Settlement
             </h3>
@@ -407,11 +407,11 @@ const AddBooking = () => {
             {/* Remaining Amount Display */}
             {(formData.totalAmount || formData.paidAmount) && (
               <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between relative z-10">
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+                <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-slate-400">
                   Remaining Balance
                 </span>
                 <span
-                  className={`text-2xl font-black tracking-tight ${remaining > 0 ? 'text-amber-500' : 'text-emerald-600'
+                  className={`text-2xl font-medium tracking-tight ${remaining > 0 ? 'text-amber-500' : 'text-emerald-600'
                     }`}
                 >
                   ${Math.max(0, remaining).toLocaleString()}
@@ -426,6 +426,5 @@ const AddBooking = () => {
       </div>
     </div>
   );
-}; 
- export default AddBooking ;
- 
+};
+export default AddBooking;

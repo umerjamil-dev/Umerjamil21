@@ -43,24 +43,24 @@ const Payments = () => {
    }));
 
    const filtered = React.useMemo(() => {
-     return transactions.filter(t => {
-       const customer = getCustomerName(t).toLowerCase();
-       const id = t.id?.toString();
-       const amount = t.amount?.toString();
-       return customer.includes(searchTerm.toLowerCase()) || 
-              id?.includes(searchTerm) || 
-              amount?.includes(searchTerm);
-     });
+      return transactions.filter(t => {
+         const customer = getCustomerName(t).toLowerCase();
+         const id = t.id?.toString();
+         const amount = t.amount?.toString();
+         return customer.includes(searchTerm.toLowerCase()) ||
+            id?.includes(searchTerm) ||
+            amount?.includes(searchTerm);
+      });
    }, [transactions, searchTerm]);
 
    const {
-     paginatedData,
-     currentPage,
-     totalPages,
-     goToPage,
-     startIndex,
-     endIndex,
-     totalItems
+      paginatedData,
+      currentPage,
+      totalPages,
+      goToPage,
+      startIndex,
+      endIndex,
+      totalItems
    } = usePagination(filtered, 10);
 
    const totalCredits = transactions.filter(t => t.type === 'Credit').reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
@@ -73,11 +73,11 @@ const Payments = () => {
          {/* Premium Header */}
          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-slate-200">
             <div className="space-y-4">
-               <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-black opacity-80">
+               <div className="flex items-center gap-3 text-[var(--desert-gold)] uppercase tracking-[0.4em] text-[9px] font-medium opacity-80">
                   <Landmark size={14} strokeWidth={3} />
                   Treasury Reconciliation: Phase III
                </div>
-               <h1 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-tight">
+               <h1 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-tight">
                   Multi-Ledger
                </h1>
                <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
@@ -85,12 +85,12 @@ const Payments = () => {
                </p>
             </div>
             <div className="flex items-center gap-4">
-               <button className="flex items-center gap-3 px-8 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black hover:border-slate-300 transition-all group shadow-sm">
+               <button className="flex items-center gap-3 px-8 py-5 bg-white border border-slate-200 rounded-xl text-[10px] font-medium text-slate-400 uppercase tracking-widest hover:text-black hover:border-slate-300 transition-all group shadow-sm">
                   <Receipt size={18} strokeWidth={3} /> Treasury Export
                </button>
                <Link
                   to="/payments/add"
-                  className="px-10 py-5 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
+                  className="px-10 py-5 bg-black text-white rounded-xl text-[10px] font-medium uppercase tracking-[0.4em] shadow-xl hover:bg-[var(--desert-gold)] hover:text-black transition-all flex items-center gap-3"
                >
                   <Plus size={18} strokeWidth={3} />
                   Record Entry
@@ -103,11 +103,11 @@ const Payments = () => {
             {/* Net Position */}
             <div className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-all duration-700"></div>
-               <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Net Cash Position</p>
+               <p className="text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Net Cash Position</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">${(netPosition / 1000).toFixed(1)}k</h3>
-                     <p className="text-[9px] font-black text-slate-400 mt-4 uppercase tracking-[0.2em] bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 w-fit">
+                     <h3 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-none">${(netPosition / 1000).toFixed(1)}k</h3>
+                     <p className="text-[9px] font-medium text-slate-400 mt-4 uppercase tracking-[0.2em] bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 w-fit">
                         Verified Liquidity
                      </p>
                   </div>
@@ -120,11 +120,11 @@ const Payments = () => {
             {/* Monthly Credits */}
             <div className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[5rem] translate-x-12 -translate-y-12 transition-transform duration-700"></div>
-               <p className="text-[10px] font-black text-[var(--sacred-emerald)] uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Inbound Receipts</p>
+               <p className="text-[10px] font-medium text-[var(--sacred-emerald)] uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Inbound Receipts</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">${(totalCredits / 1000).toFixed(1)}k</h3>
-                     <p className="text-[9px] font-black text-[var(--sacred-emerald)] flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 w-fit">
+                     <h3 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-none">${(totalCredits / 1000).toFixed(1)}k</h3>
+                     <p className="text-[9px] font-medium text-[var(--sacred-emerald)] flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 w-fit">
                         <TrendingUp size={12} strokeWidth={3} /> +8% Velocity
                      </p>
                   </div>
@@ -137,11 +137,11 @@ const Payments = () => {
             {/* Monthly Debits */}
             <div className="bg-white rounded-xl p-10 border border-slate-200 shadow-sm relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[5rem] translate-x-12 -translate-y-12 transition-transform duration-700"></div>
-               <p className="text-[10px] font-black text-red-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Outbound Debits</p>
+               <p className="text-[10px] font-medium text-red-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Outbound Debits</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-extrabold text-slate-900 tracking-tighter leading-none">${(totalDebits / 1000).toFixed(1)}k</h3>
-                     <p className="text-[9px] font-black text-red-500 flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-red-50 px-3 py-1.5 rounded-full border border-red-100 w-fit">
+                     <h3 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-none">${(totalDebits / 1000).toFixed(1)}k</h3>
+                     <p className="text-[9px] font-medium text-red-500 flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-red-50 px-3 py-1.5 rounded-full border border-red-100 w-fit">
                         <AlertCircle size={12} strokeWidth={3} /> Pending Audit
                      </p>
                   </div>
@@ -162,14 +162,14 @@ const Payments = () => {
                      placeholder="Search transaction, entity or amount..."
                      value={searchTerm}
                      onChange={(e) => setSearchTerm(e.target.value)}
-                     className="w-full pl-9 pr-4 py-4 bg-transparent border-b-2 border-slate-100 rounded-none text-sm outline-none focus:border-black text-black transition-all font-black placeholder-slate-300 uppercase tracking-widest"
+                     className="w-full pl-9 pr-4 py-4 bg-transparent border-b-2 border-slate-100 rounded-none text-sm outline-none focus:border-black text-black transition-all font-medium placeholder-slate-300 uppercase tracking-widest"
                   />
                </div>
                <div className="flex items-center gap-4 w-full lg:w-auto">
-                  <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-black hover:bg-slate-50 transition-all">
+                  <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-xl text-[10px] font-medium text-slate-400 uppercase tracking-widest hover:text-black hover:bg-slate-50 transition-all">
                      <Calendar size={16} strokeWidth={3} /> Execution Date
                   </button>
-                  <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+                  <button className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-xl text-[10px] font-medium text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
                      <Filter size={16} strokeWidth={3} /> Journal Class
                   </button>
                </div>
@@ -179,11 +179,11 @@ const Payments = () => {
                <table className="w-full text-left border-collapse">
                   <thead>
                      <tr className="bg-slate-50 border-b border-slate-100">
-                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Transaction Narrative</th>
-                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Methodology</th>
-                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Flow Class</th>
-                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Aggregate Value</th>
-                        <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] text-right">Verification</th>
+                        <th className="px-10 py-8 text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em]">Transaction Narrative</th>
+                        <th className="px-10 py-8 text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em]">Methodology</th>
+                        <th className="px-10 py-8 text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em]">Flow Class</th>
+                        <th className="px-10 py-8 text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em]">Aggregate Value</th>
+                        <th className="px-10 py-8 text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em] text-right">Verification</th>
                      </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -191,10 +191,10 @@ const Payments = () => {
                         <tr key={trx.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                            <td className="px-10 py-10">
                               <div>
-                                 <p className="text-xl font-manrope font-black text-slate-900 tracking-tight leading-none mb-3">
+                                 <p className="text-xl font-manrope font-medium text-slate-900 tracking-tight leading-none mb-3">
                                     {getCustomerName(trx)}
                                  </p>
-                                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] flex items-center gap-2">
+                                 <p className="text-[10px] text-slate-400 font-medium uppercase tracking-[0.3em] flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-slate-200"></span> ID: {trx.id}
                                  </p>
                               </div>
@@ -202,31 +202,30 @@ const Payments = () => {
                            <td className="px-10 py-10">
                               <div className="flex items-center gap-4">
                                  <Landmark size={18} className="text-black transition-colors" strokeWidth={2.5} />
-                                 <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
+                                 <span className="text-[10px] font-medium text-slate-900 uppercase tracking-widest">
                                     {getMethodName(trx)}
                                  </span>
                               </div>
                            </td>
                            <td className="px-10 py-10">
-                              <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-xl shadow-sm border ${
-                                 trx.type === 'Credit' ? 'bg-emerald-50 text-[var(--sacred-emerald)] border-emerald-100' : 'bg-red-50 text-red-500 border-red-100'
-                              }`}>
+                              <span className={`text-[9px] font-medium uppercase tracking-[0.2em] px-5 py-2 rounded-xl shadow-sm border ${trx.type === 'Credit' ? 'bg-emerald-50 text-[var(--sacred-emerald)] border-emerald-100' : 'bg-red-50 text-red-500 border-red-100'
+                                 }`}>
                                  {trx.type} Entry
                               </span>
                            </td>
                            <td className="px-10 py-10">
-                              <p className={`text-2xl font-manrope font-black tracking-tighter leading-none ${trx.type === 'Credit' ? 'text-[var(--sacred-emerald)]' : 'text-red-500'}`}>
+                              <p className={`text-2xl font-manrope font-medium tracking-tighter leading-none ${trx.type === 'Credit' ? 'text-[var(--sacred-emerald)]' : 'text-red-500'}`}>
                                  {trx.type === 'Credit' ? '+' : '-'}${parseFloat(trx.amount || 0).toLocaleString()}
                               </p>
                            </td>
                            <td className="px-10 py-10 text-right">
                               <div className="flex flex-col items-end gap-3">
-                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+                                 <p className="text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em]">
                                     {trx.date || trx.created_at ? new Date(trx.date || trx.created_at).toLocaleDateString() : '—'}
                                  </p>
                                  <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
                                     <div className={`w-2 h-2 rounded-full ${trx.status === 'Verified' ? 'bg-[var(--sacred-emerald)]' : trx.status === 'Processing' ? 'bg-amber-400' : 'bg-slate-900 shadow-[0_0_8px_black]'}`}></div>
-                                    <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.1em]">{trx.status}</span>
+                                    <span className="text-[10px] font-medium text-slate-900 uppercase tracking-[0.1em]">{trx.status}</span>
                                  </div>
                               </div>
                            </td>
@@ -237,7 +236,7 @@ const Payments = () => {
             </div>
 
             {/* Pagination/Load Footer */}
-            <Pagination 
+            <Pagination
                currentPage={currentPage}
                totalPages={totalPages}
                onPageChange={goToPage}

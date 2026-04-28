@@ -57,14 +57,14 @@ const StaffManagement = () => {
         >
           <div className="flex-1 min-w-[220px] space-y-3">
             <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.18em] text-white"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-medium uppercase tracking-[0.18em] text-white"
               style={{ background: '#1a1916' }}
             >
               <ShieldCheck size={10} strokeWidth={3} />
               Operations Division
             </div>
             <h1
-              className="text-5xl lg:text-6xl font-extrabold text-[#1a1916] leading-none"
+              className="text-5xl lg:text-6xl font-medium text-[#1a1916] leading-none"
               style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.03em' }}
             >
               Staff Management
@@ -86,8 +86,8 @@ const StaffManagement = () => {
                 style={{ background: '#ffffff', border: '1.5px solid #e2e0d8' }}
               >
                 <Icon size={13} style={{ color: '#78776f' }} />
-                <span className="text-[15px] font-bold text-[#1a1916]">{val}</span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#b0aea5]">{label}</span>
+                <span className="text-[15px] font-medium text-[#1a1916]">{val}</span>
+                <span className="text-[9px] font-medium uppercase tracking-[0.12em] text-[#b0aea5]">{label}</span>
               </div>
             ))}
           </div>
@@ -123,7 +123,7 @@ const StaffManagement = () => {
                 />
               </div>
               <button
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-[0.12em] transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[10px] font-medium uppercase tracking-[0.12em] transition-all cursor-pointer"
                 style={{ background: '#ffffff', border: '1.5px solid #e2e0d8', color: '#78776f' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = '#1a1916'; e.currentTarget.style.color = '#1a1916'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = '#e2e0d8'; e.currentTarget.style.color = '#78776f'; }}
@@ -132,7 +132,7 @@ const StaffManagement = () => {
                 Filter
               </button>
               <div
-                className="ml-auto px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-[0.12em]"
+                className="ml-auto px-3 py-1.5 rounded text-[9px] font-medium uppercase tracking-[0.12em]"
                 style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8', color: '#78776f' }}
               >
                 {filtered.length} staff members
@@ -164,7 +164,7 @@ const StaffManagement = () => {
                   {isLoading ? (
                     <tr>
                       <td colSpan={3} className="py-24 text-center">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c5c2b8]">Synchronizing Ground Data...</p>
+                        <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#c5c2b8]">Synchronizing Ground Data...</p>
                       </td>
                     </tr>
                   ) : filtered.length > 0 ? filtered.map((s, i) => {
@@ -185,13 +185,13 @@ const StaffManagement = () => {
                         <td className="px-7 py-4">
                           <div className="flex items-center gap-3.5">
                             <div
-                              className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                              className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-medium"
                               style={{ background: '#1a1916' }}
                             >
                               {s.name?.charAt(0).toUpperCase() || '?'}
                             </div>
                             <div>
-                              <div className="text-[12px] font-bold text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
+                              <div className="text-[12px] font-medium text-[#1a1916]" style={{ fontFamily: "'Sora', sans-serif" }}>
                                 {s.name || 'Incognito Staff'}
                               </div>
                               <div className="flex items-center gap-1 text-[10px] text-[#b0aea5] mt-0.5">
@@ -205,7 +205,7 @@ const StaffManagement = () => {
                         {/* Sector / Role */}
                         <td className="px-7 py-4">
                           <span
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-[0.08em]"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[9px] font-medium uppercase tracking-[0.08em]"
                             style={{ background: '#f5f4f0', color: '#78776f', border: '1.5px solid #e2e0d8' }}
                           >
                             <ShieldCheck size={10} />
@@ -217,7 +217,7 @@ const StaffManagement = () => {
                         <td className="px-7 py-4">
                           <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#1a7a4a]" />
-                            <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#1a7a4a]">Online</span>
+                            <span className="text-[9px] font-medium uppercase tracking-[0.08em] text-[#1a7a4a]">Online</span>
                           </div>
                         </td>
 
@@ -228,7 +228,7 @@ const StaffManagement = () => {
                       <td colSpan={5} className="py-24 text-center">
                         <div className="flex flex-col items-center gap-3">
                           <Users size={36} style={{ color: '#e2e0d8' }} strokeWidth={1.2} />
-                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c5c2b8]">No staff records found</p>
+                          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#c5c2b8]">No staff records found</p>
                         </div>
                       </td>
                     </tr>

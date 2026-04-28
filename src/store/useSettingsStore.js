@@ -23,7 +23,7 @@ const useSettingsStore = create((set) => ({
       const extract = (res) => {
         if (res.status !== 'fulfilled') return null;
         let data = res.value.data;
-        
+
         // Handle Laravel Resource wrapping
         if (data && !Array.isArray(data) && Array.isArray(data.data)) {
           data = data.data;
@@ -40,30 +40,29 @@ const useSettingsStore = create((set) => ({
         return data;
       };
 
-      const [rawProfile, company, users, roles, permissions] = results.map(extract);
+      const [rawProfile, company, roles, permissions] = results.map(extract);
 
       // /settings/profile returns { success: true, user: { id, name, email, ... } }
       const profile = rawProfile?.user || rawProfile;
 
       // Backend Inconsistency Fix: Ensure permissions are always objects with IDs
       // Scavenge IDs from roles if the master list only has names (common if backend fix not applied)
-      const normalizedPermissions = Array.isArray(permissions) 
+      const normalizedPermissions = Array.isArray(permissions)
         ? permissions.map(p => {
-            if (typeof p !== 'string') return p;
-            // Scavenge the integer ID from roles if it exists there
-            const matchingPerm = roles?.flatMap(r => r.permissions || []).find(rp => rp.name === p);
-            return matchingPerm ? { id: matchingPerm.id, name: p } : { id: p, name: p };
-          })
+          if (typeof p !== 'string') return p;
+          // Scavenge the integer ID from roles if it exists there
+          const matchingPerm = roles?.flatMap(r => r.permissions || []).find(rp => rp.name === p);
+          return matchingPerm ? { id: matchingPerm.id, name: p } : { id: p, name: p };
+        })
         : [];
 
 
-      set((state) => ({ 
+      set((state) => ({
         profile: profile || state.profile,
         company: company || state.company,
-        users: Array.isArray(users) ? users : state.users,
         roles: Array.isArray(roles) ? roles : state.roles,
         permissions: normalizedPermissions.length > 0 ? normalizedPermissions : state.permissions,
-        isLoading: false 
+        isLoading: false
       }));
     } catch (err) {
       set({ error: err.message, isLoading: false });
@@ -71,7 +70,7 @@ const useSettingsStore = create((set) => ({
   },
 
   updateProfile: async (data) => {
-    
+
     set({ isLoading: true });
     try {
       const response = await api.patch('/settings/profile', data);
@@ -95,13 +94,13 @@ const useSettingsStore = create((set) => ({
       const config = isFormData ? {
         headers: { 'Content-Type': 'multipart/form-data' }
       } : {};
- 
+
       const response = await api.post('/settings/company', data, config);
       console.log('addCompany response:', response.data);
-      
+
       const store = useSettingsStore.getState();
       await store.fetchSettings();
-      
+
       set({ isLoading: false });
       return response.data;
     } catch (err) {
@@ -121,7 +120,7 @@ const useSettingsStore = create((set) => ({
     set({ isLoading: true });
     try {
       const isFormData = data instanceof FormData;
-      
+
       // If image is present, we might need to use POST with _method=PATCH for certain backend setups
       const config = isFormData ? {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -129,11 +128,11 @@ const useSettingsStore = create((set) => ({
 
       const response = await api.patch('/settings/company', data, config);
       console.log('updateCompany response:', response.data);
-      
+
       // Refresh all settings to ensure everything is in sync
       const store = useSettingsStore.getState();
       await store.fetchSettings();
-      
+
       set({ isLoading: false });
       return response.data;
     } catch (err) {
@@ -233,14 +232,14 @@ const useSettingsStore = create((set) => ({
     set({ isLoading: true });
     try {
       const response = await api.post(`/settings/roles/${roleId}/permissions`, { permissions: permissionIds });
-      
+
       // Refresh roles to get updated permissions
       const rolesRes = await api.get('/settings/roles');
       let rolesData = rolesRes.data;
       if (rolesData && !Array.isArray(rolesData) && Array.isArray(rolesData.data)) {
         rolesData = rolesData.data;
       }
-      
+
       set({ roles: Array.isArray(rolesData) ? rolesData : [], isLoading: false });
       return response.data;
     } catch (err) {

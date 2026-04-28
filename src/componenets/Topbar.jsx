@@ -5,8 +5,8 @@ import { toast } from "react-hot-toast";
 
 const Topbar = ({ onMenuClick }) => {
   const { user, logout } = useAuthStore();
-  
- 
+
+
 
   const navigate = useNavigate();
 
@@ -18,10 +18,10 @@ const Topbar = ({ onMenuClick }) => {
 
   return (
     <div className="h-16 md:h-24 bg-white/80 backdrop-blur-2xl px-4 md:px-10 flex items-center justify-between sticky top-0 z-30 border-b border-[var(--primary)]/[0.08]">
-      
+
       {/* Mobile Menu Button & Search Wrapper */}
       <div className="flex items-center gap-3 w-full md:w-auto">
-        <button 
+        <button
           className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-black/5 rounded-xl transition-colors shrink-0"
           onClick={onMenuClick}
         >
@@ -39,7 +39,7 @@ const Topbar = ({ onMenuClick }) => {
             className="w-full pl-9 md:pl-12 pr-10 md:pr-16 py-2.5 md:py-4 bg-[var(--primary)]/[0.03] hover:bg-[var(--primary)]/[0.05] focus:bg-white focus:ring-[4px] focus:ring-[var(--desert-gold)]/20 border border-transparent focus:border-[var(--desert-gold)]/50 rounded-xl text-[13px] md:text-sm transition-all duration-300 outline-none placeholder-gray-400 font-medium text-[var(--on-surface)] shadow-sm focus:shadow-md"
           />
           <div className="absolute inset-y-0 right-3 md:right-4 flex items-center pointer-events-none">
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg md:rounded-xl bg-[var(--primary)]/5 text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden sm:flex border border-[var(--primary)]/5">
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg md:rounded-xl bg-[var(--primary)]/5 text-[9px] md:text-[10px] font-medium text-gray-400 uppercase tracking-widest hidden sm:flex border border-[var(--primary)]/5">
               <Command size={12} /> K
             </div>
           </div>
@@ -57,7 +57,7 @@ const Topbar = ({ onMenuClick }) => {
           </button>
           <button onClick={handleLogout} className="hidden sm:flex relative w-10 h-10 md:w-12 md:h-12 items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300 border border-transparent hover:border-red-100 group">
             <LogOut size={20} strokeWidth={1.5} className="md:w-[22px] md:h-[22px]" />
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Terminate Session</div>
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[8px] font-medium uppercase tracking-widest px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Terminate Session</div>
           </button>
         </div>
 
@@ -66,10 +66,10 @@ const Topbar = ({ onMenuClick }) => {
         {/* User Profile - VIP Style */}
         <div className="flex items-center gap-2 md:gap-4 cursor-pointer group hover:bg-[var(--primary)]/[0.03] p-1.5 md:p-2 md:pr-5 rounded-[1rem] md:rounded-[1.25rem] transition-all border border-transparent hover:border-[var(--desert-gold)]/20">
           <div className="text-right hidden sm:block">
-            <p className="text-[12px] md:text-[13px] font-manrope font-extrabold text-[var(--on-surface)] leading-none group-hover:text-[var(--desert-gold)] transition-colors">
+            <p className="text-[12px] md:text-[13px] font-manrope font-medium text-[var(--on-surface)] leading-none group-hover:text-[var(--desert-gold)] transition-colors">
               {user?.name || 'Authorized'}
             </p>
-            <p className="text-[9px] md:text-[10px] text-gray-500 font-bold mt-1.5 uppercase tracking-[0.2em] group-hover:text-[var(--desert-gold)] transition-colors">
+            <p className="text-[9px] md:text-[10px] text-gray-500 font-medium mt-1.5 uppercase tracking-[0.2em] group-hover:text-[var(--desert-gold)] transition-colors">
               {user?.role || 'Premium'}
             </p>
           </div>

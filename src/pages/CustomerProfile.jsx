@@ -20,12 +20,12 @@ const DetailRow = ({ icon: Icon, label, value, accent }) => (
       <div className="w-9 h-9 rounded-xl bg-[var(--surface)] border border-[var(--outline-variant)] flex items-center justify-center shrink-0">
         <Icon size={15} className="text-[var(--on-surface-variant)]" strokeWidth={2} />
       </div>
-      <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[var(--on-surface-variant)]">
+      <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-[var(--on-surface-variant)]">
         {label}
       </span>
     </div>
     <span
-      className={`text-sm font-manrope font-extrabold ${accent ? 'text-[var(--sacred-emerald,#10b981)]' : 'text-[var(--on-surface)]'
+      className={`text-sm font-manrope font-medium ${accent ? 'text-[var(--sacred-emerald,#10b981)]' : 'text-[var(--on-surface)]'
         }`}
     >
       {value ?? '—'}
@@ -36,8 +36,8 @@ const DetailRow = ({ icon: Icon, label, value, accent }) => (
 /* ─── stat card in header ────────────────────────────────────────────────── */
 const StatCard = ({ label, value }) => (
   <div className="flex flex-col items-center gap-1 px-8 border-r border-white/10 last:border-0">
-    <span className="text-2xl font-manrope font-black text-white">{value}</span>
-    <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.25em]">{label}</span>
+    <span className="text-2xl font-manrope font-medium text-white">{value}</span>
+    <span className="text-[9px] font-medium text-white/30 uppercase tracking-[0.25em]">{label}</span>
   </div>
 );
 
@@ -173,7 +173,7 @@ const CustomerProfile = () => {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh] gap-6 font-inter">
         <div className="w-16 h-16 rounded-full border-4 border-[var(--desert-gold)] border-t-transparent animate-spin" />
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--on-surface-variant)]">
+        <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-[var(--on-surface-variant)]">
           Retrieving Profile...
         </p>
       </div>
@@ -186,12 +186,12 @@ const CustomerProfile = () => {
         <div className="w-16 h-16 rounded-2xl bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] flex items-center justify-center">
           <User size={28} className="text-[var(--on-surface-variant)]" strokeWidth={1.5} />
         </div>
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--on-surface-variant)]">
+        <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-[var(--on-surface-variant)]">
           No profile data found
         </p>
         <Link
           to="/calculator"
-          className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] transition-colors"
+          className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] transition-colors"
         >
           <ArrowLeft size={14} /> Back to Calculator
         </Link>
@@ -216,15 +216,15 @@ const CustomerProfile = () => {
           <div className="p-3 bg-[var(--surface-container-lowest)] rounded-xl border border-[var(--outline-variant)] group-hover:shadow-md transition-all">
             <ArrowLeft size={18} strokeWidth={2.5} />
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-[0.25em]">Calculator</span>
+          <span className="text-[10px] font-medium uppercase tracking-[0.25em]">Calculator</span>
         </Link>
 
         <div className="text-center absolute left-1/2 -translate-x-1/2">
-          <h1 className="text-2xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight uppercase">
+          <h1 className="text-2xl font-manrope font-medium text-[var(--on-surface)] tracking-tight uppercase">
             Customer Profile
           </h1>
-          <p className="text-[10px] text-[var(--on-surface-variant)] font-extrabold uppercase tracking-[0.3em] mt-1">
-            Quotation <span className="text-[var(--sacred-emerald,#10b981)] font-black">Ready</span>
+          <p className="text-[10px] text-[var(--on-surface-variant)] font-medium uppercase tracking-[0.3em] mt-1">
+            Quotation <span className="text-[var(--sacred-emerald,#10b981)] font-medium">Ready</span>
           </p>
         </div>
 
@@ -232,7 +232,7 @@ const CustomerProfile = () => {
         <button
           onClick={() => window.open(pdfUrl, '_blank')}
           // onClick={handleDownload}
-          className="flex cursor-pointer  items-center gap-2.5 px-7 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-[var(--on-surface)] hover:shadow-lg hover:-translate-y-0.5 transition-all"
+          className="flex cursor-pointer  items-center gap-2.5 px-7 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-medium uppercase tracking-[0.25em] text-[var(--on-surface)] hover:shadow-lg hover:-translate-y-0.5 transition-all"
         >
           <Eye size={16} strokeWidth={2.5} />
           Preview PDF
@@ -248,7 +248,7 @@ const CustomerProfile = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-bl-[8rem] translate-x-20 -translate-y-20 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-500/5 rounded-tr-[5rem] pointer-events-none" />
 
-          <p className="text-[9px] font-black text-white/25 uppercase tracking-[0.5em] mb-8">
+          <p className="text-[9px] font-medium text-white/25 uppercase tracking-[0.5em] mb-8">
             Pilgrim · Verified Profile
           </p>
 
@@ -269,7 +269,7 @@ const CustomerProfile = () => {
 
             {/* Name + contacts */}
             <div className="flex-1">
-              <h2 className="text-3xl font-manrope font-extrabold text-white tracking-tight leading-tight">
+              <h2 className="text-3xl font-manrope font-medium text-white tracking-tight leading-tight">
                 {fullName || 'Unnamed Pilgrim'}
               </h2>
 
@@ -308,7 +308,7 @@ const CustomerProfile = () => {
           {/* LEFT — customer info ───────────────────────────────────────── */}
           <div className="lg:col-span-4">
             <div className="bg-[var(--surface-container-lowest)] rounded-2xl border border-[var(--outline-variant)] p-8 shadow-sm h-full">
-              <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
+              <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
                 <User size={14} strokeWidth={2.5} />
                 Identity
               </h3>
@@ -330,8 +330,8 @@ const CustomerProfile = () => {
 
               <div className="space-y-5 text-center mb-8">
                 <div>
-                  <p className="text-[10px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Full Name</p>
-                  <p className="text-lg font-manrope font-extrabold text-[var(--on-surface)]">
+                  <p className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-1">Full Name</p>
+                  <p className="text-lg font-manrope font-medium text-[var(--on-surface)]">
                     {fullName || '—'}
                   </p>
                 </div>
@@ -342,8 +342,8 @@ const CustomerProfile = () => {
                   <div className="flex items-center gap-3 px-5 py-4">
                     <Mail size={14} className="text-[var(--on-surface-variant)] shrink-0" />
                     <div>
-                      <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5">Email</p>
-                      <p className="text-[12px] font-bold text-[var(--on-surface)] break-all">{customer.email}</p>
+                      <p className="text-[9px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5">Email</p>
+                      <p className="text-[12px] font-medium text-[var(--on-surface)] break-all">{customer.email}</p>
                     </div>
                   </div>
                 )}
@@ -351,8 +351,8 @@ const CustomerProfile = () => {
                   <div className="flex items-center gap-3 px-5 py-4">
                     <Phone size={14} className="text-[var(--on-surface-variant)] shrink-0" />
                     <div>
-                      <p className="text-[9px] font-black text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5">Phone</p>
-                      <p className="text-[12px] font-bold text-[var(--on-surface)]">{customer.phone}</p>
+                      <p className="text-[9px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5">Phone</p>
+                      <p className="text-[12px] font-medium text-[var(--on-surface)]">{customer.phone}</p>
                     </div>
                   </div>
                 )}
@@ -360,7 +360,7 @@ const CustomerProfile = () => {
 
               {/* status badge */}
               <div className="mt-6 flex justify-center">
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-widest">
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full text-[9px] font-medium uppercase tracking-widest">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
                   Profile Verified
                 </span>
@@ -371,7 +371,7 @@ const CustomerProfile = () => {
           {/* RIGHT — package detail ──────────────────────────────────────── */}
           <div className="lg:col-span-8">
             <div className="bg-[var(--surface-container-lowest)] rounded-2xl border border-[var(--outline-variant)] p-8 shadow-sm">
-              <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
+              <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
                 <Package size={14} strokeWidth={2.5} />
                 Package Details
               </h3>
@@ -423,14 +423,14 @@ const CustomerProfile = () => {
               {/* dark total strip */}
               <div className="mt-6 bg-[#0f172a] rounded-xl p-6 flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] font-black text-white/25 uppercase tracking-[0.4em] mb-1">Official Quoted Value</p>
-                  <p className="text-3xl font-manrope font-extrabold text-white tracking-tight">
+                  <p className="text-[9px] font-medium text-white/25 uppercase tracking-[0.4em] mb-1">Official Quoted Value</p>
+                  <p className="text-3xl font-manrope font-medium text-white tracking-tight">
                     {results.finalPrice ? `$${Number(results.finalPrice).toLocaleString()}` : '—'}
                   </p>
                 </div>
                 {/* <div className="text-right">
-                  <p className="text-[9px] font-black text-white/25 uppercase tracking-[0.3em] mb-1">Markup Applied</p>
-                  <p className="text-2xl font-manrope font-extrabold text-emerald-400">
+                  <p className="text-[9px] font-medium text-white/25 uppercase tracking-[0.3em] mb-1">Markup Applied</p>
+                  <p className="text-2xl font-manrope font-medium text-emerald-400">
                     {inputs.markup ?? 0}%
                   </p>
                 </div> */}
@@ -449,7 +449,7 @@ const CustomerProfile = () => {
           <button
             onClick={handleCancel}
             disabled={savingLoading || isActionClicked}
-            className={`flex-1 flex items-center justify-center gap-3 py-5 bg-red-50 border border-red-200 rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex-1 flex items-center justify-center gap-3 py-5 bg-red-50 border border-red-200 rounded-2xl text-[10px] font-medium uppercase tracking-[0.25em] text-red-600 hover:bg-red-100 hover:-translate-y-0.5 transition-all ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <XCircle size={18} strokeWidth={2.5} />
             {savingLoading || isActionClicked ? 'Processing...' : 'Cancel'}
@@ -458,7 +458,7 @@ const CustomerProfile = () => {
           <button
             onClick={handleConfirm}
             disabled={savingLoading || isActionClicked}
-            className={`flex-1 flex items-center justify-center gap-3 py-5 btn-primary rounded-2xl text-[10px] font-extrabold uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20 ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex-1 flex items-center justify-center gap-3 py-5 btn-primary rounded-2xl text-[10px] font-medium uppercase tracking-[0.25em] text-white hover:-translate-y-0.5 transition-all shadow-xl shadow-emerald-900/20 ${savingLoading || isActionClicked ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <CheckCircle2 size={18} strokeWidth={2.5} />
             {savingLoading || isActionClicked ? 'Processing...' : 'Confirm'}

@@ -71,14 +71,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const isSubPathActive = (path, currentSiblings) => {
     if (location.pathname === path) return true;
     if (path === '/') return location.pathname === '/';
-    
+
     // Check if current path starts with this path
     if (location.pathname.startsWith(path + '/')) {
       // It's a prefix match. But is it the BEST prefix match among siblings?
       // If there's another sibling that also matches and is longer, then THIS one is not the "active" one.
-      const hasBetterSibling = currentSiblings.some(sibling => 
-        sibling.path !== path && 
-        location.pathname.startsWith(sibling.path) && 
+      const hasBetterSibling = currentSiblings.some(sibling =>
+        sibling.path !== path &&
+        location.pathname.startsWith(sibling.path) &&
         sibling.path.length > path.length
       );
       return !hasBetterSibling;
@@ -103,14 +103,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               <Plane size={22} strokeWidth={1.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-manrope font-black  text-white uppercase leading-none">
-               Process Iq Tech
+              <h1 className="text-lg font-manrope font-medium  text-white uppercase leading-none">
+                Process Iq Tech
               </h1>
-              <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-[var(--desert-gold)] mt-1.5 opacity-90">Premium</span>
+              <span className="text-[9px] uppercase tracking-[0.3em] font-medium text-[var(--desert-gold)] mt-1.5 opacity-90">Premium</span>
             </div>
           </div>
           {/* Mobile Close Button */}
-          <button 
+          <button
             className="lg:hidden p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
             onClick={() => setIsOpen && setIsOpen(false)}
           >
@@ -210,9 +210,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* Profile & Support - Minimalist Footer */}
       <div className="p-6 border-t border-white/8 relative overflow-hidden bg-white/[0.02]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--tertiary)] to-[var(--primary)] border border-white/15 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-black/30 shrink-0">{userInitials}</div>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--tertiary)] to-[var(--primary)] border border-white/15 flex items-center justify-center text-white text-xs font-medium shadow-lg shadow-black/30 shrink-0">{userInitials}</div>
           <div className="flex-1 overflow-hidden">
-            <p className="text-[11px] font-bold text-white uppercase tracking-wider truncate">{userName}</p>
+            <p className="text-[11px] font-medium text-white uppercase tracking-wider truncate">{userName}</p>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-1.5 h-1.5 rounded-full bg-[var(--desert-gold)] shadow-[0_0_12px_var(--desert-gold)] animate-pulse"></div>
               <p className="text-[8px] text-[var(--desert-gold)] uppercase tracking-widest truncate">Prime Controller</p>
@@ -227,7 +227,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </button>
         </div>
       </div>
-       {/* Profile & Support - Minimalist Footer */}
+      {/* Profile & Support - Minimalist Footer */}
     </div>
   );
 };

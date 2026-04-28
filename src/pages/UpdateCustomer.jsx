@@ -77,16 +77,16 @@ const UpdateCustomer = () => {
                   <div className="p-3 bg-[var(--surface-container-lowest)]    rounded-xl border border-[var(--outline-variant)] group-hover:shadow-md transition-all">
                      <ArrowLeft size={18} strokeWidth={2.5} />
                   </div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-[0.25em]">Pilgrim Profile</span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.25em]">Pilgrim Profile</span>
                </Link>
                <div className="text-center absolute left-1/2 -translate-x-1/2">
-                  <h1 className="text-2xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight uppercase">Update</h1>
-                  <p className="text-[10px] text-[var(--on-surface-variant)] font-extrabold uppercase tracking-[0.3em] mt-1">Record ID: {id}</p>
+                  <h1 className="text-2xl font-manrope font-medium text-[var(--on-surface)] tracking-tight uppercase">Update</h1>
+                  <p className="text-[10px] text-[var(--on-surface-variant)] font-medium uppercase tracking-[0.3em] mt-1">Record ID: {id}</p>
                </div>
                <button
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className={`btn-primary px-10 py-4 rounded-xl text-white font-extrabold text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-emerald-900/20 hover:-translate-y-1 transition-all flex items-center gap-3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`btn-primary px-10 py-4 rounded-xl text-white font-medium text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-emerald-900/20 hover:-translate-y-1 transition-all flex items-center gap-3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                >
                   <Save size={18} strokeWidth={2.5} />
                   {isLoading ? 'Synchronizing...' : 'Finalize Update'}
@@ -120,7 +120,7 @@ const UpdateCustomer = () => {
                            />
                         </label>
                      </div>
-                     <h4 className="text-xs font-extrabold text-[var(--on-surface)] uppercase   relative z-10">Biometric Identity</h4>
+                     <h4 className="text-xs font-medium text-[var(--on-surface)] uppercase   relative z-10">Biometric Identity</h4>
                      <p className="text-[10px] font-medium text-[var(--on-surface-variant)] mt-4 leading-relaxed opacity-60 relative z-10">Updating machine-readable documents.</p>
                   </div>
                </div>
@@ -129,28 +129,28 @@ const UpdateCustomer = () => {
                <div className="lg:col-span-9 space-y-10">
                   <div className="bg-[var(--surface-container-lowest)] rounded-xl p-12 shadow-sm border border-[var(--outline-variant)] group relative overflow-hidden">
                      <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--surface)] rounded-bl-[6rem] translate-x-16 -translate-y-16"></div>
-                     <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-12 flex items-center gap-3 relative z-10">
+                     <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-12 flex items-center gap-3 relative z-10">
                         <Fingerprint size={18} strokeWidth={2.5} /> Legal Identity
                      </h3>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">First Name</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">First Name</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.firstName}
                                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                               />
                            </div>
                         </div>
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Last Name</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Last Name</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.lastName}
                                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                               />
@@ -158,11 +158,11 @@ const UpdateCustomer = () => {
                         </div>
 
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Passport Index</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Passport Index</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none uppercase   placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none uppercase   placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.passport_no}
                                  onChange={(e) => setFormData({ ...formData, passport_no: e.target.value })}
                               />
@@ -170,11 +170,11 @@ const UpdateCustomer = () => {
                            </div>
                         </div>
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Citizen Registry (CNIC)</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Citizen Registry (CNIC)</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.cnic}
                                  onChange={(e) => setFormData({ ...formData, cnic: e.target.value })}
                               />
@@ -186,17 +186,17 @@ const UpdateCustomer = () => {
 
                   <div className="bg-[var(--surface-container-lowest)] rounded-xl p-12 shadow-sm border border-[var(--outline-variant)] group relative overflow-hidden">
                      <div className="absolute bottom-0 left-0 w-32 h-32 bg-[var(--surface)] rounded-tr-[5rem] -translate-x-12 translate-y-12"></div>
-                     <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-12 flex items-center gap-3 relative z-10">
+                     <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.3em] mb-12 flex items-center gap-3 relative z-10">
                         <Globe size={18} strokeWidth={2.5} /> Global Reach
                      </h3>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mb-16 relative z-10">
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Communication Channel</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Communication Channel</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.phone}
                                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                               />
@@ -204,11 +204,11 @@ const UpdateCustomer = () => {
                            </div>
                         </div>
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Email Archive</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Email Archive</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border(--on-surface)] transition-all pb-4 flex items-center justify-between">
                               <input
                                  type="email"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.email}
                                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                               />
@@ -219,11 +219,11 @@ const UpdateCustomer = () => {
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Citizen City</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Citizen City</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.city}
                                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                               />
@@ -231,11 +231,11 @@ const UpdateCustomer = () => {
                            </div>
                         </div>
                         <div className="group">
-                           <label className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Sovereign State</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-4 block ml-1">Sovereign State</label>
                            <div className="relative border-b border-[var(--outline-variant)] group-focus-within:border-[var(--on-surface)] transition-all pb-4 flex items-center justify-between">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-sm font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
+                                 className="w-full bg-transparent text-sm font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/30"
                                  value={formData.country}
                                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                               />

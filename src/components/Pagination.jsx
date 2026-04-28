@@ -2,18 +2,18 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const Pagination = ({ 
-  currentPage, 
-  totalPages, 
-  onPageChange, 
-  startIndex, 
-  endIndex, 
-  totalItems 
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  startIndex,
+  endIndex,
+  totalItems
 }) => {
   if (totalPages <= 1 && totalItems <= 10) return null;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  
+
   // Logic to show fewer page numbers if there are too many
   const getVisiblePages = () => {
     if (totalPages <= 5) return pages;
@@ -27,7 +27,7 @@ const Pagination = ({
   return (
     <div className="px-8 py-5 border-t-[1.5px] border-[#e2e0d8] flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#fcfbf9]/50">
       <div className="text-[11px] font-medium text-[#78776f]" style={{ fontFamily: "'Sora', sans-serif" }}>
-        Showing <span className="font-bold text-[#1a1916]">{startIndex}</span> to <span className="font-bold text-[#1a1916]">{endIndex}</span> of <span className="font-bold text-[#1a1916]">{totalItems}</span> results
+        Showing <span className="font-medium text-[#1a1916]">{startIndex}</span> to <span className="font-medium text-[#1a1916]">{endIndex}</span> of <span className="font-medium text-[#1a1916]">{totalItems}</span> results
       </div>
 
       <div className="flex items-center gap-2">
@@ -48,11 +48,11 @@ const Pagination = ({
           )}
 
           {visiblePages.map(page => (
-            <PageButton 
-              key={page} 
-              page={page} 
-              active={currentPage === page} 
-              onClick={onPageChange} 
+            <PageButton
+              key={page}
+              page={page}
+              active={currentPage === page}
+              onClick={onPageChange}
             />
           ))}
 
@@ -81,11 +81,10 @@ const PageButton = ({ page, active, onClick }) => (
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
     onClick={() => onClick(page)}
-    className={`w-10 h-10 rounded-xl text-[12px] font-bold transition-all shadow-sm cursor-pointer flex items-center justify-center ${
-      active 
-        ? 'bg-[#1a1916] text-white' 
+    className={`w-10 h-10 rounded-xl text-[12px] font-medium transition-all shadow-sm cursor-pointer flex items-center justify-center ${active
+        ? 'bg-[#1a1916] text-white'
         : 'bg-white border-[1.5px] border-[#e2e0d8] text-[#78776f] hover:border-[#1a1916] hover:text-[#1a1916]'
-    }`}
+      }`}
     style={{ fontFamily: "'Sora', sans-serif" }}
   >
     {page}

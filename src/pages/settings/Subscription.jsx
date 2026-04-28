@@ -15,14 +15,14 @@ const Subscription = () => {
          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-14">
             <div className="space-y-3">
                <div
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.18em] text-white"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-medium uppercase tracking-[0.18em] text-white"
                   style={{ background: '#1a1916' }}
                >
                   <CreditCard size={10} strokeWidth={3} />
                   System Configuration
                </div>
                <h1
-                  className="text-5xl lg:text-6xl font-extrabold text-[#1a1916] leading-none"
+                  className="text-5xl lg:text-6xl font-medium text-[#1a1916] leading-none"
                   style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.03em' }}
                >
                   License & Billing
@@ -33,7 +33,7 @@ const Subscription = () => {
             </div>
 
             <button
-               className="h-12 px-8 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer shrink-0"
+               className="h-12 px-8 rounded-lg text-[10px] font-medium uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer shrink-0"
                style={{ background: '#1a1916', color: '#ffffff', border: '1.5px solid #1a1916' }}
                onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
@@ -54,22 +54,22 @@ const Subscription = () => {
                style={{ borderBottom: '1.5px solid #e2e0d8', background: '#1a1916' }}
             >
                <div className="flex flex-col gap-2">
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#78776f]">
+                  <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#78776f]">
                      Active Blueprint
                   </span>
                   <h3
-                     className="text-3xl lg:text-4xl font-extrabold text-white leading-none"
+                     className="text-3xl lg:text-4xl font-medium text-white leading-none"
                      style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.02em' }}
                   >
                      Enterprise Syndicate V2
                   </h3>
                </div>
                <div className="flex flex-col md:items-end gap-1">
-                  <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                  <span className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">
                      Fiscal Cycle Renews
                   </span>
                   <span
-                     className="text-[15px] font-bold text-white"
+                     className="text-[15px] font-medium text-white"
                      style={{ fontFamily: "'Sora', sans-serif" }}
                   >
                      24 August 2024
@@ -94,17 +94,17 @@ const Subscription = () => {
                      >
                         <div className="flex flex-col gap-4">
                            <div className="flex items-center justify-between">
-                              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                              <span className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">
                                  {stat.label}
                               </span>
                               <span
-                                 className="text-[10px] font-bold px-2 py-0.5 rounded"
+                                 className="text-[10px] font-medium px-2 py-0.5 rounded"
                                  style={
                                     isHigh
                                        ? { background: '#fff1f0', color: '#c23b2e', border: '1.5px solid #f7c1c1' }
                                        : isMid
-                                       ? { background: '#faeeda', color: '#854f0b', border: '1.5px solid #fac775' }
-                                       : { background: '#edf7f1', color: '#1a7a4a', border: '1.5px solid #9fe1cb' }
+                                          ? { background: '#faeeda', color: '#854f0b', border: '1.5px solid #fac775' }
+                                          : { background: '#edf7f1', color: '#1a7a4a', border: '1.5px solid #9fe1cb' }
                                  }
                               >
                                  {pct}%
@@ -127,7 +127,7 @@ const Subscription = () => {
                         </div>
 
                         <p className="text-[11px] font-medium text-[#b0aea5]">
-                           <span className="text-[#1a1916] font-bold">{stat.used.toLocaleString()}</span>
+                           <span className="text-[#1a1916] font-medium">{stat.used.toLocaleString()}</span>
                            {' '}/ {stat.total.toLocaleString()} limit
                         </p>
                      </div>

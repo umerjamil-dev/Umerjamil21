@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-   ArrowLeft, Phone, Mail, MapPin, 
+   ArrowLeft, Phone, Mail, MapPin,
    MessageSquare, Info, Save, X,
-   Globe, ShieldCheck, UserCheck, 
+   Globe, ShieldCheck, UserCheck,
    Calendar, Activity, Rss
 } from 'lucide-react';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -72,7 +72,7 @@ const UpdateLead = () => {
       } catch (err) {
          toast.error('Operational failure: ' + err.message);
          alert("Operational failure: " + err.message);
-         
+
       }
    };
 
@@ -81,22 +81,22 @@ const UpdateLead = () => {
          {/* Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
             <div>
-               <h1 className="text-3xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight">Refine Operational Lead</h1>
-               <p className="text-[var(--on-surface-variant)] text-sm mt-1 font-medium text-blue-500 uppercase font-black tracking-widest text-[10px]">
+               <h1 className="text-3xl font-manrope font-medium text-[var(--on-surface)] tracking-tight">Refine Operational Lead</h1>
+               <p className="text-[var(--on-surface-variant)] text-sm mt-1 font-medium text-blue-500 uppercase font-medium tracking-widest text-[10px]">
                   Modifying Inquiry ID: {id}
                </p>
             </div>
             <div className="flex items-center gap-3">
                <Link
                   to={`/leads/${id}`}
-                  className="px-6 py-3 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[11px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all flex items-center gap-2"
+                  className="px-6 py-3 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[11px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all flex items-center gap-2"
                >
                   Discard Changes
                </Link>
                <button
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className={`btn-primary px-8 py-3 rounded-xl text-white text-[11px] font-extrabold uppercase shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`btn-primary px-8 py-3 rounded-xl text-white text-[11px] font-medium uppercase shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                >
                   <Save size={18} strokeWidth={2.5} />
                   {isLoading ? 'Synchronizing...' : 'Update Intelligence'}
@@ -110,17 +110,17 @@ const UpdateLead = () => {
             {/* Main Form Fields (2/3) */}
             <div className="lg:col-span-2 space-y-8">
                <div className="bg-[var(--surface-container-lowest)] rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-10 flex items-center gap-2">
+                  <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-10 flex items-center gap-2">
                      <Info size={14} strokeWidth={2.5} /> Core Identity
                   </h3>
 
                   <div className="space-y-10">
                      <div className="group">
-                        <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Full Identity Name</label>
+                        <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Full Identity Name</label>
                         <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                            <input
                               type="text"
-                              className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                              className="w-full bg-transparent text-lg font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
                               value={formData.name}
                               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                            />
@@ -129,22 +129,22 @@ const UpdateLead = () => {
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div className="group">
-                           <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Primary Contact</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Primary Contact</label>
                            <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                               <input
                                  type="text"
-                                 className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                                 className="w-full bg-transparent text-lg font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
                                  value={formData.phone}
                                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                               />
                            </div>
                         </div>
                         <div className="group">
-                           <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Email Archive</label>
+                           <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Email Archive</label>
                            <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3">
                               <input
                                  type="email"
-                                 className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                                 className="w-full bg-transparent text-lg font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
                                  value={formData.email}
                                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                               />
@@ -153,11 +153,11 @@ const UpdateLead = () => {
                      </div>
 
                      <div className="group">
-                        <label className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Geographical Origin</label>
+                        <label className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-2 block ml-1">Geographical Origin</label>
                         <div className="relative border-b-2 border-[var(--surface-container-low)] group-focus-within:border-[var(--on-surface)] transition-all pb-3 flex items-center justify-between">
                            <input
                               type="text"
-                              className="w-full bg-transparent text-lg font-manrope font-extrabold text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
+                              className="w-full bg-transparent text-lg font-manrope font-medium text-[var(--on-surface)] outline-none placeholder-[var(--on-surface-variant)]/40"
                               value={formData.city}
                               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                            />
@@ -168,7 +168,7 @@ const UpdateLead = () => {
                </div>
 
                <div className="bg-[var(--surface-container-lowest)] rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8 flex items-center gap-2">
+                  <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8 flex items-center gap-2">
                      <MessageSquare size={14} strokeWidth={2.5} /> Inquiry Transcription
                   </h3>
                   <textarea
@@ -179,7 +179,7 @@ const UpdateLead = () => {
                </div>
 
                <div className="bg-[var(--surface-container-lowest)] rounded-xl p-8 lg:p-10 shadow-sm border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8 flex items-center gap-2">
+                  <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8 flex items-center gap-2">
                      <ShieldCheck size={14} strokeWidth={2.5} /> Operational Intelligence
                   </h3>
                   <textarea
@@ -193,12 +193,12 @@ const UpdateLead = () => {
             {/* Metadata Sidebar (1/3) */}
             <div className="space-y-8">
                <div className="bg-[var(--surface-container-low)] rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8">Acquisition Channel</h3>
+                  <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-8">Acquisition Channel</h3>
                   <div className="grid grid-cols-1 gap-3">
                      {masterData.leadsource.map((src) => {
                         const sourceName = src.name || src;
                         const srcId = src.id || sourceName;
-                        
+
                         const getIcon = (name) => {
                            const n = name.toLowerCase();
                            if (n.includes('facebook')) return FacebookIcon;
@@ -211,23 +211,23 @@ const UpdateLead = () => {
 
                         return (
                            <>
-                           <button
-                              key={srcId}
-                              onClick={() => setFormData({ ...formData, source_id: srcId })}
-                              className={`flex items-center justify-between p-4 rounded-xl border transition-all ${formData.source_id === srcId
-                                 ? 'bg-white border-transparent shadow-xl shadow-black/5 ring-1 ring-[var(--on-surface)]/10'
-                                 : 'bg-white/40 border-transparent hover:border-[var(--outline-variant)] text-[var(--on-surface-variant)]'
-                                 }`}
-                           >
-                              <div className="flex items-center gap-3">
-                                 <SourceIcon size={16} className={formData.source_id === srcId ? 'text-[var(--on-surface)]' : ''} />
-                                 <span className={`text-[10px] font-extrabold uppercase tracking-widest ${formData.source_id === srcId ? 'text-[var(--on-surface)]' : ''}`}>
-                                    {sourceName}
-                                 </span>
-                              </div>
-                              {formData.source_id === srcId && <div className="w-2 h-2 rounded-full bg-[var(--on-surface)]"></div>}
-                           </button>
-                           
+                              <button
+                                 key={srcId}
+                                 onClick={() => setFormData({ ...formData, source_id: srcId })}
+                                 className={`flex items-center justify-between p-4 rounded-xl border transition-all ${formData.source_id === srcId
+                                    ? 'bg-white border-transparent shadow-xl shadow-black/5 ring-1 ring-[var(--on-surface)]/10'
+                                    : 'bg-white/40 border-transparent hover:border-[var(--outline-variant)] text-[var(--on-surface-variant)]'
+                                    }`}
+                              >
+                                 <div className="flex items-center gap-3">
+                                    <SourceIcon size={16} className={formData.source_id === srcId ? 'text-[var(--on-surface)]' : ''} />
+                                    <span className={`text-[10px] font-medium uppercase tracking-widest ${formData.source_id === srcId ? 'text-[var(--on-surface)]' : ''}`}>
+                                       {sourceName}
+                                    </span>
+                                 </div>
+                                 {formData.source_id === srcId && <div className="w-2 h-2 rounded-full bg-[var(--on-surface)]"></div>}
+                              </button>
+
                            </>
                         );
                      })}
@@ -235,11 +235,11 @@ const UpdateLead = () => {
                </div>
 
                <div className="bg-[var(--surface-container-lowest)] rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
+                  <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
                      <UserCheck size={14} /> Delegation Protocol
                   </h3>
                   <select
-                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer"
+                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-medium text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] appearance-none cursor-pointer"
                      value={formData.assigned_to_id}
                      onChange={(e) => setFormData({ ...formData, assigned_to_id: e.target.value })}
                   >
@@ -251,19 +251,19 @@ const UpdateLead = () => {
                </div>
 
                <div className="bg-[var(--surface-container-lowest)] rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
+                  <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
                      <Calendar size={14} /> Follow-up Matrix
                   </h3>
                   <input
                      type="date"
-                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-bold text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer"
+                     className="w-full p-4 bg-[var(--surface)] rounded-xl text-[11px] font-medium text-[var(--on-surface)] outline-none border border-[var(--outline-variant)] cursor-pointer"
                      value={formData.follow_up_date}
                      onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
                   />
                </div>
 
                <div className="bg-[var(--surface-container-lowest)] rounded-xl p-8 border border-[var(--outline-variant)]">
-                  <h3 className="text-[10px] font-extrabold text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
+                  <h3 className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] mb-6 flex items-center gap-2">
                      <Activity size={14} /> Lifecycle Status
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
@@ -271,7 +271,7 @@ const UpdateLead = () => {
                         <button
                            key={s.id || s}
                            onClick={() => setFormData({ ...formData, status_id: s.id || s })}
-                           className={`py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-widest transition-all border ${formData.status_id === (s.id || s)
+                           className={`py-3 rounded-xl text-[9px] font-medium uppercase tracking-widest transition-all border ${formData.status_id === (s.id || s)
                               ? 'bg-[var(--on-surface)] text-white border-transparent shadow-lg'
                               : 'bg-[var(--surface)] text-[var(--on-surface-variant)] border-[var(--outline-variant)] hover:bg-[var(--surface-container-high)]'
                               }`}
@@ -285,7 +285,7 @@ const UpdateLead = () => {
                <div className="bg-[var(--grad-black)] rounded-xl p-8 text-white relative overflow-hidden group">
                   <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-tl-[4rem] group-hover:scale-110 transition-transform"></div>
                   <ShieldCheck className="text-white/40 mb-6" size={28} strokeWidth={1.5} />
-                  <h4 className="text-[11px] font-extrabold uppercase mb-2">Protocol Note</h4>
+                  <h4 className="text-[11px] font-medium uppercase mb-2">Protocol Note</h4>
                   <p className="text-[10px] text-white/60 leading-relaxed font-medium">
                      Ensure all data points are verified against the customer's travel documentation before authorization.
                   </p>

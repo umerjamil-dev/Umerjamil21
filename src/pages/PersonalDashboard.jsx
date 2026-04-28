@@ -66,20 +66,20 @@ const PersonalDashboard = () => {
       animate="visible"
       className="mx-auto max-w-[1600px] space-y-8 px-4 sm:px-6 pb-16 pt-6 font-inter"
     >
-      
+
       {/* Header */}
       <motion.div
         variants={itemVariants}
         className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
       >
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-[var(--desert-gold)] text-[10px] font-extrabold uppercase tracking-[0.35em]">
+          <div className="flex items-center gap-2 text-[var(--desert-gold)] text-[10px] font-medium uppercase tracking-[0.35em]">
             <Sparkles size={14} strokeWidth={2.5} />
             Personal Nexus
           </div>
 
           <div>
-            <h1 className="text-4xl md:text-5xl font-manrope font-extrabold text-[var(--on-surface)] tracking-tight leading-none">
+            <h1 className="text-4xl md:text-5xl font-manrope font-medium text-[var(--on-surface)] tracking-tight leading-none">
               Salam,{' '}
               <span className="text-[var(--desert-gold)]">
                 {user?.name?.split(' ')[0] || 'Member'}
@@ -97,10 +97,10 @@ const PersonalDashboard = () => {
             <Award size={20} />
           </div>
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-gray-400">
+            <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-gray-400">
               Rank
             </p>
-            <p className="text-sm font-extrabold uppercase tracking-tight text-[var(--on-surface)]">
+            <p className="text-sm font-medium uppercase tracking-tight text-[var(--on-surface)]">
               Gold Affiliate
             </p>
           </div>
@@ -125,15 +125,15 @@ const PersonalDashboard = () => {
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 border border-gray-100">
                 <stat.icon size={22} style={{ color: stat.color }} />
               </div>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
                 {stat.sub}
               </span>
             </div>
 
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-gray-400 mb-1">
+            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-400 mb-1">
               {stat.label}
             </p>
-            <h3 className="text-3xl font-manrope font-extrabold tracking-tight text-[#111827]">
+            <h3 className="text-3xl font-manrope font-medium tracking-tight text-[#111827]">
               {stat.val}
             </h3>
           </motion.div>
@@ -149,15 +149,15 @@ const PersonalDashboard = () => {
         >
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 className="text-2xl font-manrope font-extrabold tracking-tight text-[#111827]">
+              <h3 className="text-2xl font-manrope font-medium tracking-tight text-[#111827]">
                 My Momentum
               </h3>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mt-1">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-gray-400 mt-1">
                 Monthly Operational Flow
               </p>
             </div>
 
-            <div className="flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-[10px] font-extrabold uppercase tracking-widest text-[var(--on-surface)]">
+            <div className="flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-[var(--on-surface)]">
               <Activity size={14} className="text-[var(--desert-gold)]" />
               Live Track
             </div>
@@ -206,10 +206,10 @@ const PersonalDashboard = () => {
           className="rounded-3xl border border-gray-200 bg-white p-6 md:p-8 shadow-sm"
         >
           <div className="mb-8">
-            <h3 className="text-2xl font-manrope font-extrabold tracking-tight text-[#111827] text-center">
+            <h3 className="text-2xl font-manrope font-medium tracking-tight text-[#111827] text-center">
               Portfolio Mix
             </h3>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 text-center mt-1">
+            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-400 text-center mt-1">
               Lead Volume by Category
             </p>
           </div>
@@ -232,8 +232,8 @@ const PersonalDashboard = () => {
                 slotProps={{ legend: { hidden: true } }}
               />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-                <p className="text-2xl font-manrope font-extrabold text-[#111827]">70%</p>
-                <p className="text-[9px] font-extrabold text-gray-400 uppercase tracking-widest">
+                <p className="text-2xl font-manrope font-medium text-[#111827]">70%</p>
+                <p className="text-[9px] font-medium text-gray-400 uppercase tracking-widest">
                   Efficiency
                 </p>
               </div>
@@ -249,10 +249,10 @@ const PersonalDashboard = () => {
                     className="w-2 h-2 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-[10px] font-extrabold text-gray-600 uppercase tracking-wider">
+                  <span className="text-[10px] font-medium text-gray-600 uppercase tracking-wider">
                     {item.label}
                   </span>
-                  <span className="text-xs font-bold text-[#111827] ml-auto">
+                  <span className="text-xs font-medium text-[#111827] ml-auto">
                     {item.value}%
                   </span>
                 </div>
@@ -271,10 +271,10 @@ const PersonalDashboard = () => {
         >
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="text-2xl font-manrope font-extrabold tracking-tight text-[#111827]">
+              <h3 className="text-2xl font-manrope font-medium tracking-tight text-[#111827]">
                 My System Pulse
               </h3>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mt-1">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-gray-400 mt-1">
                 Timeline of your latest operations
               </p>
             </div>
@@ -290,13 +290,12 @@ const PersonalDashboard = () => {
                 className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 transition-all hover:bg-white hover:shadow-sm"
               >
                 <div
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                    act.type === 'success'
-                      ? 'bg-[#10B981]/10 text-[#10B981]'
-                      : act.type === 'warning'
+                  className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${act.type === 'success'
+                    ? 'bg-[#10B981]/10 text-[#10B981]'
+                    : act.type === 'warning'
                       ? 'bg-orange-100 text-orange-600'
                       : 'bg-blue-100 text-blue-600'
-                  }`}
+                    }`}
                 >
                   {act.type === 'success' ? (
                     <CheckCircle2 size={20} />
@@ -306,10 +305,10 @@ const PersonalDashboard = () => {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-extrabold text-[var(--desert-gold)] uppercase tracking-[0.2em] mb-1">
+                  <p className="text-[10px] font-medium text-[var(--desert-gold)] uppercase tracking-[0.2em] mb-1">
                     {act.time}
                   </p>
-                  <h4 className="text-sm font-extrabold text-[var(--on-surface)] tracking-tight truncate">
+                  <h4 className="text-sm font-medium text-[var(--on-surface)] tracking-tight truncate">
                     {act.action}
                   </h4>
                   <p className="text-xs text-gray-500 font-medium truncate">
@@ -341,7 +340,7 @@ const PersonalDashboard = () => {
               <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center">
                 <item.icon size={24} style={{ color: item.color }} />
               </div>
-              <h4 className="text-xs font-extrabold text-[#111827] uppercase tracking-[0.18em] text-center">
+              <h4 className="text-xs font-medium text-[#111827] uppercase tracking-[0.18em] text-center">
                 {item.title}
               </h4>
             </div>

@@ -12,6 +12,7 @@ const LiveHotelBooking = () => {
       searchHotels,
       selectHotel,
    } = useHotelStore();
+   console.log("Hotels Found", searchedHotels);
 
    const [suggestions, setSuggestions] = useState([]);
    const [showSuggestions, setShowSuggestions] = useState(false);
@@ -58,7 +59,7 @@ const LiveHotelBooking = () => {
    const formatPrice = (price) => {
       if (!price) return 'N/A';
       const currencySymbols = {
-         PKR: '₨',
+         PKR: 'Rs',
          USD: '$',
          EUR: '€',
          SAR: '﷼',
@@ -88,7 +89,7 @@ const LiveHotelBooking = () => {
          <div className="flex items-center gap-3 pb-4 border-b border-slate-200">
             <Building2 className="text-black" size={28} />
             <div>
-               <h1 className="text-2xl font-black text-slate-900 tracking-tight">Live Hotel Search</h1>
+               <h1 className="text-2xl font-medium text-slate-900 tracking-tight">Live Hotel Search</h1>
                <p className="text-slate-500 text-xs font-medium">Real-time prices in Makkah & Madinah</p>
             </div>
          </div>
@@ -98,7 +99,7 @@ const LiveHotelBooking = () => {
             {/* Row 1: City + Dates */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                <div className="relative" ref={suggestionsRef}>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">City</label>
+                  <label className="text-[10px] font-medium text-slate-500 uppercase tracking-wider block mb-1">City</label>
                   <input
                      type="text"
                      value={searchParams.city}
@@ -113,7 +114,7 @@ const LiveHotelBooking = () => {
                   {showSuggestions && (suggestions.length > 0 || isLoadingSuggestions) && (
                      <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         {isLoadingSuggestions ? (
-                           <div className="p-3 text-center text-xs font-bold text-slate-500 flex items-center justify-center gap-2">
+                           <div className="p-3 text-center text-xs font-medium text-slate-500 flex items-center justify-center gap-2">
                               <Loader2 size={14} className="animate-spin text-black" />
                               Loading...
                            </div>
@@ -127,7 +128,7 @@ const LiveHotelBooking = () => {
                                  }}
                                  className="px-3 py-2 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-0"
                               >
-                                 <div className="text-sm font-bold text-slate-900">{item.name}</div>
+                                 <div className="text-sm font-medium text-slate-900">{item.name}</div>
                                  {item.location && <div className="text-xs text-slate-500 truncate">{item.location}</div>}
                               </div>
                            ))
@@ -136,7 +137,7 @@ const LiveHotelBooking = () => {
                   )}
                </div>
                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Check-in</label>
+                  <label className="text-[10px] font-medium text-slate-500 uppercase tracking-wider block mb-1">Check-in</label>
                   <input
                      type="date"
                      value={searchParams.check_in}
@@ -145,7 +146,7 @@ const LiveHotelBooking = () => {
                   />
                </div>
                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Check-out</label>
+                  <label className="text-[10px] font-medium text-slate-500 uppercase tracking-wider block mb-1">Check-out</label>
                   <input
                      type="date"
                      value={searchParams.check_out}
@@ -158,11 +159,11 @@ const LiveHotelBooking = () => {
             {/* Row 2: Guests + Currency */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Guests</label>
+                  <label className="text-[10px] font-medium text-slate-500 uppercase tracking-wider block mb-1">Guests</label>
                   <div className="flex items-center gap-2">
                      <button
                         onClick={() => updateSearchParams({ adults: Math.max(1, searchParams.adults - 1) })}
-                        className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-black hover:text-white font-bold text-lg transition-colors"
+                        className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-black hover:text-white font-medium text-lg transition-colors"
                      >
                         −
                      </button>
@@ -170,19 +171,19 @@ const LiveHotelBooking = () => {
                         type="number"
                         value={searchParams.adults}
                         onChange={(e) => updateSearchParams({ adults: parseInt(e.target.value) || 1 })}
-                        className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-center outline-none focus:border-black"
+                        className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-center outline-none focus:border-black"
                         min="1"
                      />
                      <button
                         onClick={() => updateSearchParams({ adults: searchParams.adults + 1 })}
-                        className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-black hover:text-white font-bold text-lg transition-colors"
+                        className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-black hover:text-white font-medium text-lg transition-colors"
                      >
                         +
                      </button>
                   </div>
                </div>
                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Currency</label>
+                  <label className="text-[10px] font-medium text-slate-500 uppercase tracking-wider block mb-1">Currency</label>
                   <select
                      value={searchParams.currency}
                      onChange={(e) => updateSearchParams({ currency: e.target.value })}
@@ -201,7 +202,7 @@ const LiveHotelBooking = () => {
                <button
                   onClick={searchHotels}
                   disabled={isSearching}
-                  className="px-6 py-2.5 bg-black text-white font-bold text-[11px] uppercase tracking-wider rounded-lg hover:bg-[var(--sacred-emerald)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm"
+                  className="px-6 py-2.5 bg-black text-white font-medium text-[11px] uppercase tracking-wider rounded-lg hover:bg-[var(--sacred-emerald)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm"
                >
                   {isSearching ? (
                      <>
@@ -230,7 +231,7 @@ const LiveHotelBooking = () => {
          {!isSearching && searchedHotels.length > 0 && (
             <div className="space-y-4">
                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-black text-slate-900">{searchedHotels.length} Hotels Found</h2>
+                  <h2 className="text-lg font-medium text-slate-900">{searchedHotels.length} Hotels Found</h2>
                </div>
 
                {searchedHotels.map((hotel, index) => {
@@ -266,11 +267,11 @@ const LiveHotelBooking = () => {
                                     </div>
                                  )}
                                  <div className="space-y-1.5 flex-1">
-                                    <h3 className="text-md font-black text-slate-900">{hotel.name}</h3>
+                                    <h3 className="text-md font-medium text-slate-900">{hotel.name}</h3>
                                     <div className="flex items-center gap-3 flex-wrap">
                                        {renderStars(hotelClass)}
                                        {rating > 0 && (
-                                          <span className="flex items-center gap-1 text-xs font-bold text-slate-600">
+                                          <span className="flex items-center gap-1 text-xs font-medium text-slate-600">
                                              <Star size={12} className="fill-black text-black" />
                                              {rating} ({reviews.toLocaleString()} reviews)
                                           </span>
@@ -278,18 +279,18 @@ const LiveHotelBooking = () => {
                                     </div>
                                     <div className="flex flex-wrap gap-1.5">
                                        {amenities.slice(0, 3).map((amenity, idx) => (
-                                          <span key={idx} className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-bold">
+                                          <span key={idx} className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-medium">
                                              {amenity}
                                           </span>
                                        ))}
                                        {amenities.length > 3 && (
-                                          <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-bold">
+                                          <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-medium">
                                              +{amenities.length - 3}
                                           </span>
                                        )}
                                     </div>
                                     {freeCancellation && (
-                                       <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 rounded-md text-[10px] font-bold">
+                                       <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 rounded-md text-[10px] font-medium">
                                           Free Cancellation
                                        </span>
                                     )}
@@ -299,10 +300,10 @@ const LiveHotelBooking = () => {
                               {/* Price */}
                               <div className="flex flex-col items-end justify-between min-w-[140px]">
                                  <div className="text-right">
-                                    <p className="text-[10px] font-bold text-slate-400">Starting from</p>
-                                    <p className="text-2xl font-black text-black">{formatPrice(price)}</p>
-                                    <p className="text-[10px] font-bold text-slate-400">per night</p>
-                                    <p className="text-[10px] font-bold text-slate-400 mt-1">via {hotel.source || 'N/A'}</p>
+                                    <p className="text-[10px] font-medium text-slate-400">Starting from</p>
+                                    <p className="text-2xl font-medium text-black">{formatPrice(price.lowest)}</p>
+                                    <p className="text-[10px] font-medium text-slate-400">per night</p>
+                                    <p className="text-[10px] font-medium text-slate-400 mt-1">via {hotel.source || 'N/A'}</p>
                                  </div>
                               </div>
                            </div>
@@ -311,12 +312,12 @@ const LiveHotelBooking = () => {
                         {/* Expanded Details - Keep same but with compact styling */}
                         {selectedHotel === hotel && (
                            <div className="border-t border-slate-200 p-5 bg-slate-50 rounded-b-xl">
-                              <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-4">Hotel Details</h4>
+                              <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider mb-4">Hotel Details</h4>
                               {hotel.gps_coordinates && (
                                  <div className="bg-white p-4 rounded-lg border border-slate-200 mb-4">
                                     <div className="flex items-center gap-2 mb-2">
                                        <MapPin size={16} className="text-black" />
-                                       <h5 className="text-xs font-black text-slate-900">Location</h5>
+                                       <h5 className="text-xs font-medium text-slate-900">Location</h5>
                                     </div>
                                     <p className="text-xs font-medium text-slate-600">
                                        Lat: {hotel.gps_coordinates.latitude} | Lng: {hotel.gps_coordinates.longitude}
@@ -325,7 +326,7 @@ const LiveHotelBooking = () => {
                               )}
                               {amenities.length > 0 && (
                                  <div className="bg-white p-4 rounded-lg border border-slate-200 mb-4">
-                                    <h5 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-3">All Amenities</h5>
+                                    <h5 className="text-xs font-medium text-slate-900 uppercase tracking-wider mb-3">All Amenities</h5>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                                        {amenities.map((amenity, idx) => (
                                           <div key={idx} className="flex items-center gap-2 p-2 bg-slate-50 rounded-md">
@@ -338,22 +339,22 @@ const LiveHotelBooking = () => {
                               )}
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                  <div className="bg-white p-4 rounded-lg border border-slate-200">
-                                    <p className="text-[10px] font-bold text-slate-400 mb-1">Hotel Class</p>
+                                    <p className="text-[10px] font-medium text-slate-400 mb-1">Hotel Class</p>
                                     <div className="flex items-center gap-2">
                                        {renderStars(hotelClass)}
-                                       <span className="text-sm font-black text-slate-900">{hotelClass}-Star</span>
+                                       <span className="text-sm font-medium text-slate-900">{hotelClass}-Star</span>
                                     </div>
                                  </div>
                                  <div className="bg-white p-4 rounded-lg border border-slate-200">
-                                    <p className="text-[10px] font-bold text-slate-400 mb-1">Guest Rating</p>
-                                    <p className="text-lg font-black text-black">{rating}/5.0</p>
-                                    <p className="text-[10px] font-bold text-slate-500 mt-0.5">{reviews.toLocaleString()} reviews</p>
+                                    <p className="text-[10px] font-medium text-slate-400 mb-1">Guest Rating</p>
+                                    <p className="text-lg font-medium text-black">{rating}/5.0</p>
+                                    <p className="text-[10px] font-medium text-slate-500 mt-0.5">{reviews.toLocaleString()} reviews</p>
                                  </div>
                                  <div className="bg-white p-4 rounded-lg border border-slate-200">
-                                    <p className="text-[10px] font-bold text-slate-400 mb-1">Price per Night</p>
-                                    <p className="text-lg font-black text-black">{formatPrice(price)}</p>
+                                    <p className="text-[10px] font-medium text-slate-400 mb-1">Price per Night</p>
+                                    <p className="text-lg font-medium text-black">{formatPrice(price.lowest)}</p>
                                     {freeCancellation && (
-                                       <p className="text-[10px] font-bold text-green-600 mt-0.5">Free cancellation</p>
+                                       <p className="text-[10px] font-medium text-green-600 mt-0.5">Free cancellation</p>
                                     )}
                                  </div>
                               </div>
@@ -368,7 +369,7 @@ const LiveHotelBooking = () => {
          {!isSearching && searchedHotels.length === 0 && (
             <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
                <Building2 className="mx-auto text-slate-300 mb-4" size={48} />
-               <p className="text-slate-400 font-bold text-sm mb-1">No hotels searched yet</p>
+               <p className="text-slate-400 font-medium text-sm mb-1">No hotels searched yet</p>
                <p className="text-slate-400 text-xs">Enter your travel details and click "Search"</p>
             </div>
          )}

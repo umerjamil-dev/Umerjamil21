@@ -50,7 +50,7 @@ const Permissions = () => {
          }
       }
    };
-   
+
    const handleEdit = (p) => {
       setEditingPermission(p);
       setIsEditing(true);
@@ -88,14 +88,14 @@ const Permissions = () => {
          >
             <div className="space-y-3">
                <div
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.18em] text-white"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-[9px] font-medium uppercase tracking-[0.18em] text-white"
                   style={{ background: '#1a1916', letterSpacing: '0.18em' }}
                >
                   <Lock size={10} strokeWidth={3} />
                   Privilege Controller
                </div>
                <h1
-                  className="text-5xl lg:text-6xl font-extrabold text-[#1a1916] leading-none tracking-tight"
+                  className="text-5xl lg:text-6xl font-medium text-[#1a1916] leading-none tracking-tight"
                   style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.03em' }}
                >
                   Authorization
@@ -112,7 +112,7 @@ const Permissions = () => {
                   if (isAdding || isEditing) handleReset();
                   else setIsAdding(true);
                }}
-               className="h-12 px-8 rounded-lg text-[10px] font-bold uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer"
+               className="h-12 px-8 rounded-lg text-[10px] font-medium uppercase tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer"
                style={
                   isAdding || isEditing
                      ? { background: '#ffffff', color: '#78776f', border: '1.5px solid #c5c2b8' }
@@ -145,7 +145,7 @@ const Permissions = () => {
                      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5">
                         {/* Name Input */}
                         <div className="flex flex-col gap-2">
-                           <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                           <label className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">
                               Authorization ID
                            </label>
                            <div
@@ -166,7 +166,7 @@ const Permissions = () => {
 
                         {/* URL Input */}
                         <div className="flex flex-col gap-2">
-                           <label className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#78776f]">
+                           <label className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#78776f]">
                               Resource URL
                            </label>
                            <div
@@ -188,7 +188,7 @@ const Permissions = () => {
                      <button
                         type="submit"
                         disabled={isLoading}
-                        className="rounded-lg px-8 py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-all disabled:opacity-50 cursor-pointer flex-shrink-0"
+                        className="rounded-lg px-8 py-3 text-[10px] font-medium uppercase tracking-[0.15em] text-white transition-all disabled:opacity-50 cursor-pointer flex-shrink-0"
                         style={{ background: '#1a1916', height: '46px' }}
                      >
                         {isLoading ? 'Forging…' : isEditing ? 'Sync Changes' : 'Finalize'}
@@ -227,7 +227,7 @@ const Permissions = () => {
                   style={{ background: '#f5f4f0', border: '1.5px solid #e2e0d8' }}
                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                  <span className="text-[9px] font-bold text-[#78776f] uppercase tracking-widest">
+                  <span className="text-[9px] font-medium text-[#78776f] uppercase tracking-widest">
                      {filtered.length} Live
                   </span>
                </div>
@@ -244,7 +244,7 @@ const Permissions = () => {
                      >
                         <Zap size={28} className="text-[#e2e0d8]" />
                      </motion.div>
-                     <div className="mt-5 font-bold uppercase tracking-[0.25em] text-[#c5c2b8] text-[9px]">
+                     <div className="mt-5 font-medium uppercase tracking-[0.25em] text-[#c5c2b8] text-[9px]">
                         Synchronizing Registry…
                      </div>
                   </div>
@@ -256,7 +256,7 @@ const Permissions = () => {
                      >
                         <ShieldCheck size={24} className="text-[#c5c2b8]" />
                      </div>
-                     <div className="font-bold uppercase tracking-[0.25em] text-[#c5c2b8] text-[9px]">
+                     <div className="font-medium uppercase tracking-[0.25em] text-[#c5c2b8] text-[9px]">
                         No Capabilities Found
                      </div>
                   </div>
@@ -287,7 +287,7 @@ const Permissions = () => {
 
                            {/* Text */}
                            <div className="flex flex-col items-center gap-1 w-full overflow-hidden">
-                              <div className="text-[9px] font-bold text-[#1a1916] uppercase tracking-[0.05em] text-center break-words line-clamp-2 leading-tight select-none w-full">
+                              <div className="text-[9px] font-medium text-[#1a1916] uppercase tracking-[0.05em] text-center break-words line-clamp-2 leading-tight select-none w-full">
                                  {p.name.replace(/_/g, ' ')}
                               </div>
                               {p.url && (

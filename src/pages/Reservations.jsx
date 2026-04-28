@@ -31,20 +31,20 @@ const Reservations = () => {
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'Visa':      return { icon: ShieldCheck, color: '#059669', bg: '#ecfdf5', border: '#a7f3d0' };
-      case 'Hotel':     return { icon: Hotel,       color: '#d97706', bg: '#fffbeb', border: '#fde68a' };
-      case 'Flight':    return { icon: Plane,        color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' };
-      case 'Transport': return { icon: MapPin,       color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' };
-      default:          return { icon: ShieldCheck,  color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' };
+      case 'Visa': return { icon: ShieldCheck, color: '#059669', bg: '#ecfdf5', border: '#a7f3d0' };
+      case 'Hotel': return { icon: Hotel, color: '#d97706', bg: '#fffbeb', border: '#fde68a' };
+      case 'Flight': return { icon: Plane, color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' };
+      case 'Transport': return { icon: MapPin, color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' };
+      default: return { icon: ShieldCheck, color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' };
     }
   };
 
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Confirmed': return { bg: '#f0fdf4', text: '#15803d', border: '#bbf7d0', dot: '#22c55e' };
-      case 'Partial':   return { bg: '#fefce8', text: '#a16207', border: '#fef08a', dot: '#eab308' };
-      case 'Pending':   return { bg: '#f8fafc', text: '#64748b', border: '#e2e8f0', dot: '#94a3b8' };
-      default:          return { bg: '#f8fafc', text: '#64748b', border: '#e2e8f0', dot: '#94a3b8' };
+      case 'Partial': return { bg: '#fefce8', text: '#a16207', border: '#fef08a', dot: '#eab308' };
+      case 'Pending': return { bg: '#f8fafc', text: '#64748b', border: '#e2e8f0', dot: '#94a3b8' };
+      default: return { bg: '#f8fafc', text: '#64748b', border: '#e2e8f0', dot: '#94a3b8' };
     }
   };
 
@@ -65,7 +65,7 @@ const Reservations = () => {
   };
 
   const getPackageName = (reservation) => {
-    return  'Standard Package';
+    return 'Standard Package';
   };
 
   // Combine all reservations into one array with type labels
@@ -110,7 +110,7 @@ const Reservations = () => {
           <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#94a3b8' }}>
             Management
           </p>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-medium tracking-tight text-slate-900">
             Reservations
           </h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -141,7 +141,7 @@ const Reservations = () => {
             style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
           >
             <p className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-            <p className="text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</p>
+            <p className="text-2xl font-medium" style={{ color: stat.color }}>{stat.value}</p>
           </div>
         ))}
       </div>
@@ -231,7 +231,7 @@ const Reservations = () => {
 
                 // Get the correct route based on reservation type
                 const getDetailRoute = () => {
-                  switch(res.reservationType) {
+                  switch (res.reservationType) {
                     case 'Visa': return `/reservations/visa/${res.id}`;
                     case 'Hotel': return `/reservations/hotels/${res.id}`;
                     case 'Flight': return `/reservations/flights/${res.id}`;
@@ -285,7 +285,7 @@ const Reservations = () => {
                       <div className="flex items-center gap-2 text-sm text-slate-600">
                         <CalendarDays size={14} strokeWidth={1.8} style={{ color: '#94a3b8' }} />
                         {res.
-travel_date || '—'}
+                          travel_date || '—'}
                       </div>
                     </td>
 
@@ -334,7 +334,7 @@ travel_date || '—'}
         </div>
 
         {/* Footer */}
-        <Pagination 
+        <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={goToPage}

@@ -131,7 +131,7 @@ const WhatsAppSystem = () => {
                         >
                             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                         </button>
-                        <h1 className="text-xl font-bold text-gray-900 font-manrope">WhatsApp</h1>
+                        <h1 className="text-xl font-medium text-gray-900 font-manrope">WhatsApp</h1>
                     </div>
 
                     <div className="relative">
@@ -158,13 +158,13 @@ const WhatsAppSystem = () => {
                 <header className="px-6 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative z-10 shadow-sm">
                     <div className="flex items-center gap-4">
                         {/* <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                            <span className="text-lg font-black">{lead?.lead_name?.[0] || 'L'}</span>
+                            <span className="text-lg font-medium">{lead?.lead_name?.[0] || 'L'}</span>
                         </div> */}
                         <div>
-                            <h2 className="text-base font-bold text-gray-900">{lead?.lead_name}</h2>
+                            <h2 className="text-base font-medium text-gray-900">{lead?.lead_name}</h2>
                             <div className="flex items-center gap-1.5">
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                <span className="text-[11px] font-bold text-emerald-500 uppercase tracking-wider">{lead?.phone}</span>
+                                <span className="text-[11px] font-medium text-emerald-500 uppercase tracking-wider">{lead?.phone}</span>
                             </div>
                         </div>
                     </div>
@@ -188,7 +188,7 @@ const WhatsAppSystem = () => {
                             <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
                                 <MessageCircle size={40} />
                             </div>
-                            <p className="text-sm font-bold uppercase tracking-widest">No messages yet</p>
+                            <p className="text-sm font-medium uppercase tracking-widest">No messages yet</p>
                         </div>
                     ) : (
                         messages.map((m, idx) => {
@@ -210,7 +210,7 @@ const WhatsAppSystem = () => {
                                         `}>
                                             {m.body}
                                             <div className="flex items-center justify-end gap-1.5 mt-2">
-                                                <span className={`text-[10px] font-bold uppercase tracking-tighter opacity-60`}>
+                                                <span className={`text-[10px] font-medium uppercase tracking-tighter opacity-60`}>
                                                     {m.time || 'now'}
                                                 </span>
                                                 {isMe && <CheckCheck size={12} className="opacity-80" />}
@@ -232,8 +232,8 @@ const WhatsAppSystem = () => {
                                 <div key={file.id} className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-3 py-2 rounded-2xl group">
                                     <FileText size={14} className="text-emerald-500" />
                                     <div className="flex flex-col">
-                                        <span className="text-[11px] font-bold text-gray-700 truncate max-w-[150px]">{file.name}</span>
-                                        <span className="text-[9px] text-emerald-500 font-black uppercase tracking-tighter">{file.size}</span>
+                                        <span className="text-[11px] font-medium text-gray-700 truncate max-w-[150px]">{file.name}</span>
+                                        <span className="text-[9px] text-emerald-500 font-medium uppercase tracking-tighter">{file.size}</span>
                                     </div>
                                     <button
                                         onClick={() => setAttachments(prev => prev.filter(a => a.id !== file.id))}
