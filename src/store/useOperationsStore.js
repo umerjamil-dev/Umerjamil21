@@ -27,7 +27,6 @@ const useOperationsStore = create((set) => ({
       // Console logs for debugging as requested by user
       // console.log('📦 Operations Data Fetched:');
       // console.log('• Staff:', staffRes.status === 'fulfilled' ? staffRes.value.data : 'FAILED');
-      console.log('• overview:', overviewData);
 
       const staffData = staffRes.status === 'fulfilled' ? staffRes.value.data : null;
       const staffList = staffData?.data ?? (Array.isArray(staffData) ? staffData : []);

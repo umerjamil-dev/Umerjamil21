@@ -13,7 +13,7 @@ const UpdateCustomer = () => {
    const { id } = useParams();
    const navigate = useNavigate();
    const { getCustomer, updateCustomer, isLoading } = useCustomerStore();
-   const imgBaseUrl = 'http://localhost:8000/';
+   const imgBaseUrl = 'https://hajjumrahbackend.processiqtech.com/';
 
    const [formData, setFormData] = useState({
       firstName: '',

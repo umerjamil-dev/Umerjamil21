@@ -1,37 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Users, Search, Filter,
   MapPin, Phone, FileText,
   ChevronRight, ShieldCheck,
   Plane, Hotel, Star,
-  Download,
-  Plus,
-  Globe
+  Download, Plus, Globe
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+// Make sure to import your custom hooks/store
 import useCustomerStore from '../store/useCustomerStore';
 import usePagination from '../hooks/usePagination';
 import Pagination from '../components/Pagination';
 
 const Customers = () => {
   const { customers, fetchCustomers, isLoading } = useCustomerStore();
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchCustomers();
   }, [fetchCustomers]);
 
-  const customersToShow = customers;
-
-  const filtered = React.useMemo(() => {
-    return (customersToShow || []).filter(c => {
+  // Filter Logic
+  const filtered = useMemo(() => {
+    return (customers || []).filter(c => {
       const name = `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.name || '';
       return name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.passportNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.id?.toString().includes(searchTerm);
     });
-  }, [customersToShow, searchTerm]);
+  }, [customers, searchTerm]);
 
+  // Pagination Logic
   const {
     paginatedData,
     currentPage,
@@ -41,154 +40,212 @@ const Customers = () => {
     endIndex,
     totalItems
   } = usePagination(filtered, 10);
+
+  // Mock Stats Data (You can calculate these dynamically if backend supports)
+  const stats = [
+    { label: 'Total Pilgrims', value: customers.length, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', shadow: 'shadow-blue-100' },
+    { label: 'Visa Approved', value: Math.floor(customers.length * 0.75), icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50', shadow: 'shadow-emerald-100' },
+    { label: 'Flight Booked', value: Math.floor(customers.length * 0.45), icon: Plane, color: 'text-[#0A2A5C]', bg: 'bg-indigo-50', shadow: 'shadow-indigo-100' },
+    { label: 'Hotel Booked', value: Math.floor(customers.length * 0.85), icon: Hotel, color: 'text-orange-600', bg: 'bg-orange-50', shadow: 'shadow-orange-100' },
+  ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Active': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'Completed': return 'bg-slate-100 text-slate-700 border-slate-200';
+      case 'Pending': return 'bg-amber-50 text-amber-700 border-amber-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
   return (
-    <div className="space-y-12 animate-in fade-in duration-1000 font-inter">
-      {/* Editorial Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4">
-        <div>
-          <h1 className="text-[2.5rem] font-manrope font-medium text-[var(--on-surface)] tracking-tight">Customers </h1>
-          <p className="mt-2 text-sm font-medium text-[var(--on-surface-variant)] tracking-wide">The definitive collective of sacred travelers.</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-medium text-[var(--on-surface-variant)] uppercase   hover:text-[var(--on-surface)] transition-all group">
-            <Download size={16} strokeWidth={2} />
-            Analytics Export
-          </button>
+    <div className="min-h-screen bg-gray-50/50 p-6 lg:p-10 font-inter text-slate-800 selection:bg-indigo-100 selection:text-indigo-800">
+
+      {/* Main Container */}
+      <div className=" space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-4xl font-manrope font-bold text-slate-900 tracking-tight leading-[1.1]">
+              Customer Registry
+            </h1>
+            <p className="mt-2.5 text-base font-medium text-slate-500">
+              Manage pilgrim data, visa status, and travel logistics.
+            </p>
+          </div>
 
           <Link
             to="/customers/add"
-            className="btn-primary flex items-center gap-2 px-8 py-4 text-[10px] font-medium uppercase tracking-[0.25em] shadow-xl shadow-black/10 hover:shadow-2xl transition-all rounded-xl"
+            className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-lg shadow-slate-900/10"
           >
             <Plus size={18} strokeWidth={2.5} />
-            Register Customer
+            <span>New Pilgrim</span>
           </Link>
         </div>
-      </div>
 
-      {/* Stats Summary - Bento No-Line Style */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: 'Total Registries', value: customers.length, icon: Users, bg: '#616B7B' },
-          { label: 'Visa Approved', value: Math.floor(customers.length * 0.7), icon: ShieldCheck, bg: '#636569' },
-          { label: 'Flight Ready', value: Math.floor(customers.length * 0.4), icon: Plane, bg: '#726888' },
-          { label: 'Hospitality', value: Math.floor(customers.length * 0.9), icon: Hotel, bg: '#A5413D' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-[var(--surface-container-lowest)] rounded-xl p-8 border border-[var(--outline-variant)] shadow-sm flex flex-col gap-6 group hover:bg-[var(--surface-container-high)] transition-all cursor-default relative overflow-hidden">
+        {/* Stats Grid - Bento Style */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {stats.map((stat, idx) => (
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-all relative z-10 shadow-lg"
-              style={{ backgroundColor: stat.bg }}
+              key={idx}
+              className="group relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
             >
-              <stat.icon size={20} className="text-white" />
-            </div>
-            <div className="relative z-10">
-              <p className="text-3xl font-manrope font-medium text-[var(--on-surface)] tracking-tighter">{stat.value}</p>
-              <p className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mt-1.5">{stat.label}</p>
-            </div>
-            <div className="absolute top-0 right-0 w-24 h-24 opacity-5 pointer-events-none" style={{ backgroundColor: stat.bg }}></div>
-          </div>
-        ))}
-      </div>
+              <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20 -mr-10 -mt-10 transition-opacity group-hover:opacity-30 ${stat.bg}`}></div>
 
-      {/* Database Container */}
-      <div className="space-y-8">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="relative w-full lg:w-[480px] group">
-            <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={20} />
-            <input
-              type="text"
-              placeholder="Passport, identification or nomenclature..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-4 bg-transparent border-b border-[var(--outline-variant)] rounded-none text-sm outline-none focus:border-[var(--on-surface)] text-[var(--on-surface)] transition-all font-medium placeholder-[var(--on-surface-variant)]"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-5 py-3 bg-[var(--surface-container-low)]   rounded-xl text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all">
-              <Filter size={14} />
-              Filters
-            </button>
-            <button className="flex items-center gap-2 px-5 py-3 bg-[var(--surface-container-low)]   rounded-xl text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest hover:bg-[var(--surface-container-high)] transition-all">
-              Group Logic
-            </button>
-          </div>
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300`}>
+                  <stat.icon size={20} strokeWidth={2} />
+                </div>
+
+                <div>
+                  <h3 className="text-3xl font-manrope font-bold text-slate-900 tracking-tight">{stat.value}</h3>
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">{stat.label}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Ledger Table - No Line Philosophy */}
-        <div className="bg-[var(--surface-container-lowest)] rounded-3xl shadow-sm border border-[var(--outline-variant)] overflow-hidden">
+        {/* Content Area: Search & Table */}
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+
+          {/* Toolbar */}
+          <div className="p-6 border-b border-slate-100 flex flex-col lg:flex-row items-center justify-between gap-4">
+
+            {/* Search Input */}
+            <div className="relative w-full lg:w-96 group">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-slate-400 group-focus-within:text-[#0A2A5C] transition-colors" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by name, passport, or ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50/50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 text-sm font-medium text-slate-700"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 w-full lg:w-auto">
+              <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-slate-600 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                <Filter size={14} />
+                Filters
+              </button>
+              <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-slate-600 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                <Download size={14} />
+                Export
+              </button>
+            </div>
+          </div>
+
+          {/* Table Container */}
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[var(--surface)] border-b border-[var(--outline-variant)]">
-                  <th className="px-10 py-6 text-[10px] font-manrope font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Pilgrim Nomenclature</th>
-                  <th className="px-10 py-6 text-[10px] font-manrope font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Passport Registry</th>
-                  <th className="px-10 py-6 text-[10px] font-manrope font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Status Index</th>
-                  <th className="px-10 py-6 text-[10px] font-manrope font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em]">Residency</th>
-                  <th className="px-10 py-6 text-[10px] font-manrope font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.25em] text-right">Operation</th>
+                <tr className="bg-slate-50/80 border-b border-slate-100">
+                  <th className="px-6 lg:px-8 py-4 text-[10px] font-manrope font-bold text-slate-400 uppercase tracking-widest">Pilgrim Info</th>
+                  <th className="px-6 lg:px-8 py-4 text-[10px] font-manrope font-bold text-slate-400 uppercase tracking-widest">Passport</th>
+                  <th className="px-6 lg:px-8 py-4 text-[10px] font-manrope font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                  <th className="px-6 lg:px-8 py-4 text-[10px] font-manrope font-bold text-slate-400 uppercase tracking-widest">Location</th>
+                  <th className="px-6 lg:px-8 py-4 text-[10px] font-manrope font-bold text-slate-400 uppercase tracking-widest text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--outline-variant)]/30">
+              <tbody className="divide-y divide-slate-50">
                 {isLoading ? (
                   <tr>
-                    <td colSpan="5" className="px-10 py-20 text-center text-sm font-medium uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50 italic">
-                      Querying Customer Registry...
+                    <td colSpan="5" className="py-20 text-center">
+                      <div className="flex flex-col items-center justify-center gap-3">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-300"></div>
+                        <p className="text-sm font-medium text-slate-400 animate-pulse">Loading Registry...</p>
+                      </div>
                     </td>
                   </tr>
                 ) : paginatedData.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-10 py-20 text-center text-sm font-medium uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50 italic">
-                      No pilgrims found in the current cycle.
+                    <td colSpan="5" className="py-20 text-center">
+                      <div className="flex flex-col items-center justify-center text-slate-400">
+                        <Search size={48} className="mb-3 opacity-20" />
+                        <p className="text-sm font-medium">No pilgrims found matching your search.</p>
+                      </div>
                     </td>
                   </tr>
-                ) : paginatedData.map((customer) => {
-                  const fullName = `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || customer.name || 'Unnamed Pilgrim';
-                  const initials = fullName.split(' ').map(n => n[0]).join('').slice(0, 2);
+                ) : paginatedData.map((customer, idx) => {
+                  const fullName = `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || customer.name || 'Unknown';
+                  const initials = fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
                   return (
-                    <tr key={customer.id} className="group hover:bg-[var(--surface-container-high)] transition-all cursor-pointer">
-                      <td className="px-10 py-6">
-                        <div className="flex items-center gap-5">
-                          <div className="w-12 h-12 rounded-xl bg-[#111827] text-white flex items-center justify-center font-manrope font-medium text-base border border-[var(--outline-variant)] overflow-hidden">
-                            {customer.photo ? (
-                              <img src={customer.photo} alt="" className="w-full h-full object-cover" />
-                            ) : initials}
+                    <tr
+                      key={customer.id || idx}
+                      className="group hover:bg-slate-50/50 transition-colors duration-200"
+                    >
+                      {/* Customer Info */}
+                      <td className="px-6 lg:px-8 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500 flex items-center justify-center font-manrope font-bold text-sm border border-white shadow-sm">
+                              {customer.photo ? (
+                                <img src={customer.photo} alt="" className="w-full h-full object-cover rounded-full" />
+                              ) : initials}
+                            </div>
+                            {/* Status Indicator Ring */}
+                            {customer.status === 'Active' && (
+                              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
+                            )}
                           </div>
                           <div>
-                            <Link to={`/customers/${customer.id}`} className="block text-[13px] font-manrope font-medium text-[var(--on-surface)] group-hover:text-[var(--primary)] transition-colors tracking-tight">
+                            <Link
+                              to={`/customers/${customer.id}`}
+                              className="block text-sm font-bold text-slate-800 group-hover:text-[#0A2A5C] transition-colors"
+                            >
                               {fullName}
                             </Link>
-                            <p className="text-[9px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mt-1.5 opacity-60">ID: {customer.id} <span className="mx-1 opacity-20">•</span> {customer.phone}</p>
+                            <div className="flex items-center gap-3 mt-0.5">
+                              <span className="text-xs text-slate-400 font-medium">ID: {customer.id}</span>
+                              <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                              <span className="text-xs text-slate-400 font-medium flex items-center gap-1">
+                                <Phone size={10} />
+                                {customer.phone || 'N/A'}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-10 py-6">
-                        <div className="flex items-center gap-2">
-                          <ShieldCheck size={12} className="text-[var(--sacred-emerald)]" />
-                          <span className="text-[11px] font-medium text-[var(--on-surface)] tracking-widest uppercase">{customer.passportNo || 'Required'}</span>
+
+                      {/* Passport */}
+                      <td className="px-6 lg:px-8 py-5">
+                        <div className="flex items-center gap-2 bg-slate-50 w-fit px-3 py-1.5 rounded-lg border border-slate-100">
+                          <ShieldCheck size={13} className="text-indigo-500" strokeWidth={2.5} />
+                          <span className="text-xs font-bold text-slate-700 font-mono tracking-wide">
+                            {customer.passportNo || 'N/A'}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-10 py-6">
-                        <span className={`px-4 py-1.5 rounded-xl text-[8px] font-medium uppercase tracking-widest border shadow-sm ${customer.status === 'Active' ? 'bg-[var(--grad-green)] text-black border-green-200' :
-                          customer.status === 'Completed' ? 'bg-[var(--grad-black)] text-black border-black/10' :
-                            'bg-[var(--grad-gold)] text-black border-amber-200'
-                          }`}>
+
+                      {/* Status */}
+                      <td className="px-6 lg:px-8 py-5">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getStatusColor(customer.status)}`}>
                           {customer.status || 'Active'}
                         </span>
                       </td>
-                      <td className="px-10 py-6">
-                        <div className="flex items-center gap-2">
-                          <MapPin size={12} className="text-[var(--on-surface-variant)]" />
-                          <span className="text-[10px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest">{customer.city || 'Pending'}</span>
+
+                      {/* Location */}
+                      <td className="px-6 lg:px-8 py-5">
+                        <div className="flex items-center gap-1.5 text-slate-500">
+                          <MapPin size={14} strokeWidth={2} className="opacity-60" />
+                          <span className="text-xs font-medium">{customer.city || 'Unknown'}</span>
                         </div>
                       </td>
-                      <td className="px-10 py-6 text-right">
-                        <div className="flex items-center justify-end">
-                          <Link
-                            to={`/customers/${customer.id}`}
-                            className="w-10 h-10 rounded-xl bg-[var(--surface-container-low)] border border-[var(--outline-variant)] flex items-center justify-center text-[var(--on-surface)] group-hover:bg-[#111827] group-hover:text-white transition-all shadow-sm"
-                          >
-                            <ChevronRight size={16} />
-                          </Link>
-                        </div>
+
+                      {/* Action */}
+                      <td className="px-6 lg:px-8 py-5 text-right">
+                        <Link
+                          to={`/customers/${customer.id}`}
+                          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 text-white bg-slate-900 hover:border-slate-900 transition-all duration-200"
+                        >
+                          <ChevronRight size={18} />
+                        </Link>
                       </td>
                     </tr>
                   );
@@ -196,16 +253,21 @@ const Customers = () => {
               </tbody>
             </table>
           </div>
-        </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={goToPage}
-          startIndex={startIndex}
-          endIndex={endIndex}
-          totalItems={totalItems}
-        />
+          {/* Pagination Footer */}
+          <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
+            {/* Assuming your Pagination component handles rendering, passing props to it */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
+              startIndex={startIndex}
+              endIndex={endIndex}
+              totalItems={totalItems}
+            />
+          </div>
+
+        </div>
       </div>
     </div>
   );

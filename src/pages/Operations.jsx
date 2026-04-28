@@ -8,6 +8,7 @@ import {
    ChevronDown, ChevronUp, Car, ShieldCheck,
    Package, User2, CalendarDays, Hash, Edit3, Loader2
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import useOperationsStore from '../store/useOperationsStore';
 import useAuthStore from '../store/useAuthStore';
 
@@ -306,9 +307,9 @@ const Operations = () => {
                      </h2>
                      <p className="text-slate-400 text-sm">Full operational details per assignment — flight, hotel, transport, visa & package.</p>
                   </div>
-                  <button className="shrink-0 flex items-center gap-2 px-5 py-3 bg-black text-white rounded-xl text-[10px] font-medium uppercase tracking-widest hover:bg-[var(--desert-gold)] hover:text-black transition-all">
+                  <Link to="/operations/assignment?add=true" className="shrink-0 flex items-center gap-2 px-5 py-3 bg-black text-white rounded-xl text-[10px] font-medium uppercase tracking-widest hover:bg-[var(--desert-gold)] hover:text-black transition-all">
                      <Plus size={14} strokeWidth={3} /> New Assignment
-                  </button>
+                  </Link>
                </div>
 
                {/* Filter bar */}

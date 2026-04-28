@@ -27,7 +27,7 @@ const LiveHotelBooking = () => {
          }
          setIsLoadingSuggestions(true);
          try {
-            const res = await fetch(`http://localhost:8000/api/hotels/autocomplete?q=${searchParams.city}`);
+            const res = await fetch(`https://hajjumrahbackend.processiqtech.com/api/hotels/autocomplete?q=${searchParams.city}`);
             const data = await res.json();
             if (data.success && data.data) {
                setSuggestions(data.data);
@@ -56,8 +56,10 @@ const LiveHotelBooking = () => {
       return () => document.removeEventListener('mousedown', handleClickOutside);
    }, []);
 
-   const formatPrice = (price) => {
-      if (!price) return 'N/A';
+   const formatPrice = (priceValue) => {
+      // Ensure we have a number
+      const price = typeof priceValue === 'object' ? 0 : parseFloat(priceValue) || 0;
+      if (price === 0) return 'N/A';
       const currencySymbols = {
          PKR: 'Rs',
          USD: '$',
@@ -235,7 +237,21 @@ const LiveHotelBooking = () => {
                </div>
 
                {searchedHotels.map((hotel, index) => {
-                  const price = hotel.extracted_price || (hotel.price && typeof hotel.price === 'object' ? hotel.price.lowest : hotel.price) || 0;
+                  // Robust price extraction
+                  const extractPrice = (p) => {
+                     if (!p) return 0;
+                     if (typeof p === 'number') return p;
+                     if (typeof p === 'string') {
+                        const num = parseFloat(p.replace(/[^\d.]/g, ''));
+                        return isNaN(num) ? 0 : num;
+                     }
+                     if (typeof p === 'object') {
+                        return extractPrice(p.lowest || p.value || p.amount || p.extracted_price || 0);
+                     }
+                     return 0;
+                  };
+
+                  const displayPrice = extractPrice(hotel.extracted_price) || extractPrice(hotel.price) || 0;
                   const rating = hotel.overall_rating || 0;
                   const reviews = hotel.reviews || 0;
                   const hotelClass = hotel.hotel_class || 0;
@@ -301,7 +317,7 @@ const LiveHotelBooking = () => {
                               <div className="flex flex-col items-end justify-between min-w-[140px]">
                                  <div className="text-right">
                                     <p className="text-[10px] font-medium text-slate-400">Starting from</p>
-                                    <p className="text-2xl font-medium text-black">{formatPrice(price.lowest)}</p>
+                                    <p className="text-2xl font-medium text-black">{formatPrice(displayPrice)}</p>
                                     <p className="text-[10px] font-medium text-slate-400">per night</p>
                                     <p className="text-[10px] font-medium text-slate-400 mt-1">via {hotel.source || 'N/A'}</p>
                                  </div>
@@ -313,17 +329,47 @@ const LiveHotelBooking = () => {
                         {selectedHotel === hotel && (
                            <div className="border-t border-slate-200 p-5 bg-slate-50 rounded-b-xl">
                               <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider mb-4">Hotel Details</h4>
-                              {hotel.gps_coordinates && (
+
+                              {hotel.description && (
                                  <div className="bg-white p-4 rounded-lg border border-slate-200 mb-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                       <MapPin size={16} className="text-black" />
-                                       <h5 className="text-xs font-medium text-slate-900">Location</h5>
-                                    </div>
-                                    <p className="text-xs font-medium text-slate-600">
-                                       Lat: {hotel.gps_coordinates.latitude} | Lng: {hotel.gps_coordinates.longitude}
+                                    <h5 className="text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-2">Description</h5>
+                                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                                       {hotel.description}
                                     </p>
                                  </div>
                               )}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                 {hotel.gps_coordinates && (
+                                    <div className="bg-white p-4 rounded-lg border border-slate-200">
+                                       <div className="flex items-center gap-2 mb-2">
+                                          <MapPin size={16} className="text-black" />
+                                          <h5 className="text-xs font-medium text-slate-900">Location</h5>
+                                       </div>
+                                       <p className="text-xs font-medium text-slate-600">
+                                          Lat: {hotel.gps_coordinates.latitude} | Lng: {hotel.gps_coordinates.longitude}
+                                       </p>
+                                    </div>
+                                 )}
+
+                                 {(hotel.check_in_time || hotel.check_out_time) && (
+                                    <div className="bg-white p-4 rounded-lg border border-slate-200">
+                                       <div className="grid grid-cols-2 gap-4">
+                                          {hotel.check_in_time && (
+                                             <div>
+                                                <p className="text-[10px] font-medium text-slate-400 uppercase mb-1">Check-in</p>
+                                                <p className="text-xs font-bold text-slate-900">{hotel.check_in_time}</p>
+                                             </div>
+                                          )}
+                                          {hotel.check_out_time && (
+                                             <div>
+                                                <p className="text-[10px] font-medium text-slate-400 uppercase mb-1">Check-out</p>
+                                                <p className="text-xs font-bold text-slate-900">{hotel.check_out_time}</p>
+                                             </div>
+                                          )}
+                                       </div>
+                                    </div>
+                                 )}
+                              </div>
                               {amenities.length > 0 && (
                                  <div className="bg-white p-4 rounded-lg border border-slate-200 mb-4">
                                     <h5 className="text-xs font-medium text-slate-900 uppercase tracking-wider mb-3">All Amenities</h5>
@@ -352,7 +398,7 @@ const LiveHotelBooking = () => {
                                  </div>
                                  <div className="bg-white p-4 rounded-lg border border-slate-200">
                                     <p className="text-[10px] font-medium text-slate-400 mb-1">Price per Night</p>
-                                    <p className="text-lg font-medium text-black">{formatPrice(price.lowest)}</p>
+                                    <p className="text-lg font-medium text-black">{formatPrice(displayPrice)}</p>
                                     {freeCancellation && (
                                        <p className="text-[10px] font-medium text-green-600 mt-0.5">Free cancellation</p>
                                     )}

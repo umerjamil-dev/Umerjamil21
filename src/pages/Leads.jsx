@@ -37,8 +37,8 @@ const getStatusDot = (status = '') => {
 const StatCard = ({ label, value, color }) => (
   <div className="bg-white rounded-xl border border-slate-200 p-4 relative overflow-hidden group hover:shadow-md transition-all">
     <div className={`absolute top-0 left-0 h-1 w-full ${color}`} />
-    <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">{label}</div>
-    <div className="font-syne text-2xl font-extrabold text-slate-800">{value}</div>
+    <div className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">{label}</div>
+    <div className="font-syne text-2xl font-medium text-slate-800">{value}</div>
   </div>
 );
 
@@ -93,7 +93,7 @@ const Leads = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-syne text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="font-syne text-3xl md:text-4xl font-medium tracking-tight bg-gradient-to-r from-slate-900 to-indigo-600 bg-clip-text text-transparent">
             Leads
           </h1>
           <p className="text-slate-500 text-sm mt-1 flex items-center gap-2">
@@ -104,10 +104,10 @@ const Leads = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-medium hover:border-indigo-300 hover:text-indigo-600 transition-all shadow-sm">
+          <button className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-medium hover:border-indigo-300 hover:text-[#0A2A5C] transition-all shadow-sm">
             <Download size={14} /> Export
           </button>
-          <Link to="/leads/add" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg">
+          <Link to="/leads/add" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg">
             <Plus size={14} strokeWidth={2.5} /> Add lead
           </Link>
         </div>
@@ -152,11 +152,11 @@ const Leads = () => {
             </colgroup>
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Lead</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Source</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                <th className="px-5 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                <th className="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Lead</th>
+                <th className="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Source</th>
+                <th className="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
+                <th className="px-5 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -185,7 +185,7 @@ const Leads = () => {
                           {getInitials(lead.lead_name)}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <Link to={`/leads/${lead.id}`} className="font-semibold text-slate-800 hover:text-indigo-600 transition text-sm block truncate">
+                          <Link to={`/leads/${lead.id}`} className="font-medium text-slate-800 hover:text-[#0A2A5C] transition text-sm block truncate">
                             {lead.lead_name || 'Unnamed'}
                           </Link>
                           <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
@@ -206,7 +206,7 @@ const Leads = () => {
 
                     {/* Status */}
                     <td className="px-5 py-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusStyle(lead.status_name)}`}>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusStyle(lead.status_name)}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${getStatusDot(lead.status_name)}`} />
                         {lead.status_name || '—'}
                       </span>
@@ -224,12 +224,12 @@ const Leads = () => {
                     <td className="px-5 py-4 text-right">
 
                       <div className="flex items-center justify-end gap-1 group-hover:opacity-100 transition-opacity">
-                        <a href={`tel:${lead.phone}`} className="p-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all" title="Call">
+                        <a href={`tel:${lead.phone}`} className="p-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-[#0A2A5C] transition-all" title="Call">
                           <Phone size={13} />
                         </a>
-                        <a href={`sms:${lead.phone}`} className="p-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-all" title="SMS">
+                        <Link to={`/emails/${lead.id}`} className="p-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all" title="Email">
                           <Mail size={13} />
-                        </a>
+                        </Link>
                         <Link to={`/whatsapp/${lead.id}`} className="p-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-600 transition-all" title="WhatsApp">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />

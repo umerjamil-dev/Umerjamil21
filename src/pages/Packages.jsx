@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
-   Plus, Search, Filter,
+   Plus, Search, Filter, ChevronDown,
    Package, Hotel, Calendar,
    ChevronRight, Star, Tag,
-   MapPin, Users
+   MapPin, Users, Clock
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import usePackageStore from '../store/usePackageStore';
@@ -11,132 +11,217 @@ import usePackageStore from '../store/usePackageStore';
 const Packages = () => {
    const { packages: storePackages, fetchPackages, isLoading } = usePackageStore();
 
+   // State for Search and Category Filtering
+   const [searchTerm, setSearchTerm] = useState('');
+   const [selectedCategory, setSelectedCategory] = useState('All');
+
    useEffect(() => {
       fetchPackages();
    }, [fetchPackages]);
 
-   const packages = storePackages && storePackages.length > 0 ? storePackages : [];
+   // Unique categories extraction for the dropdown filter
+   const categories = useMemo(() => {
+      const cats = new Set(storePackages?.map(p => p.category_name).filter(Boolean));
+      return ['All', ...Array.from(cats)];
+   }, [storePackages]);
+
+   // Filtering Logic: Search + Category
+   const filteredPackages = useMemo(() => {
+      return (storePackages || []).filter(pkg => {
+         const matchesSearch = pkg.title?.toLowerCase().includes(searchTerm.toLowerCase());
+         const matchesCategory = selectedCategory === 'All' || pkg.category_name === selectedCategory;
+         return matchesSearch && matchesCategory;
+      });
+   }, [storePackages, searchTerm, selectedCategory]);
+
+   // Helper for Category Badge Styles
+   const getCategoryStyle = (cat) => {
+      switch (cat) {
+         case 'Elite': return 'bg-amber-50 text-amber-700 border-amber-100';
+         case 'Market': return 'bg-blue-50 text-blue-700 border-blue-100';
+         case 'Economy': return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+         default: return 'bg-slate-50 text-slate-700 border-slate-100';
+      }
+   };
 
    return (
-      <div className="space-y-10 animate-in fade-in duration-700">
-         {/* Header */}
-         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-               <h1 className="text-3xl font-manrope font-medium text-[var(--on-surface)] tracking-tight">Package Inventory</h1>
-               <p className="text-[var(--on-surface-variant)] text-sm mt-1 font-medium italic opacity-60">Architecting and managing sacred travel clusters.</p>
-            </div>
-            <Link
-               to="/packages/add"
-               className="btn-primary px-8 py-3 rounded-xl text-white text-[11px] font-medium uppercase tracking-widest shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 w-fit"
-            >
-               <Plus size={18} strokeWidth={2.5} />
-               Assemble New Package
-            </Link>
-         </div>
+      <div className="min-h-screen bg-slate-50/50 p-6 lg:p-10 font-inter text-slate-800">
+         <div className=" space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
-         {/* Filters & Search */}
-         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div className="md:col-span-8 relative group">
-               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--on-surface-variant)] group-focus-within:text-[var(--on-surface)] transition-colors" size={18} />
-               <input
-                  type="text"
-                  placeholder="Query package catalogue..."
-                  className="w-full pl-14 pr-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--surface-container-low)] transition-all"
-               />
-            </div>
-            <div className="md:col-span-4 flex gap-4">
-               <button className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-medium uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)] transition-all">
-                  <Filter size={16} /> Filter
-               </button>
-               <button className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[var(--surface-container-lowest)] border border-[var(--outline-variant)] rounded-xl text-[10px] font-medium uppercase tracking-widest text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)] transition-all">
-                  Category
-               </button>
-            </div>
-         </div>
-
-         {/* Packages Grid */}
-         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-            {isLoading ? (
-               <div className="col-span-full py-20 text-center text-sm font-medium uppercase tracking-widest text-slate-400 opacity-50 italic">Auditing Package Manifest...</div>
-            ) : packages.map((pkg) => (
-               <Link key={pkg.id} to={`/packages/${pkg.id}`} className="bg-white rounded-xl border border-[var(--outline-variant)] overflow-hidden group hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 flex flex-col">
-                  {/* Card Premium Header */}
-                  <div className="p-6 pb-0 flex justify-between items-start">
-                     <div className="w-10 h-10 rounded-xl bg-[var(--surface)] flex items-center justify-center border border-[var(--outline-variant)] group-hover:bg-white transition-all">
-                        <Package size={20} className="text-[var(--on-surface)]" strokeWidth={1.5} />
-                     </div>
-                     <div className={`px-2.5 py-1 rounded-full text-[8px] font-medium uppercase tracking-widest ${pkg.category_name === 'Elite' ? 'bg-amber-100 text-amber-700' :
-                        pkg.category_name === 'Market' ? 'bg-blue-100 text-blue-700' :
-                           'bg-emerald-100 text-emerald-700'
-                        }`}>
-                        {pkg.category_name}
-                     </div>
-                  </div>
-
-                  <div className="p-6 flex-1">
-                     <h3 className="text-lg font-manrope font-medium text-[var(--on-surface)] mb-5 leading-tight group-hover:text-[var(--primary)] transition-colors">{pkg.title}</h3>
-
-                     <div className="space-y-3.5">
-                        <div className="flex items-center gap-2.5">
-                           <div className="w-7 h-7 rounded-lg bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)] group-hover:bg-white transition-all">
-                              <Hotel size={12} />
-                           </div>
-                           <div className="flex-1 min-w-0">
-                              <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5 opacity-50">Makkah</p>
-                              <p className="text-[11px] font-medium text-[var(--on-surface)] truncate">{pkg.makkah_hotel}</p>
-                           </div>
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                           <div className="w-7 h-7 rounded-lg bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)] group-hover:bg-white transition-all">
-                              <Hotel size={12} />
-                           </div>
-                           <div className="flex-1 min-w-0">
-                              <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5 opacity-50">Madinah</p>
-                              <p className="text-[11px] font-medium text-[var(--on-surface)] truncate">{pkg.madinah_hotel}</p>
-                           </div>
-                        </div>
-                        <div className="flex items-center gap-2.5 pt-1.5 font-manrope">
-                           <div className="flex-1 bg-[var(--surface)] p-2.5 rounded-lg border border-[var(--outline-variant)]">
-                              <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5">Makkah</p>
-                              <p className="text-xs font-medium">{pkg.nights_makkah} <span className="text-[9px] pl-2 font-medium opacity-80 uppercase">nights</span></p>
-                           </div>
-                           <div className="flex-1 bg-[var(--surface)] p-2.5 rounded-lg border border-[var(--outline-variant)]">
-                              <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-widest mb-0.5">Madinah</p>
-                              <p className="text-xs font-medium">{pkg.nights_madinah} <span className="text-[9px] pl-2 font-medium opacity-80 uppercase">nights</span></p>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-
-                  {/* Card Footer */}
-                  <div className="p-6 pt-0 mt-auto">
-                     <div className="h-px bg-[var(--outline-variant)] mb-6 opacity-30"></div>
-                     <div className="flex items-center justify-between">
-                        <div>
-                           <p className="text-[8px] font-medium text-[var(--on-surface-variant)] uppercase tracking-[0.2em] mb-0.5">Base Valuation</p>
-                           <p className="text-xl font-manrope font-medium text-[var(--on-surface)] tracking-tighter">${(pkg.base_price || pkg.base_price)?.toLocaleString() || '0'}</p>
-                        </div>
-                        <div className="w-10 h-10 rounded-xl bg-[var(--on-surface)] text-white flex items-center justify-center group-hover:bg-[var(--primary)] transition-all group-hover:translate-x-1 shadow-md">
-                           <ChevronRight size={18} />
-                        </div>
-                     </div>
-                  </div>
-               </Link>
-            ))}
-
-
-            {/* Empty State / Add New Card */}
-            <Link to="/packages/add" className="bg-[var(--surface-container-lowest)] rounded-xl border-2 border-dashed border-[var(--outline-variant)] p-6 flex flex-col items-center justify-center text-center group hover:border-[var(--on-surface)] transition-all min-h-[320px]">
-               <div className="w-12 h-12 rounded-[1.5rem] bg-[var(--surface)] flex items-center justify-center text-[var(--on-surface-variant)] mb-4 group-hover:scale-110 transition-transform border border-[var(--outline-variant)] shadow-sm">
-                  <Plus size={24} strokeWidth={1.5} />
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+               <div>
+                  <h1 className="text-4xl font-manrope  font-medium text-slate-900 tracking-tight leading-[1.1]">
+                     Package Inventory
+                  </h1>
+                  <p className="mt-2.5 text-base font-medium text-slate-500">
+                     Manage sacred travel clusters, itineraries, and pricing.
+                  </p>
                </div>
-               <h3 className="text-xs font-medium text-[var(--on-surface)] uppercase tracking-[0.2em]">Craft New</h3>
-               <p className="text-[9px] text-[var(--on-surface-variant)] mt-3 font-medium max-w-[150px] leading-relaxed opacity-60">Design and authorize a new pilgrimage for the season.</p>
-            </Link>
+
+               <Link
+                  to="/packages/add"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-slate-900 text-white text-sm  font-medium rounded-xl hover:bg-slate-800 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-lg shadow-slate-900/10"
+               >
+                  <Plus size={18} strokeWidth={2.5} />
+                  <span>Create Package</span>
+               </Link>
+            </div>
+
+            {/* Controls: Search & Functional Category Filter */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+               {/* Search Bar */}
+               <div className="md:col-span-8 relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                     <Search className="h-4 w-4 text-slate-400 group-focus-within:text-[#0A2A5C] transition-colors" />
+                  </div>
+                  <input
+                     type="text"
+                     placeholder="Search by package name, hotel, or city..."
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
+                     className="block w-full pl-11 pr-4 py-3.5 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 text-sm font-medium text-slate-700"
+                  />
+               </div>
+
+               {/* Category Filter Dropdown */}
+               <div className="md:col-span-4 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                     <Tag size={16} className="text-slate-400" />
+                  </div>
+                  <select
+                     value={selectedCategory}
+                     onChange={(e) => setSelectedCategory(e.target.value)}
+                     className="w-full pl-10 pr-10 py-3.5 appearance-none bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer hover:bg-slate-50 transition-all"
+                  >
+                     {categories.map(cat => (
+                        <option key={cat} value={cat}>{cat === 'All' ? 'All Categories' : cat}</option>
+                     ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
+                     <ChevronDown size={16} />
+                  </div>
+               </div>
+            </div>
+
+            {/* Packages Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+               {isLoading ? (
+                  // Loading Skeleton / State
+                  <div className="col-span-full py-24 flex flex-col items-center justify-center text-slate-400">
+                     <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-slate-300 mb-4"></div>
+                     <p className="text-sm font-medium uppercase tracking-widest animate-pulse">Auditing Package Manifest...</p>
+                  </div>
+               ) : filteredPackages.length === 0 ? (
+                  // Empty State
+                  <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/30">
+                     <Package size={48} className="mb-3 opacity-20" />
+                     <p className="text-sm font-medium">No packages found matching your criteria.</p>
+                     <button
+                        onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }}
+                        className="mt-4 text-xs  font-medium text-[#0A2A5C] hover:text-indigo-700 uppercase tracking-wider"
+                     >
+                        Clear Filters
+                     </button>
+                  </div>
+               ) : (
+                  // Package Cards
+                  filteredPackages.map((pkg) => (
+                     <Link
+                        key={pkg.id}
+                        to={`/packages/${pkg.id}`}
+                        className="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden"
+                     >
+                        {/* Card Header */}
+                        <div className="p-6 pb-2 flex justify-between items-start">
+                           <div className="w-11 h-11 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-indigo-50 group-hover:text-[#0A2A5C] transition-colors">
+                              <Package size={20} strokeWidth={1.5} />
+                           </div>
+                           <span className={`px-3 py-1 rounded-full text-[10px]  font-medium uppercase tracking-wider border ${getCategoryStyle(pkg.category_name)}`}>
+                              {pkg.category_name}
+                           </span>
+                        </div>
+
+                        {/* Card Body */}
+                        <div className="p-6 flex-1 flex flex-col gap-5">
+                           <div>
+                              <h3 className="text-lg font-manrope  font-medium text-slate-900 leading-snug group-hover:text-[#0A2A5C] transition-colors line-clamp-2 h-[3.5rem]">
+                                 {pkg.title}
+                              </h3>
+                           </div>
+
+                           {/* Hotel Details */}
+                           <div className="space-y-3">
+                              <div className="flex items-start gap-3">
+                                 <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 mt-0.5">
+                                    <Hotel size={14} className="text-slate-400" />
+                                 </div>
+                                 <div className="flex-1 min-w-0">
+                                    <p className="text-[9px]  font-medium text-slate-400 uppercase tracking-widest">Makkah</p>
+                                    <p className="text-xs  font-medium text-slate-700 truncate">{pkg.makkah_hotel || 'Standard Hotel'}</p>
+                                 </div>
+                              </div>
+                              <div className="flex items-start gap-3">
+                                 <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 mt-0.5">
+                                    <Hotel size={14} className="text-slate-400" />
+                                 </div>
+                                 <div className="flex-1 min-w-0">
+                                    <p className="text-[9px]  font-medium text-slate-400 uppercase tracking-widest">Madinah</p>
+                                    <p className="text-xs  font-medium text-slate-700 truncate">{pkg.madinah_hotel || 'Standard Hotel'}</p>
+                                 </div>
+                              </div>
+                           </div>
+
+                           {/* Nights Counter */}
+                           <div className="flex items-center gap-2 bg-slate-50/50 p-2 rounded-xl border border-slate-100">
+                              <div className="flex-1 text-center border-r border-slate-200/50">
+                                 <p className="text-lg  font-medium text-slate-900 leading-none">{pkg.nights_makkah || 0}</p>
+                                 <p className="text-[9px] uppercase text-slate-400  font-medium tracking-wider mt-1">Makkah</p>
+                              </div>
+                              <div className="flex-1 text-center">
+                                 <p className="text-lg  font-medium text-slate-900 leading-none">{pkg.nights_madinah || 0}</p>
+                                 <p className="text-[9px] uppercase text-slate-400  font-medium tracking-wider mt-1">Madinah</p>
+                              </div>
+                           </div>
+                        </div>
+
+                        {/* Card Footer */}
+                        <div className="p-6 pt-2 mt-auto flex items-center justify-between border-t border-slate-50">
+                           <div>
+                              <p className="text-[9px]  font-medium text-slate-400 uppercase tracking-widest mb-1">Starting Price</p>
+                              <div className="flex items-baseline gap-1">
+                                 <span className="text-sm  font-medium text-slate-900">$</span>
+                                 <span className="text-2xl font-manrope  font-medium text-slate-900 tracking-tight">
+                                    {(pkg.base_price || 0).toLocaleString()}
+                                 </span>
+                              </div>
+                           </div>
+                           <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center group-hover:bg-[#0A2A5C] group-hover:scale-110 transition-all shadow-md">
+                              <ChevronRight size={18} />
+                           </div>
+                        </div>
+                     </Link>
+                  ))
+               )}
+
+               {/* "Create New" Empty Card - Always visible at end */}
+               {!isLoading && (
+                  <Link
+                     to="/packages/add"
+                     className="group bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center text-center min-h-[420px] hover:bg-indigo-50/30 hover:border-indigo-200 transition-all duration-300"
+                  >
+                     <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-indigo-500 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300 mb-5">
+                        <Plus size={28} strokeWidth={1.5} />
+                     </div>
+                     <h3 className="text-sm  font-medium text-slate-600 uppercase tracking-wider group-hover:text-indigo-700 transition-colors">Create New</h3>
+                     <p className="text-xs text-slate-400 mt-2 leading-relaxed max-w-[160px]">
+                        Build a new itinerary, add hotels, and set pricing.
+                     </p>
+                  </Link>
+               )}
+
+            </div>
          </div>
-
-
-
       </div>
    );
 };

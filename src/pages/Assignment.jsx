@@ -10,6 +10,7 @@ import useAssignmentStore from '../store/useAssignmentStore';
 import useAuthStore from '../store/useAuthStore';
 import useMasterTypeStore from '../store/useMasterTypeStore';
 import toast from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 import usePagination from '../hooks/usePagination';
 import Pagination from '../components/Pagination';
 
@@ -64,11 +65,18 @@ const Assignment = () => {
 
   const isLoading = assignmentsLoading || masterLoading;
 
+  const location = useLocation();
+
   useEffect(() => {
     fetchAssignments();
     addAssignmentData();
     fetchMasterData();
-  }, []);
+
+    // Auto-open if redirected with ?add=true
+    if (new URLSearchParams(location.search).get('add') === 'true') {
+      setIsAdding(true);
+    }
+  }, [location.search]);
 
   const patchForm = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 

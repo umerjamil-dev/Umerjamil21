@@ -67,6 +67,28 @@ const Bookings = () => {
       });
    }, [bookingsToShow, searchTerm]);
 
+   // Dynamic Financial Aggregates
+   const stats = React.useMemo(() => {
+      const revenue = filtered.reduce((acc, b) => acc + parseFloat(b.total_amount || 0), 0);
+      const paid = filtered.reduce((acc, b) => acc + parseFloat(b.paid_amount || 0), 0);
+      const risk = revenue - paid;
+      const yieldPct = revenue > 0 ? ((paid / revenue) * 100).toFixed(1) : "0.0";
+
+      const format = (val) => {
+         if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
+         if (val >= 1000) return `$${(val / 1000).toFixed(1)}k`;
+         return `$${val.toLocaleString()}`;
+      };
+
+      return {
+         revenue: format(revenue),
+         risk: format(risk),
+         yield: yieldPct,
+         rawRevenue: revenue,
+         rawRisk: risk
+      };
+   }, [filtered]);
+
    const {
       paginatedData,
       currentPage,
@@ -115,9 +137,9 @@ const Bookings = () => {
                <p className="text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Inflow Aggregate</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-none">$284.5k</h3>
+                     <h3 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-none">{stats.revenue}</h3>
                      <p className="text-[9px] font-medium text-[var(--sacred-emerald)] flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 w-fit">
-                        <TrendingUp size={12} strokeWidth={3} /> +12% Efficiency
+                        <TrendingUp size={12} strokeWidth={3} /> Live Ledger
                      </p>
                   </div>
                   <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 group-hover:bg-black group-hover:text-white transition-all shadow-sm">
@@ -132,9 +154,9 @@ const Bookings = () => {
                <p className="text-[10px] font-medium text-slate-400 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Outflow Risk</p>
                <div className="flex items-end justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-none">$42.3k</h3>
+                     <h3 className="text-5xl font-manrope font-medium text-slate-900 tracking-tighter leading-none">{stats.risk}</h3>
                      <p className="text-[9px] font-medium text-red-500 flex items-center gap-2 mt-4 uppercase tracking-[0.2em] bg-red-50 px-3 py-1.5 rounded-full border border-red-100 w-fit leading-none">
-                        <AlertCircle size={12} strokeWidth={3} /> 3 Critical Nodes
+                        <AlertCircle size={12} strokeWidth={3} /> Unpaid Balance
                      </p>
                   </div>
                   <div className="w-16 h-16 bg-red-50 rounded-xl flex items-center justify-center border border-red-100 text-red-400 transition-all shadow-sm">
@@ -149,15 +171,15 @@ const Bookings = () => {
                <p className="text-[10px] font-medium text-white/30 uppercase tracking-[0.4em] mb-12 relative z-10 font-inter">Engagement Yield</p>
                <div className="flex items-center justify-between relative z-10">
                   <div>
-                     <h3 className="text-5xl font-manrope font-medium tracking-tighter text-white">68.4%</h3>
-                     <p className="text-[10px] font-medium text-[var(--desert-gold)] mt-4 uppercase tracking-[0.3em]">Optimized Cycle</p>
+                     <h3 className="text-5xl font-manrope font-medium tracking-tighter text-white">{stats.yield}%</h3>
+                     <p className="text-[10px] font-medium text-[var(--desert-gold)] mt-4 uppercase tracking-[0.3em]">Repayment Rate</p>
                   </div>
                   <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform">
                      <TrendingUp size={32} strokeWidth={2} />
                   </div>
                </div>
                <div className="w-full bg-white/10 h-2 rounded-full mt-10 overflow-hidden border border-white/5 shadow-inner">
-                  <div className="bg-gradient-to-r from-[var(--desert-gold)] to-amber-300 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(255,191,0,0.4)]" style={{ width: '68.4%' }}></div>
+                  <div className="bg-gradient-to-r from-[var(--desert-gold)] to-amber-300 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(255,191,0,0.4)]" style={{ width: `${stats.yield}%` }}></div>
                </div>
             </div>
          </div>

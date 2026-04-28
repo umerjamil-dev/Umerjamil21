@@ -11,7 +11,7 @@ import useCalculatorStore from '../store/useCalculatorStore';
 import useCustomerStore from '../store/useCustomerStore';
 import { useRef, useEffect, useState } from 'react';
 
-const BASE_URL = 'http://localhost:8000/';
+const BASE_URL = 'https://hajjumrahbackend.processiqtech.com/';
 
 /* ─── small reusable row ─────────────────────────────────────────────────── */
 const DetailRow = ({ icon: Icon, label, value, accent }) => (
